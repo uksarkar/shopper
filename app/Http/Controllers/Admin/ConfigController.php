@@ -6,6 +6,7 @@ use App\Config;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use \Spatie\Permission\Models\Role;
+use App\Menu;
 
 class ConfigController extends Controller
 {
@@ -40,10 +41,12 @@ class ConfigController extends Controller
     /**
      * Header customization
      */
-    public function headerCustomization(Role $role)
+    public function headerCustomization(Role $role, Menu $menu)
     {
+        $item = $menu->orderBy('priority')->get();
+        $menu = $menu->getHTML($item);
         $roles = $role->all();
-        return view('admin.configs.headerCustomization',compact('roles'));
+        return view('admin.configs.headerCustomization',compact('roles','menu'));
     }
     
     //end of the controller

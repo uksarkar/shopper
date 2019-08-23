@@ -39,7 +39,31 @@ Route::prefix('admin')->namespace('Admin')->group( function (){
 
 //Development only_________________________________________
 
-// Route::get('/test', 'ConfigController@index');
+// Route::get('/test', function(App\Menu $menu){
+//    $items 	= $menu->orderBy('priority')->get();
+//    $output = $menu->getHTML($items);
+
+//    return $menu->outputMenu();
+// });
+
+
+
+
+
+
+
+
+// Route::post('/test', function(App\Category $category){
+//    $slug = 'some-category';
+//    $posts = Post::whereHas('category', function ($query) use ($slug) {
+//       $query->where('slug', $slug)
+//          ->orWhereHas('children', function ($query) use ($slug) {
+//                $query->where('slug', $slug);
+//          });
+//    })->with('category.children');
+
+//    return $posts;
+// });
 
 // Route::get('/roles', function (){
 //    $role = Spatie\Permission\Models\Role::create(['name'=>'admin']);

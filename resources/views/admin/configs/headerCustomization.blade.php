@@ -30,114 +30,52 @@
                             <div class="card">
                                 <div class="card-header">Customize Header</div>
                                 <div class="card-body">
-                                    {{-- Start Collapsible --}}
                                     <div class="card-header">
                                         Primary Mneu 
-                                        <label class="switch switch-label switch-success float-right">
-                                            <input class="switch-input" type="checkbox" checked="0"><span class="switch-slider" data-checked="On" data-unchecked="Hide"></span>
-                                        </label>
+                                        <button id="savePM" class="btn btn-success btn-sm float-right"><i class="fa fa-save" aria-hidden="true"></i> Save</button>
                                     </div>
-                                    @if(\App\Helper::primaryMenu())
-                                    <div id="accordion" role="tablist">
-                                        @foreach (\App\Helper::primaryMenu() as $menu)
-                                        @if(!blank($menu->metas))
-                                        <div class="card mb-0">
-                                            <div class="card-header" id="headingOne" role="tab">
-                                            <h5 class="mb-0">
-                                                <i class="icon-list icons mr-1"></i>
-                                                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">{{ $menu->name }}</a>
-                                                <button class="btn btn-danger btn-sm float-right"><i class="fa fa-trash"></i> Remove</button>
-                                            </h5>
+
+                                    <div class="card-body">
+                                        <p id="animiLine"></p>
+                                        <p id="resText"></p>
+                                        {{-- Start nestable --}}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                            <div id="overlay"></div> 
+                                            <h3>Menu</h3>
+                                            <div class="dd nestable">
+                                                {!! $menu !!}
                                             </div>
-                                            <div class="collapse" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
-                                            <div class="card-body">
-                                                <div class="input-group mb-1">
-                                                    <div class="input-group-prepend"><span class="input-group-text">Name:</span></div>
-                                                    <input class="form-control" id="name" type="text" name="name" value="{{ $menu->name }}">
-                                                    <div class="input-group-append"><button class="btn btn-primary">Update</button></div>
-                                                </div>
-                                                <hr>
-                                                <ul class="list-group">
-                                                    @foreach ($menu->metas as $item)
-                                                        <li class="list-group-item">
-                                                            <div class="row">
-                                                                <div class="col-sm-4">
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-prepend"><span class="input-group-text">Name:</span></div>
-                                                                        <input class="form-control" id="name" type="text" name="name" value="{{ $item->text }}">
-                                                                        <div class="input-group-append"><span class="input-group-text"><i class="fa fa-pencil"></i></span></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-4">
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-prepend"><span class="input-group-text">Link:</span></div>
-                                                                        <input class="form-control" id="name" type="text" name="name" value="{{ $item->key_1 }}">
-                                                                        <div class="input-group-append"><span class="input-group-text"><i class="fa fa-link"></i></span></div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-4">
-                                                                    <button class="btn btn-success">Update</button>
-                                                                    <button class="btn btn-danger">Remove</button>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                                <div class="row">
-                                                    <div class="col-sm-12 text-right p-1">
-                                                        <button class="btn btn-sm btn-primary">Add Link</button>
-                                                    </div>
-                                                </div>
                                             </div>
+                                            <div class="col-md-6">
+                                            <form class="form-group" id="menu-add">
+                                                <h3>Add new menu item</h3>
+                                                <div class="form-group">
+                                                <label for="addInputName">Name</label>
+                                                <input type="text" class="form-control" id="addInputName" placeholder="Item name" required>
+                                                </div>
+                                                <div class="form-group">
+                                                <label for="addInputSlug">Slug</label>
+                                                <input type="text" class="form-control" id="addInputSlug" placeholder="item-slug" required>
+                                                </div>
+                                                <button class="btn btn-info" id="addButton">Add</button>
+                                            </form>
+
+                                            <form class="form-group" id="menu-editor" style="display: none;">
+                                                <h3>Editing <span id="currentEditName" class="text-warning"></span></h3>
+                                                <div class="form-group">
+                                                <label for="addInputName">Name</label>
+                                                <input type="text" class="form-control" id="editInputName" placeholder="Item name" required>
+                                                </div>
+                                                <div class="form-group">
+                                                <label for="addInputSlug">Slug</label>
+                                                <input type="text" class="form-control" id="editInputSlug" placeholder="item-slug">
+                                                </div>
+                                                <button class="btn btn-info" id="editButton">Edit</button>
+                                            </form>
                                             </div>
                                         </div>
-                                        @else
-                                        <div class="card mb-0">
-                                            <div class="card-header bg-white">
-                                                <div class="row">
-                                                    <div class="col-sm-1"><i class="icon-link icons mr-1"></i></div>
-                                                    <div class="col-sm-3">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend"><span class="input-group-text">Name:</span></div>
-                                                            <input class="form-control" id="name" type="text" name="name" value="{{ $menu->name }}">
-                                                            <div class="input-group-append"><span class="input-group-text"><i class="fa fa-pencil"></i></span></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend"><span class="input-group-text">Link:</span></div>
-                                                            <input class="form-control" id="name" type="text" name="name" value="{{ $menu->key_1 }}">
-                                                            <div class="input-group-append"><span class="input-group-text"><i class="fa fa-link"></i></span></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-3">
-                                                        <select class="selectpicker" multiple data-live-search="true">
-                                                            <option value="all">All</option>
-                                                            <option value="guest">Guest</option>
-                                                            <option value="auth">Loggedin</option>
-                                                            @foreach ($roles as $role)
-                                                                <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-sm-2 text-right">
-                                                        <button class="btn btn-sm btn-primary"><i class="fa fa-retweet"></i> Update</button>
-                                                        <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @endif
-                                        @endforeach
-                                    </div>
-                                    @endif
-                                    {{-- End Collapsible --}}
-                                    <hr>
-                                    <div class="row">
-                                        <div class="col-sm-12 text-right p-1">
-                                            <button class="btn btn-primary">Add Link</button>
-                                            <button class="btn btn-info">Add Dropdown</button>
-                                        </div>
+                                        {{-- End nastable --}}
                                     </div>
                                 </div>
                             </div>

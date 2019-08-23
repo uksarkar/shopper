@@ -17,7 +17,7 @@
     <link href="{{ asset("assets/css/style.css") }}" rel="stylesheet">
     <link href="{{ asset("assets/vendors/pace-progress/css/pace.min.css") }}" rel="stylesheet">
     @if(Route::is('config.headerCustomization'))
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+    <link rel="stylesheet" href="{{ asset('assets/css/nestable-style.css') }}" />
     @endif
     @if(Route::is("products.create") || Route::is("products.edit") || Route::is("users.create") || Route::is("users.edit") || Route::is("shops.create") || Route::is("shops.edit"))
         <style>

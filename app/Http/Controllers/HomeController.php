@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Menu;
 
 class HomeController extends Controller
 {
@@ -31,6 +32,14 @@ class HomeController extends Controller
         }
         return view('admin.login');
         
+    }
+
+    public function test(Request $request, Menu $menu){
+        // $items 	= $menu->orderBy('priority')->get();
+        // $output = $menu->getHTML($items);
+        $menu->storeMenu($request->all());
+     
+        return "success";
     }
 
     //End of the controller

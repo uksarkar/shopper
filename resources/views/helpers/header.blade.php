@@ -7,22 +7,7 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarTop">
-                @if(\App\Helper::primaryMenu())
-                    <ul class="navbar-nav mr-auto">
-                        @foreach(\App\Helper::primaryMenu() as $menu)
-                            <li class="nav-item dropdown">
-                                <a href="@if(!blank($menu->key_1)){{ $menu->key_1 }}@else#@endif" class="nav-link @if(blank($menu->key_1)) dropdown-toggle @endif" data-toggle="dropdown">  {{ $menu->name }}  </a>
-                                @if(blank($menu->key_1))
-                                    <ul class="dropdown-menu">
-                                        @foreach($menu->metas as $meta)
-                                            <li><a class="dropdown-item" href="{{ $meta->key_1 }}">{{ $meta->text }}</a></li>
-                                        @endforeach
-                                    </ul>
-                                @endif
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
+                {!! (new App\Menu)->outputMenu() !!}
                     <ul class="navbar-nav">
                         @guest
                             <li class="nav-item"><a href="/register" class="nav-link" > Register </a></li>

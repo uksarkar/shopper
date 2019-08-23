@@ -25,22 +25,7 @@
                                     </aside> <!-- col.// -->
                                     <article class="col-sm-6">
                                             <h4 class="title"> {{ $shop->name }}  </h4>
-                                            <div class="rating-wrap  mb-2">
-                                                <ul class="rating-stars">
-                                                    <li style="width:80%" class="stars-active"> 
-                                                        <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
-                                                        <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
-                                                        <i class="fa fa-star"></i> 
-                                                    </li>
-                                                    <li>
-                                                        <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
-                                                        <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
-                                                        <i class="fa fa-star"></i> 
-                                                    </li>
-                                                </ul>
-                                                <div class="label-rating">132 reviews</div>
-                                                <div class="label-rating">154 orders </div>
-                                            </div> <!-- rating-wrap.// -->
+                                            <br>
                                             <p> {{ $shop->description }} </p>
                                             <dl class="dlist-align">
                                               <dt>Location</dt>
@@ -51,8 +36,8 @@
                                               <dd>@if(!blank($shop->products)){{ count($shop->products) }}@else No Product @endif</dd>
                                             </dl>  <!-- item-property-hor .// -->
                                             <dl class="dlist-align">
-                                              <dt>Delivery</dt>
-                                              <dd>Russia, USA, and Europe</dd>
+                                              <dt>Brance</dt>
+                                              <dd>0</dd>
                                             </dl>  <!-- item-property-hor .// -->
                                         
                                     </article> <!-- col.// -->
@@ -64,7 +49,6 @@
                                                 <a href="#" class="btn btn-primary"> Edit </a>
                                                 <a href="#" class="btn btn-secondary"> Details  </a>
                                             </p>
-                                            <a href="#"><i class="fa fa-heart"></i> Add to wishlist</a>
                                         </div> <!-- action-wrap.// -->
                                     </aside> <!-- col.// -->
                                 </div> <!-- row.// -->

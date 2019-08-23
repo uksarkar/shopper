@@ -12,7 +12,8 @@
     <script src="{{ asset("assets/js/main.js") }}"></script>
 @endif
 @if(Route::is('config.headerCustomization'))
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script src="{{ asset('assets/js/jquery.nestable.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('assets/js/jquery.nestable.plus.js') }}" type="text/javascript" defer></script>
 @endif
 @if(Route::is("products.create") || Route::is("products.edit") || Route::is("users.create") || Route::is("users.edit") || Route::is("shops.create") || Route::is("shops.edit"))
     <script>
@@ -115,10 +116,67 @@
             form.prop('action','/price/'+id);
             form.submit();
         })
-
+        //Menu Customizer
         @if(Route::is('config.headerCustomization'))
-            $('select').selectpicker();
+        $('.dd.nestable').nestable({
+            maxDepth: 2
+        })
+        .on('change', updateOutput);
+        $('#savePM').click(function(){
+            $('#resText').show().html("<span class='text-warning'>Sending.....</span>");
+            $('#animiLine').show();
+            $('#overlay').show();
+            // Variable to hold request
+            var request;
+            // Abort any pending request
+            if (request) {
+                request.abort();
+            }
+            // setup some local variables
+            var $form = $('.form-group');
+
+            // Let's select and cache all the fields
+            var $inputs = $form.find("input, select, button, textarea");
+
+            // Let's disable the inputs for the duration of the Ajax request.
+            // Note: we disable elements AFTER the form data has been serialized.
+            // Disabled form elements will not be serialized.
+            $inputs.prop("disabled", true);
+
+            // Fire off the request to /form.php
+            request = $.ajax({
+                url: "/api/menu",
+                type: "post",
+                contentType: "application/json; charset=utf-8",
+                data: sendData
+            });
+
+            // Callback handler that will be called on success
+            request.done(function (response, textStatus, jqXHR){
+                $('#resText').html("<span class='text-success'><i class=\"fa fa-check\" aria-hidden=\"true\"></i> Saved</span>").delay(1000).fadeOut();
+            });
+
+            // Callback handler that will be called on failure
+            request.fail(function (jqXHR, textStatus, errorThrown){
+                $('#resText').html("<span class='text-danger'>Error.....</span>");
+                // Log the error to the console
+                console.error(
+                    "The following error occurred: "+
+                    textStatus, errorThrown
+                );
+            });
+
+            // Callback handler that will be called regardless
+            // if the request failed or succeeded
+            request.always(function () {
+                // Reenable the inputs
+                $inputs.prop("disabled", false);
+                $('#animiLine').hide();
+                $('#overlay').hide();
+            });
+        });
         @endif
+        //end menu customizer
 
     });
 </script>
