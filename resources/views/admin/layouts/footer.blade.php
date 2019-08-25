@@ -13,7 +13,10 @@
 @endif
 @if(Route::is('config.headerCustomization'))
     <script src="{{ asset('assets/js/jquery.nestable.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('assets/js/jquery.nestable.plus.js') }}" type="text/javascript" defer></script>
+    <script src="{{ asset('assets/js/jquery.nestable.plus.js') }}" type="text/javascript"></script>
+@endif
+@if(Route::is('products.create') || Route::is('products.edit'))
+    <script src="{{ asset('assets/js/summernote-bs4.min.js') }}" type="text/javascript"></script>
 @endif
 @if(Route::is("products.create") || Route::is("products.edit") || Route::is("users.create") || Route::is("users.edit") || Route::is("shops.create") || Route::is("shops.edit"))
     <script>
@@ -60,6 +63,7 @@
     </script>
 @endif
 <script>
+    $('[data-toggle="tooltip"]').tooltip();
     $(document).ready(function() {
         $("#productSub").click(function(){
             $("#SubForm").submit();
@@ -86,6 +90,15 @@
             let subForm = $(this).data().sub;
             $('.formsub[data-sub='+subForm+']').submit();
             $(this).prop('disabled', true);
+        })
+        
+        //submitting form from list
+
+        $(".submitButton").click(function () {
+            let dataId = $(this).data().id;
+            $('#deleteForm').attr('action','/admin/category/'+dataId);
+            $('#deleteForm').submit();
+            $('button').prop('disabled', true);
         })
 
         //Show and hiding price edit form
@@ -116,6 +129,17 @@
             form.prop('action','/price/'+id);
             form.submit();
         })
+        //Category options
+        $('.option-a').click(function(e){
+            e.preventDefault();
+            let value = $(this).data('id');
+            let text = $(this).text();
+            $('.parent_id').val(value);
+            $('.dropdown-menu i').removeClass('fa-check-square-o').addClass('fa-square-o');
+            $(this).find('i').removeClass('fa-square-o').addClass('fa-check-square-o');
+            $('.dropdowntree-name').text(text);
+        });
+        //end category options
         //Menu Customizer
         @if(Route::is('config.headerCustomization'))
         $('.dd.nestable').nestable({
@@ -177,6 +201,44 @@
         });
         @endif
         //end menu customizer
+
+        //Summer nots
+
+        @if(Route::is('products.create') || Route::is('products.edit'))
+        $.ajax({
+        url: 'https://api.github.com/emojis',
+        }).then(function(data) {
+        window.emojis = Object.keys(data);
+        window.emojiUrls = data; 
+        });;
+
+        $(".textarea").summernote({
+            width: 800,
+            height: 300,
+            placeholder: 'Product descriptions....',
+            hint: {
+                match: /:([\-+\w]+)$/,
+                search: function (keyword, callback) {
+                callback($.grep(emojis, function (item) {
+                    return item.indexOf(keyword)  === 0;
+                }));
+                },
+                template: function (item) {
+                var content = emojiUrls[item];
+                return '<img src="' + content + '" width="20" /> :' + item + ':';
+                },
+                content: function (item) {
+                var url = emojiUrls[item];
+                if (url) {
+                    return $('<img />').attr('src', url).css('width', 20)[0];
+                }
+                return '';
+                }
+            }
+        });
+        @endif
+
+        //End Summer nots
 
     });
 </script>

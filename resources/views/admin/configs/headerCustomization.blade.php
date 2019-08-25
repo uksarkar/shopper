@@ -44,7 +44,11 @@
                                             <div id="overlay"></div> 
                                             <h3>Menu</h3>
                                             <div class="dd nestable">
-                                                {!! $menu !!}
+                                                @if(!is_null($menu))
+                                                    {!! $menu !!}
+                                                @else
+                                                <ol class="dd-list"></ol>
+                                                @endif
                                             </div>
                                             </div>
                                             <div class="col-md-6">

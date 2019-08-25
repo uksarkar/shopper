@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Support\Str;
 use App\Product;
+use App\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Controllers\Controller;
@@ -36,9 +37,10 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Category $category)
     {
-        return view('admin.products.create');
+        $category_output = $category->outputTree();
+        return view('admin.products.create', compact('category_output'));
     }
 
     /**
@@ -47,10 +49,11 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateProductRequest $request)
+    public function store(CreateProductRequest $request, Product $product)
     {
-        $getdata = $request->all();
+        $getdata = $request->validated();
         $getdata['user_id'] = auth()->user()->id;
+        $getdata['slug'] = $product->makeSlugFromTitle($request->name);
         $product = Product::create($getdata);
         if ($request->hasFile('image')) {
             $imageName = time().'_'.$getdata['image']->getClientOriginalName();
@@ -79,9 +82,10 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit(Product $product, Category $category)
     {
-        return view('admin.products.edit', compact('product'));
+        $category_output = $category->outputTree($product->category_id);
+        return view('admin.products.edit', compact('product','category_output'));
     }
 
     /**
@@ -93,7 +97,7 @@ class ProductController extends Controller
      */
     public function update(CreateProductRequest $request, Product $product)
     {
-        $product->update($request->all());
+        $product->update($request->validated());
         if ($request->hasFile('image')) {
             $imageName = time().'_'.$request->file('image')->getClientOriginalName();
             $getData = preg_replace('/ /', '-', $imageName);

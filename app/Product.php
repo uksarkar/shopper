@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 /**
  * App\Product
@@ -30,7 +31,20 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Product extends Model
 {
-    protected $fillable = ['name','description','user_id','shope_id'];
+    protected $fillable = ['name','slug','description','category_id','user_id','shope_id'];
+
+    /**
+     * Create a product slug.
+     *
+     * @param  string $title
+     * @return string
+     */
+    public function makeSlugFromTitle($title)
+    {
+        $slug = Str::slug($title);
+        $count = $this->whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+        return $count ? "{$slug}-{$count}" : $slug;
+    }
 
     public function user(){
         return $this->belongsTo('App\User');
@@ -41,7 +55,7 @@ class Product extends Model
     public function shops(){
         return $this->belongsToMany("App\Shop");
     }
-    public function price(){
+    public function prices(){
         return $this->hasMany("App\Price");
     }
     public function category()

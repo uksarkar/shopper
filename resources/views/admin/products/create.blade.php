@@ -35,6 +35,19 @@
                                     <form action="{{ route("products.store") }}" method="post" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
+                                            <div class="col-sm-9">
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend"><span class="input-group-text">Name</span></div>
+                                                        <input class="form-control" id="name" type="text" name="name" placeholder="Product Name" required value="{{ old("name") }}">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <textarea class="textarea" id="textarea-input" name="description" rows="9" placeholder="Content.." required>{{ old("description") }}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="col-sm-3">
                                                 <!-- image-preview-filename input [CUT FROM HERE]-->
                                                 <div class="avatar-upload">
@@ -48,24 +61,18 @@
                                                     </div>
                                                 </div>
                                                 <!-- /input-group image-preview [TO HERE]-->
+                                                {{-- Starting tree view --}}
+
+                                                <div class="tree">
+                                                    <div class="tree-header border-tree rounded mt-2 p-1">Category</div>
+                                                    {!! $category_output !!}
+                                                </div>
+                                                {{-- End tree view --}}
                                             </div>
-                                            <div class="col-sm-9">
-                                                <div class="form-group">
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend"><span class="input-group-text">Name</span></div>
-                                                        <input class="form-control" id="name" type="text" name="name" placeholder="Product Name" required value="{{ old("name") }}">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend"><span class="input-group-text">Description</span></div>
-                                                        <textarea class="form-control" id="textarea-input" name="description" rows="9" placeholder="Content.." required>{{ old("description") }}</textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group form-actions">
-                                                    <button class="btn btn-sm btn-primary float-right" type="submit">Submit</button>
-                                                </div>
-                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="form-group form-actions">
+                                            <button class="btn btn-primary float-right" type="submit">Submit</button>
                                         </div>
                                     </form>
                                 </div>

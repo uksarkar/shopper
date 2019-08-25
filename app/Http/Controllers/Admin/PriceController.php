@@ -21,6 +21,7 @@ class PriceController extends Controller
     {
         $data = $request->validated();
         $data['shop_id'] = $request->shop;
+        $data['user_id'] = auth()->user()->id;
         $data['product_id'] = $request->product;
         $product = Product::findOrFail($request->product);
         $product->shops()->attach($request->shop);

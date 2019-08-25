@@ -44,7 +44,7 @@
                                         <div class="col-sm-9">
                                             <h4 class="card-title">{{ $product->name }}</h4>
                                             <div class="card-text">
-                                                {{ $product->description }}
+                                                {!! $product->description !!}
                                             </div>
                                             <div class="card-accent-dark">
                                                 <a href="{{ route("products.edit", $product->id) }}" class="btn btn-primary">Edit</a>
