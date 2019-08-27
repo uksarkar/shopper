@@ -4,7 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Product;
+use App\Price;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class Category extends Model
@@ -29,6 +31,9 @@ class Category extends Model
     {
         return $this->hasMany(self::class, 'parent_id')->with('children');
     }
+    public function content(){
+        return $this->belongsToMany(AdminContent::class);
+    }
 
     public function makeSlugFromTitle($title)
     {
@@ -41,20 +46,11 @@ class Category extends Model
         $find = explode('/', $slug);
         $find = array_pop($find);
         $result = $this->where('slug', $find)->first();
-        return $result;
         if(!blank($result)){
-            $result->slug = $this->create_slug($result->id);
-            return $result->slug == $slug ? $result:false;
+            $result->slug = $this->getRoute($result->id);
+            return $result->slug == "/".$slug ? $result:false;
         }
         return false;
-    }
-    public function create_slug($value, $column = 'id'){
-        $find = $this->where($column,$value)->firstOrFail();
-        $this_slug = $find->slug;
-        if($find->parent_id != 0){
-            $this_slug = $this->create_slug($find->parent_id)."/".$this_slug;
-        } 
-        return $this_slug;
     }
     //End of finding category
 
@@ -63,9 +59,9 @@ class Category extends Model
         $this_slug = explode('/', $slug);
         $this_slug = array_pop($this_slug);
         $product = Product::where('slug', $this_slug)->firstOrFail();
-        $category_slug = $this->create_slug($product->category_id);
+        $category_slug = $this->getRoute($product->category_id);
         $product->slug = $category_slug.'/'.$product->slug;
-        return $product->slug == $slug ? $product:false;
+        return $product->slug == "/".$slug ? $product:false;
     }
     //End of finding product
 
@@ -100,8 +96,17 @@ class Category extends Model
 
     public function getRoute($category_id)
     {
+        if(Cache::has('product_categories') && array_key_exists($category_id, Cache::get('product_categories'))) return Cache::get('product_categories')[$category_id];
+
+        $this->updateCache();
+        $route = array_key_exists($category_id, $this->routes) ? $this->routes[$category_id]:'/unrecognized';
+        return $route;
+    }
+    //update the cache if any changes made on database by ConfigController
+    public function updateCache(){
         $this->determineCategoriesRoutes();
-        return $this->routes;
+        Cache::put('product_categories', $this->routes);
+        return true;
     }
 
     private function determineCategoriesRoutes()
@@ -112,12 +117,10 @@ class Category extends Model
             $slugs = $this->determineCategorySlugs($category, $categories);
 
             if (count($slugs) === 1) {
-                // $this->routes[$id] = '/' . $slugs[0];
-                $this->routes[$category->slug] = '/' . $slugs[0];
+                $this->routes[$id] = '/' . $slugs[0];
             }
             else {
-                // $this->routes[$id] = '/' . implode('/', $slugs);
-                $this->routes[$category->slug] = '/' . implode('/', $slugs);
+                $this->routes[$id] = '/' . implode('/', $slugs);
             }
         }
     }

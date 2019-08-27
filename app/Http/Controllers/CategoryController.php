@@ -11,17 +11,16 @@ class CategoryController extends Controller
 
     public function index($slug){
         $categoryClass = new Category;
-        $category = $categoryClass->whereSlug($slug)->first();
+        $category = $categoryClass->findCategoryBySlug($slug);
 
-        return $categoryClass->getRoute($category->id);
-        // $category = $categoryClass->findCategoryBySlug($slug);
+        // return $category;
 
-        // if($category) {return view('category', compact('category'));}
-        // else {
-        //     $product = $categoryClass->findProductBySlug($slug);
-        //     return $product ? $product:abort(404);
-        // }
-        // return abort(404);
+        if($category) {return view('category', compact('category'));}
+        else {
+            $product = $categoryClass->findProductBySlug($slug);
+            return $product ? $product:abort(404);
+        }
+        return abort(404);
     }
 
 

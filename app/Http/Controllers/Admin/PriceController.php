@@ -25,7 +25,9 @@ class PriceController extends Controller
         $data['product_id'] = $request->product;
         $product = Product::findOrFail($request->product);
         $product->shops()->attach($request->shop);
-        Price::create($data);
+        $price = Price::create($data);
+
+        $price->cachePrice($product->id);
 
         return back()->with('successMassage','Product was successfully added.');
     }
@@ -38,7 +40,9 @@ class PriceController extends Controller
      */
     public function update(PriceUpdateRequest $request, Price $price)
     {
-        $price->update($request->all());
+        $update = $price->update($request->all());
+
+        $price->cachePrice($update->product_id);
 
         return back()->with('successMessage','Price was updated!');
     }
@@ -55,6 +59,8 @@ class PriceController extends Controller
         $shop = $price->shop;
         $product->shops()->detach($shop);
         $price->delete();
+
+        $price->cachePrice($price->product_id,true);
 
         return back()->with('successMessage','Product was removed.');
     }

@@ -45,12 +45,14 @@ class Product extends Model
         $count = $this->whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
         return $count ? "{$slug}-{$count}" : $slug;
     }
-
     public function user(){
         return $this->belongsTo('App\User');
     }
     public function image(){
         return $this->morphOne('App\Image', 'imageable');
+    }
+    public function test_shops(){
+        return $this->hasManyThrough(Shop::class, Price::class , 'product_id','id','id','shop_id');
     }
     public function shops(){
         return $this->belongsToMany("App\Shop");

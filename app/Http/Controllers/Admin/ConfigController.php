@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\AdminContent;
 use App\Category;
 use App\Config;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use \Spatie\Permission\Models\Role;
 use App\Menu;
+use Illuminate\Support\Str;
 
 class ConfigController extends Controller
 {
@@ -42,12 +44,13 @@ class ConfigController extends Controller
     /**
      * Header customization
      */
-    public function headerCustomization(Role $role, Menu $menu)
+    public function headerCustomization(AdminContent $content, Menu $menu)
     {
         $item = $menu->orderBy('priority')->get();
         $menu = $menu->getHTML($item);
-        $roles = $role->all();
-        return view('admin.configs.headerCustomization',compact('roles','menu'));
+        $contents = $content->with(['products','categories'])->get();
+        $categories = Category::whereDoesntHave('content')->get();
+        return view('admin.configs.headerCustomization',compact('contents','menu','categories'));
     }
 
     /**
@@ -65,6 +68,7 @@ class ConfigController extends Controller
         $title = isset($request->slug) ? $request->slug:$request->name;
         $data['slug'] = $category->makeSlugFromTitle($title);
         $category->create($data);
+        $category->updateCache();
         return back()->with('successMassage', 'The category was created!');
     }
     /**
@@ -82,6 +86,7 @@ class ConfigController extends Controller
         $title = isset($request->slug) ? $request->slug:$request->name;
         $data['slug'] = $title == $category->slug ? $title: $category->makeSlugFromTitle($title);
         $category->update($data);
+        $category->updateCache();
         return redirect()->route('config.category')->with('successMassage', 'The category was updated!');
     }
     /**
@@ -92,6 +97,7 @@ class ConfigController extends Controller
             $category->children()->delete();
         }
         $category->delete();
+        $category->updateCache();
         return back()->with('successMassage', 'The category was deleted, with its sub-category.');
     }
     

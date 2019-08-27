@@ -42,9 +42,6 @@ class User extends Authenticatable
     public function image(){
         return $this->morphOne('App\Image', 'imageable');
     }
-    public function activity(){
-        return $this->hasOne("App\Activity");
-    }
     public function products(){
         return $this->hasMany("App\Product");
     }
@@ -58,6 +55,11 @@ class User extends Authenticatable
     {
         return Cache::has('user-is-online-' . $this->id);
     }
+    public function lastActive()
+    {
+        return Cache::has('user-active-time-' . $this->id) ? Cache::get('user-active-time-' . $this->id):false;
+    }
+    
     public function hasShops($product){
         $shops = $this->shops()->whereDoesntHave('products', function ($query) use($product) {
             $query->where('product_id','=', $product->id);

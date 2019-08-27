@@ -14,7 +14,7 @@ class Shop extends Model
     public function products(){
         return $this->belongsToMany("App\Product");
     }
-    public function price(){
+    public function prices(){
         return $this->hasMany("App\Price");
     }
     public function image(){

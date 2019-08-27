@@ -76,20 +76,20 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($product->shops as $shop)
+                                        @foreach($product->prices as $price)
                                             <tr>
                                                 <td class="text-center">
-                                                    <div class="thumbnail"><img class="img img-thumbnail" src="@if($shop->image) {{ $shop->image->url }} @else https://via.placeholder.com/100x100.png?text=No+Image @endif" width="100" alt="image"></div>
+                                                    <div class="thumbnail"><img class="img img-thumbnail" src="@if($price->shop->image) {{ $price->shop->image->url }} @else https://via.placeholder.com/100x100.png?text=No+Image @endif" width="100" alt="image"></div>
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('shops.show', $shop->id ) }}">{{ $shop->name }}</a>
-                                                    <div class="small text-muted">By: {{ $shop->user->name }}</div>
+                                                    <a href="{{ route('shops.show', $price->shop->id ) }}">{{ $price->shop->name }}</a>
+                                                    <div class="small text-muted">By: {{ $price->shop->user->name }}</div>
                                                 </td>
                                                 <td>
-                                                    <p class="bg-light p-1 rounded">{{ $shop->price[0]->amounts }}</p>
+                                                    <p class="bg-light p-1 rounded">{{ $price->amounts }}</p>
                                                 </td>
                                                 <td>
-                                                    {{  $shop->location }}
+                                                    {{  $price->shop->location }}
                                                 </td>
                                             </tr>
                                         @endforeach

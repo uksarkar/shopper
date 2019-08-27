@@ -57,7 +57,7 @@
                                                 </td>
                                                 <td class="text-center"><span class="badge badge-pill badge-light">@if(count($user->shops) > 0){{ count($user->shops) }}@endif</span></td>
                                                 <td>
-                                                    <div class="small text-muted">Last Active</div><strong>@if($user->activity && !$user->isOnline()){{ $user->activity->updated_at->diffForHumans() }}@elseif($user->isOnline())Online Now @else Not Available @endif</strong>
+                                                    <div class="small text-muted">Last Active</div><strong>@if($user->lastActive() && !$user->isOnline()){{ $user->lastActive()->diffForHumans() }}@elseif($user->isOnline())Online Now @else Not Available @endif</strong>
                                                 </td>
                                             </tr>
                                             @endforeach

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Class Price
@@ -23,4 +24,19 @@ class Price extends Model
     public function shop(){
         return $this->belongsTo("App\Shop");
     }
+    /**
+     * For increasing performance of the application
+     * store the most lowest price and shop count with this price
+     * on cache
+     * Author: Utpal Sarkar
+     * Url: https://github.com/utpalongit
+     */
+    public function cachePrice($product_id, $delete = false) {
+        if($delete){return Cache::put('product_'.$product_id, 1, -5);}
+        $price = $this->where('product_id', $product_id)->orderBy('amounts')->pluck('amounts')->first();
+        $count = $this->whereAmounts($price)->get()->count();
+        return Cache::put('product_'.$product_id, ['price'=>$price,'count'=>$count]);
+    }
+
+    //end of the model
 }

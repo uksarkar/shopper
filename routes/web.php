@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Cache;
+
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('admin', 'HomeController@admin')->name('admin');
 
@@ -39,21 +41,15 @@ Route::prefix('admin')->namespace('Admin')->group( function (){
 
 //Development only_________________________________________
 
-Route::get('/test', function(App\Category $category){
-   $array = $category->pluck('id','name')->all();
-   $keys = array_keys($array);
-   $values = array_values($array);
+// Route::get('/test','Admin\AdminContentController@index');
 
-   $easyArray = array();
-
-   foreach($keys as $keyId => $key) {
-      $easyArray[$keyId] = array(
-         'id'     =>  $key,
-         'addr'   =>  $values[$keyId]
-      );
-   }
-   return $easyArray;
+Route::get('/#test', function(App\Product $product){
+   
+   return "hello";
+   
 });
+
+Route::view('test2', 'test');
 
 // Route::get('{category}',"CategoryController@index");
 

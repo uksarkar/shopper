@@ -104,7 +104,7 @@
             <figure class="card card-product">
                 <div class="img-wrap"> <img src="@if($product->image){{ $product->image->url }}@else https://via.placeholder.com/300x220.png?text=No+Image @endif"></div>
                 <figcaption class="info-wrap">
-                    <a href="/{{ $category->slug }}/{{ $product->slug }}" class="title">{{ $product->name }}</a>
+                    <a href="{{ $category->slug }}/{{ $product->slug }}" class="title">{{ $product->name }}</a>
                     <div class="price-wrap">
                         Starting at 
                         <span class="price-new text-success">${{ $price = $product->prices()->orderBy('amounts')->pluck('amounts')->first() }}</span>
