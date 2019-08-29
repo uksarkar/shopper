@@ -24,8 +24,9 @@ class UrlAndActivityMiddleware
             Cache::put('user-active-time-' . auth()->user()->id, $now);
         }
         
-        if($request->getRequestUri() != '/test'){
-            Cache::put('rq_url',$request->getRequestUri());
+        if($request->getRequestUri() != '/login' && $request->getRequestUri() != '/test'){
+            session()->put('rq_url', $request->getRequestUri());
+            // Cache::put('rq_url',$request->getRequestUri(),-5);
         }
 
         return $next($request);

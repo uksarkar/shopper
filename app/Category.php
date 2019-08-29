@@ -31,6 +31,9 @@ class Category extends Model
     {
         return $this->hasMany(self::class, 'parent_id')->with('children');
     }
+    public function image(){
+        return $this->morphOne(Image::class, 'imageable');
+    }
     public function content(){
         return $this->belongsToMany(AdminContent::class);
     }
@@ -70,7 +73,7 @@ class Category extends Model
 	    $result = null;
         foreach ($category as $k => $item) 
             if ($item->parent_id == $parent_id) { 
-            $ul_class = ($item->parent_id == null) ? "rounded border-tree tree-css":null;
+            $ul_class = ($item->parent_id == null) ? "rounded border-tree tree-css pb-2":null;
             if($category_id == null){
                 $selected = ($k == 0 && $item->parent_id == null) ? "checked":null;
             } else {
@@ -91,7 +94,7 @@ class Category extends Model
     //End outputting category tree on admin panel create product page
     
 
-    //Testing _____________________________________________________
+    //Making the route for category
     private $routes = [];
 
     public function getRoute($category_id)
@@ -135,8 +138,7 @@ class Category extends Model
 
         return $slugs;
     }
-
-    //End Testing__________________________________________________
+    //End of the route making section
 
     //end of this class
 }

@@ -11,47 +11,45 @@
     <script src="{{ asset("assets/vendors/@coreui/coreui-plugin-chartjs-custom-tooltips/js/custom-tooltips.min.js") }}"></script>
     <script src="{{ asset("assets/js/main.js") }}"></script>
 @endif
-@if(Route::is('config.headerCustomization'))
+@if(Route::is('config.homeCustomization'))
     <script src="{{ asset('assets/js/jquery.nestable.js') }}" type="text/javascript"></script>
     <script src="{{ asset('assets/js/jquery.nestable.plus.js') }}" type="text/javascript"></script>
 @endif
 @if(Route::is('products.create') || Route::is('products.edit'))
     <script src="{{ asset('assets/js/summernote-bs4.min.js') }}" type="text/javascript"></script>
 @endif
-@if(Route::is("products.create") || Route::is("products.edit") || Route::is("users.create") || Route::is("users.edit") || Route::is("shops.create") || Route::is("shops.edit"))
-    <script>
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#imagePreview').css('background-image', 'url('+e.target.result +')');
-                    $('#imagePreview').hide();
-                    $('#imagePreview').fadeIn(650);
-                }
-                reader.readAsDataURL(input.files[0]);
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+                $('#imagePreview').hide();
+                $('#imagePreview').fadeIn(650);
             }
+            reader.readAsDataURL(input.files[0]);
         }
-        $("#imageUpload").change(function() {
-            readURL(this);
-        });
+    }
+    $("#imageUpload").change(function() {
+        readURL(this);
+    });
 
-        $(document).ready(function(){
-            $("#deletesubmit").click(function(e){
-                e.preventDefault();
-                $(this).prop('disabled', true);
-                $("#deleteform").submit();
-            });
-            $("form").submit(function(e) {
-                // submit more than once return false
-                $(this).submit(function(e) {
-                    e.preventDefault();
-                });
-                // submit once return true
-                $(".submitButton").prop('disabled', true);
-            });
+    $(document).ready(function(){
+        $("#deletesubmit").click(function(e){
+            e.preventDefault();
+            $(this).prop('disabled', true);
+            $("#deleteform").submit();
         });
-    </script>
-@endif
+        $("form").submit(function(e) {
+            // submit more than once return false
+            $(this).submit(function(e) {
+                e.preventDefault();
+            });
+            // submit once return true
+            $(".submitButton").prop('disabled', true);
+        });
+    });
+</script>
 @if(Route::is("products.show") || Route::is("products.index"))
     <script>
         $(document).ready(function() {
@@ -96,9 +94,42 @@
 
         $(".submitButton").click(function () {
             let dataId = $(this).data().id;
-            $('#deleteForm').attr('action','/admin/category/'+dataId);
+            $('#deleteForm').attr('action','/admin/config/home/content/'+dataId);
             $('#deleteForm').submit();
             $('button').prop('disabled', true);
+        })
+
+        //creating form for the content
+
+        $("#createButton").click( function(){
+            let theForm = $("form[data-sub='SbTn4MoDeL']");
+            theForm.children('input[name="_method"]').remove();
+            $('#model_SbTn4MoDeL').text('Create Content');
+            theForm.attr('action','/admin/config/home/content');
+            $("button[data-sub=SbTn4MoDeL]").html('<i class="fa fa-plus"></i> Add');
+            $('#imagePreview').css('background-image', 'url(https://via.placeholder.com/300x300.png?text=Image)');
+        })
+        $(".editContentButton").click( function(){
+            let theForm = $("form[data-sub='SbTn4MoDeL']"),
+                hasMethod = theForm.find('input[name="_method"]'),
+                content_id = $(this).data().id,
+                header = $(this).data().header,
+                title = $(this).data().title,
+                content = $(this).data().content,
+                image = $(this).data().image,
+                url = $(this).data().url;
+                
+            if(hasMethod.length === 0){
+                theForm.append('<input type="hidden" name="_method" value="PUT">');
+            }
+            $('#model_SbTn4MoDeL').text('Edit Content');
+            $('#imagePreview').css('background-image', 'url('+image+')');
+            theForm.find("input[name=header]").val(header);
+            theForm.find("input[name=title]").val(title);
+            theForm.find("input[name=url]").val(url);
+            theForm.find("textarea[name=content]").html(content);
+            theForm.attr('action','/admin/config/home/content/'+content_id);
+            $("button[data-sub=SbTn4MoDeL]").html('<i class="fa fa-cloud-upload"></i> Update');
         })
 
         //Show and hiding price edit form
@@ -141,7 +172,7 @@
         });
         //end category options
         //Menu Customizer
-        @if(Route::is('config.headerCustomization'))
+        @if(Route::is('config.homeCustomization'))
         $('.dd.nestable').nestable({
             maxDepth: 2
         })

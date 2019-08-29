@@ -72,9 +72,9 @@
                                                     <div class="input-group">
                                                         <div class="input-group-prepend"><span class="input-group-text">User Role</span></div>
                                                         <select class="form-control" name="role_id" id="role">
-                                                            @foreach($roles as $role)
+                                                            {{-- @foreach($roles as $role)
                                                                 <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                                            @endforeach
+                                                            @endforeach --}}
                                                         </select>
                                                     </div>
                                                 </div>

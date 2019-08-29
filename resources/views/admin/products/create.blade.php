@@ -50,7 +50,7 @@
                                             </div>
                                             <div class="col-sm-3">
                                                 <!-- image-preview-filename input [CUT FROM HERE]-->
-                                                <div class="avatar-upload">
+                                                <div class="avatar-upload mx-auto flex-column">
                                                     <div class="avatar-edit">
                                                         <input name="image" type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />
                                                         <label for="imageUpload"></label>

@@ -34,8 +34,22 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-4">
-                                            <form action="{{ route('config.create.category') }}" method="post">
+                                            <form action="{{ route('config.create.category') }}" method="post" enctype="multipart/form-data">
                                                 @csrf
+                                                <div class="form-group">
+                                                    <!-- image-preview-filename input [CUT FROM HERE]-->
+                                                    <div class="avatar-upload">
+                                                        <div class="avatar-edit">
+                                                            <input name="image" type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />
+                                                            <label for="imageUpload"></label>
+                                                        </div>
+                                                        <div class="avatar-preview">
+                                                            <div id="imagePreview" style="background-image: url(https://via.placeholder.com/300x300.png?text=Image);">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /input-group image-preview [TO HERE]-->
+                                                </div>
                                                 <div class="form-group">
                                                     <div class="input-group">
                                                         <div class="input-group-prepend"><span class="input-group-text">Category Name</span></div>
@@ -91,7 +105,7 @@
                                                 <button data-id="{{ $category->id }}" class="btn btn-link text-danger submitButton" type="button" data-toggle="tooltip" data-placement="top" title="" data-original-title="All sub-category will be deleted!">Delete</button>
                                             </li>
                                                 @foreach ($category->children as $k => $child)
-                                                @include('admin.helper.child_category', ['child_category' => $child])
+                                                    @include('admin.helper.child_category', ['child_category' => $child])
                                                 @endforeach
                                             @endforeach
                                             </ul>

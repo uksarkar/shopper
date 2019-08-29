@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use \Spatie\Permission\Models\Role;
 use App\Menu;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class ConfigController extends Controller
@@ -44,62 +45,143 @@ class ConfigController extends Controller
     /**
      * Header customization
      */
-    public function headerCustomization(AdminContent $content, Menu $menu)
+    public function homeCustomization(AdminContent $content, Menu $menu)
     {
         $item = $menu->orderBy('priority')->get();
         $menu = $menu->getHTML($item);
-        $contents = $content->with(['products','categories'])->get();
-        $categories = Category::whereDoesntHave('content')->get();
-        return view('admin.configs.headerCustomization',compact('contents','menu','categories'));
+        $contents = $content->where('content','<>','recommended_FoR_HoMe')->with('categories')->get();
+        $categories = Category::where('parent_id',0)->with('children')->get();
+        $hasContentQuery = DB::select("SELECT 
+                                            c.id,
+                                            ac.admin_content_id as key_id
+                                        FROM categories c
+                                        LEFT JOIN admin_content_category ac
+                                            ON c.id = ac.category_id");
+        $hasContent = [];
+        foreach ($hasContentQuery as $item) {
+            $hasContent[$item->id] = $item->key_id;
+        }
+
+        //this content is required for adding products in the bottom of home page
+        $recommendedContent = $content->where('content', 'recommended_FoR_HoMe')->with('products')->first();
+        if(blank($recommendedContent)){
+            $content->create([
+                'content' => 'recommended_FoR_HoMe',
+                'title'=>'null',
+                'header'=>'Recommended Items',
+                'url'=>'not need'
+            ]);
+            $recommendedContent = $content->where('content', 'recommended_FoR_HoMe')->with('products')->first();
+        }
+        //end recommended
+
+        return view('admin.configs.homeCustomization', compact('contents','menu','categories','hasContent','recommendedContent'));
+    }
+    /**
+     * Create new content
+     */
+    public function createContent(Request $request, AdminContent $content){
+        $theContent = $content->create($request->all());
+
+        if ($request->hasFile('image')) {
+            $imageName = time().'_'.$request->file('image')->getClientOriginalName();
+            $imageName = preg_replace("/ /", "-", $imageName);
+            $request->file('image')->move(public_path('images'), $imageName);
+            $theContent->image()->create(['url'=>$imageName]);
+        }
+
+        return back()->with('successMassage','Content was added!');
+    }
+    /**
+     * Updating content
+     */
+    public function updateContent(Request $request, AdminContent $content){
+        $content->update($request->all());
+
+        if ($request->hasFile('image')) {
+            $imageName = time().'_'.$request->file('image')->getClientOriginalName();
+            $getData = preg_replace('/ /', '-', $imageName);
+
+            if (!empty($content->image)) {
+                if (file_exists($oldImage = public_path().$content->image->url)){
+                    unlink($oldImage);
+                }
+                $content->image()->update(['url'=>$getData]);
+            } else {
+                $content->image()->create(['url'=>$getData]);
+            }
+
+            $request->image->move(public_path('images'),$getData);
+        }
+
+        return back()->with('successMassage','Content was updated!');
+    }
+    /**
+     * Delete content
+     */
+    public function deleteContent(AdminContent $content){
+        
+        //Delete if there are any images
+        if (!empty($content->image)) {
+            if(file_exists($imageName = public_path().$content->image->url)){
+                unlink($imageName);
+            }
+            $content->image()->delete();
+        }
+
+        //Delete if there any categories
+        if(!empty($content->categories)){
+            $content->categories()->detach();
+        }
+
+        $content->delete();
+
+        return back()->with('successMassage', 'Content was deleted!');
     }
 
     /**
-     * Creating deleting and editing category
+     * Adding the category with content
      */
-    public function customizeCategory(Category $category){
-        $categories = $category->where('parent_id',0)->with('children')->get();
-        return view('admin.configs.category', compact('categories'));
-    }
-    /**
-     * Creating category
-     */
-    public function createCategory(Request $request, Category $category){
+
+     public function addCategory(Request $request){
         $data = $request->all();
-        $title = isset($request->slug) ? $request->slug:$request->name;
-        $data['slug'] = $category->makeSlugFromTitle($title);
-        $category->create($data);
-        $category->updateCache();
-        return back()->with('successMassage', 'The category was created!');
-    }
+        $content = AdminContent::where('id',$data['content_id'])->first();
+        $store = explode(',',$data['content_ids']);
+        $content->categories()->syncWithoutDetaching($store);
+        return back()->with('successMassage', 'Categories ware added!');
+     }
+     /**
+      * Removing the category from content
+      */
+      public function removeCategory(Request $request,AdminContent $content){
+        $content->categories()->detach($request->category_id);
+        return back()->with('successMassage', 'Category was removed!');
+      }
+
     /**
-     * edit page for category
+     * Adding the product with content
      */
-    public function editCategory(Category $category){
-        $categories = Category::where('parent_id',0)->with('children')->get();
-        return view('admin.configs.editCategory', compact('categories', 'category'));
-    }
-    /**
-     * delete category
-     */
-    public function updateCategory(Category $category, Request $request){
+
+     public function addProduct(Request $request){
+
         $data = $request->all();
-        $title = isset($request->slug) ? $request->slug:$request->name;
-        $data['slug'] = $title == $category->slug ? $title: $category->makeSlugFromTitle($title);
-        $category->update($data);
-        $category->updateCache();
-        return redirect()->route('config.category')->with('successMassage', 'The category was updated!');
-    }
-    /**
-     * delete category
-     */
-    public function deleteCategory(Category $category){
-        if($category->children){
-            $category->children()->delete();
-        }
-        $category->delete();
-        $category->updateCache();
-        return back()->with('successMassage', 'The category was deleted, with its sub-category.');
-    }
+        $content = AdminContent::where('id',$data['recommended_content_id'])->first();
+        $store = explode(',',$data['product_ids']);
+        $content->products()->syncWithoutDetaching($store);
+
+        return back()->with('successMassage', 'Products ware added!');
+     }
+
+     /**
+      * Removing the product from content
+      */
+      public function removeProduct(Request $request,AdminContent $content){
+
+        $content->products()->detach($request->product_id);
+
+        return back()->with('successMassage', 'Products was removed!');
+      }
+
     
     //end of the controller
 }

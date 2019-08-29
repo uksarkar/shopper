@@ -3,7 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use App\Category;
 
 /**
  * App\Product
@@ -64,4 +66,13 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    public function lowestPrice(){
+        return Cache::get('product_'.$this->id);
+    }
+    public function slug(){
+        $category_slug = Category::getRoute($this->category_id);
+        return $category_slug.'/'.$this->slug;
+    }
+
+    //end of the model
 }

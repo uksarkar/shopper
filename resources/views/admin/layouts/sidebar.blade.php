@@ -14,7 +14,7 @@
             <li class="nav-item"><a class="nav-link" href="{{ route("shops.create") }}"><i class="nav-icon icon-plus"></i> Add Shop</a></li>
             <li class="nav-title">Configaretions</li>
             <li class="nav-item"><a class="nav-link" href="{{ route('config') }}"><i class="nav-icon icon-pencil"></i> Settings</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ route('config.headerCustomization') }}"><i class="nav-icon icon-note"></i> Home Page</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ route('config.homeCustomization') }}"><i class="nav-icon icon-note"></i> Home Page</a></li>
         </ul>
     </nav>
     <button class="sidebar-minimizer brand-minimizer" type="button"></button>

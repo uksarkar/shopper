@@ -6,7 +6,6 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use App\User;
-use App\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 
@@ -20,7 +19,7 @@ class UsersController extends Controller
      */
     public function index(User $user)
     {
-        $users = $user->with('activity')->with('shops')->with('image')->paginate(15);
+        $users = $user->with('shops')->with('image')->paginate(15);
         return view('admin.users.index', compact('users'));
     }
 
@@ -30,10 +29,9 @@ class UsersController extends Controller
      * @param Role $role
      * @return Response
      */
-    public function create(Role $role)
+    public function create()
     {
-        $roles = $role->all();
-        return view("admin.users.create", compact('roles'));
+        return view("admin.users.create");
     }
 
     /**

@@ -63,7 +63,7 @@
                                             <ul class="list-group">
                                                 <li class="list-group-item">Name: {{ $user->name }}</li>
                                                 <li class="list-group-item">Last Active: @if($user->lastActive()) {{ $user->lastActive()->diffForHumans() }}@else Not active yet @endif</li>
-                                                <li class="list-group-item">Products added: @if($user->products) {{ count($user->products) }} @else No product added. @endif</li>
+                                                <li class="list-group-item">Products added: @if($user->products) {{ count($user->products) }} @else No products ware added. @endif</li>
                                                 <li class="list-group-item">Email: {{ $user->email }} @if($user->email_verified_at) <span class="badge badge-pill badge-success">Verified</span> @else <span class="badge badge-pill badge-warning">Not verified</span> @endif</li>
                                             </ul>
                                         </div>

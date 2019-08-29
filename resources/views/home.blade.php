@@ -10,11 +10,15 @@
     @endif
 
     {{-- End slider section --}}
-
-    @include('helpers.content')
-    @include('helpers.content')
+    @if ($contents)
+        @foreach ($contents as $content)
+            @include('helpers.content',['content',$content])
+        @endforeach
+    @endif
     @include('helpers.quota')
-    @include('helpers.items')
+    @if($items)
+        @include('helpers.items', ['items'=>$items])
+    @endif
     @include('helpers.links')
     @include('helpers.subscribe')
     @include('helpers.footer')

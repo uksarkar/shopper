@@ -18,6 +18,7 @@ class CreateAdminContentsTable extends Migration
             $table->text('content');
             $table->string('title');
             $table->string('header');
+            $table->string('url');
             $table->timestamps();
         });
     }

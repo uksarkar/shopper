@@ -33,9 +33,23 @@
                                     Categories
                                 </div>
                                 <div class="card-body">
-                                    <form action="{{ route('config.update.category',$category->id) }}" method="post">
+                                    <form action="{{ route('config.update.category',$category->id) }}" method="post" enctype="multipart/form-data">
                                         @csrf
                                         @method('PUT')
+                                        <div class="form-group">
+                                            <!-- image-preview-filename input [CUT FROM HERE]-->
+                                            <div class="avatar-upload">
+                                                <div class="avatar-edit">
+                                                    <input name="image" type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />
+                                                    <label for="imageUpload"></label>
+                                                </div>
+                                                <div class="avatar-preview">
+                                                    <div id="imagePreview" style="background-image: url(@isset($category->image){{ $category->image->url }}@else https://via.placeholder.com/300x300.png?text=Image @endisset);">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /input-group image-preview [TO HERE]-->
+                                        </div>
                                         <div class="form-group">
                                             <div class="input-group">
                                                 <div class="input-group-prepend"><span class="input-group-text">Category Name</span></div>

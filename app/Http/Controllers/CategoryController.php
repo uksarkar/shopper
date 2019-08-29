@@ -26,8 +26,5 @@ class CategoryController extends Controller
 
 
 
-
-
-
     //End Category Controller
 }

@@ -62,6 +62,7 @@ class ProductController extends Controller
             $getdata['url'] = $imageName;
             $product->image()->create($getdata);
         }
+        
         return redirect()->route('products.index')->with('successMassage','Product was added.');
     }
 
@@ -112,7 +113,6 @@ class ProductController extends Controller
             }
 
             $request->image->move(public_path('images'),$getData);
-
         }
         return redirect()->route('products.index')->with('successMassage', 'The product has been successfully updated.');
     }

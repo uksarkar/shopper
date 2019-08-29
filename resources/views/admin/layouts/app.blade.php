@@ -16,11 +16,11 @@
     <!-- Main styles for this application-->
     <link href="{{ asset("assets/css/style.css") }}" rel="stylesheet">
     <link href="{{ asset("assets/vendors/pace-progress/css/pace.min.css") }}" rel="stylesheet">
-    @if(Route::is('config.headerCustomization'))
+    @if(Route::is('config.homeCustomization'))
         <link rel="stylesheet" href="{{ asset('assets/css/nestable-style.css') }}" />
     @endif
     @if(Route::is('products.create') || Route::is('products.edit'))
-    <link rel="stylesheet" href="{{ asset('assets/css/summernote-bs4.css') }}" />
+        <link rel="stylesheet" href="{{ asset('assets/css/summernote-bs4.css') }}" />
     @endif
         <style>
             .avatar-upload {

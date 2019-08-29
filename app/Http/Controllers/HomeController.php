@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AdminContent;
 use Illuminate\Http\Request;
 use App\Menu;
 
@@ -14,7 +15,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $contents = AdminContent::where('content','<>','recommended_FoR_HoMe')->orderBy('id')->get();
+        $items = AdminContent::where('content','recommended_FoR_HoMe')->with('products')->first();
+
+        return view('home', compact('contents','items'));
     }
 
     /**

@@ -29,7 +29,7 @@ class Price extends Model
      * store the most lowest price and shop count with this price
      * on cache
      * Author: Utpal Sarkar
-     * Url: https://github.com/utpalongit
+     * Url: https://github.com/uksarkar
      */
     public function cachePrice($product_id, $delete = false) {
         if($delete){return Cache::put('product_'.$product_id, 1, -5);}
