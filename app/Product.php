@@ -70,8 +70,13 @@ class Product extends Model
         return Cache::get('product_'.$this->id);
     }
     public function slug(){
-        $category_slug = Category::getRoute($this->category_id);
+        $category = new Category;
+        $category_slug = $category->getRoute($this->category_id);
         return $category_slug.'/'.$this->slug;
+    }
+    public function monySing(){
+        $sing = Cache::has('monySing') ? Cache::get('monySing'):"$";
+        return $sing;
     }
 
     //end of the model

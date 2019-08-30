@@ -55,6 +55,12 @@ class Category extends Model
         }
         return false;
     }
+    //find category name and slug by slug
+    public function getNameSlugOfCategory($slug){
+        $category = $this->where('slug', $slug)->firstOrFail();
+        $category->slug = $this->getRoute($category->id);
+        return $category;
+    }
     //End of finding category
 
     //Start finding product by slug

@@ -17,14 +17,15 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
             @foreach (explode('/', $category->slug) as $k => $slug)
-                <li class="breadcrumb-item"><a href="/{{ $slug }}">{{ $slug }}</a></li>
+                @if($k > 0)
+                    <li class="breadcrumb-item @if($category->getNameSlugOfCategory($slug)['id'] == $category->id) active @endif"><a href="{{ $category->getNameSlugOfCategory($slug)['slug'] }}">{{ $category->getNameSlugOfCategory($slug)['name'] }}</a></li>
+                @endif
             @endforeach
-            <li class="breadcrumb-item active" aria-current="page">Items</li>
         </ol>  
         </nav> <!-- col.// -->
         <div class="col-md-3-24 text-right"> 
          <a href="#" data-toggle="tooltip" title="List view"> <i class="fa fa-bars"></i></a>
-         <a href="#" data-toggle="tooltip" title="Grid view"> <i class="fa fa-th"></i></a>
+         <a href="/{{ $category->slug }}" data-toggle="tooltip" title="Grid view"> <i class="fa fa-th"></i></a>
         </div> <!-- col.// -->
     </div> <!-- row.// -->
     <hr>
@@ -32,49 +33,6 @@
         <div class="col-md-3-24"> <strong>Filter by:</strong> </div> <!-- col.// -->
         <div class="col-md-21-24"> 
             <ul class="list-inline">
-              <li class="list-inline-item dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">   Supplier type </a>
-                <div class="dropdown-menu p-3" style="max-width:400px;"">	
-                  <label class="form-check">
-                      <a href="#">
-                       <input type="checkbox" class="form-check-input"> Good supplier
-                    </a>
-                  </label>
-                  <label class="form-check">
-                      <a href="#">
-                       <input type="checkbox" class="form-check-input"> Best supplier
-                    </a>
-                  </label>
-                  <label class="form-check">
-                      <a href="#">
-                       <input type="checkbox" class="form-check-input"> New supplier
-                    </a>
-                  </label>
-                </div> <!-- dropdown-menu.// -->
-              </li>
-              <li class="list-inline-item dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">  Country </a>
-                <div class="dropdown-menu p-3" style="max-width:400px;"">	
-                  <label class="form-check">
-                      <a href="#">
-                       <input type="checkbox" class="form-check-input"> China
-                    </a>
-                  </label>
-                  <label class="form-check">
-                      <a href="#">
-                       <input type="checkbox" class="form-check-input"> Japan
-                    </a>
-                  </label>
-                  <label class="form-check">
-                      <a href="#">
-                       <input type="checkbox" class="form-check-input"> Uzbekistan
-                    </a>
-                  </label>
-                  <label class="form-check">
-                      <a href="#">
-                       <input type="checkbox" class="form-check-input"> Russia
-                    </a>
-                  </label>
-                </div> <!-- dropdown-menu.// -->
-              </li>
               <li class="list-inline-item"><a href="#">Product type</a></li>
               <li class="list-inline-item"><a href="#">Brand name</a></li>
               <li class="list-inline-item"><a href="#">Color</a></li>
@@ -104,11 +62,9 @@
             <figure class="card card-product">
                 <div class="img-wrap"> <img src="@if($product->image){{ $product->image->url }}@else https://via.placeholder.com/300x220.png?text=No+Image @endif"></div>
                 <figcaption class="info-wrap">
-                    <a href="{{ $category->slug }}/{{ $product->slug }}" class="title">{{ $product->name }}</a>
+                    <a href="{{ $product->slug() }}" class="title">{{ $product->name }}</a>
                     <div class="price-wrap">
-                        Starting at 
-                        <span class="price-new text-success">${{ $price = $product->prices()->orderBy('amounts')->pluck('amounts')->first() }}</span>
-                        in {{ $product->prices()->whereAmounts($price)->get()->count() }} shops
+                        Starting at <span class="text-success">{{ $product->monySing() }}{{ $product->lowestPrice()['price'] }}</span> in {{ $product->lowestPrice()['count'] }} shops.
                     </div> <!-- price-wrap.// -->
                 </figcaption>
             </figure> <!-- card // -->

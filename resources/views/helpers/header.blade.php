@@ -1,5 +1,5 @@
 <header class="section-header">
-    <nav class="navbar navbar-expand-lg navbar-light @if(!Route::is('home'))shadow-sm @endif">
+    <nav class="navbar navbar-expand-lg navbar-light @if(Route::is('login'))shadow-sm @endif">
 {{--        <div class="container">--}}
             <a class="navbar-brand" href="/"><img class="logo" src="{{ config('site.header.logo') }}" alt="{{ config('site.header.name') }}" title="{{ config('site.header.name') }}"></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTop" aria-controls="navbarTop" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,7 +19,7 @@
             </div> <!-- collapse.// -->
         </div>
     </nav>
-    @if(Route::is('home'))
+    @if(!Route::is('login'))
     <section class="header-main shadow-sm">
         <div class="container">
             <div class="row-sm align-items-center">

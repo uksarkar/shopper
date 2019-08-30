@@ -47,18 +47,29 @@ Route::prefix('admin')->middleware('auth','role_or_permission:admin|view admin')
 
 // Route::get('/test','Admin\AdminContentController@index');
 
-Route::get('/test', function(){
+Route::get('/test/{slug?}', function($slug){
 
    // return session()->get('rq_url');
-   $a = "1";
+   $a = $_GET['q'];
 
-   $b = explode(',',$a);
+   $product = new App\Product;
 
-   return $b;
+   $array = explode(',',$a);
+   $view_list = array_search('view list',$array);
+   $view_grid = array_search('view grid',$array);
+   $product_type = array_search('product type',$array);
+   $brand_name = array_search('brand name',$array);
+   $color = array_search('color',$array);
+   $size = array_search('size',$array);
+   if(!blank($view_grid)) return "something";
+
+   return $product->get();
    
-});
+})->where('slug', '^[a-zA-Z0-9-_\/]+$');
 
-Route::view('test2', 'test');
+Route::view('test2', function(App\Category $category){
+   return $category->findCategoryBySlug("mobile/apple/i-phone");
+});
 
 // Route::get('{category}',"CategoryController@index");
 

@@ -15,7 +15,7 @@
 
                         <div class="price-wrap">
                             <span class="price-new">
-                                Starting from {{ $product->lowestPrice()['price'] }} in {{ $product->lowestPrice()['count'] }} shops.
+                                Starting at <span class="text-success">{{ $product->monySing() }}{{ $product->lowestPrice()['price'] }}</span> in {{ $product->lowestPrice()['count'] }} shops.
                             </span>
                         </div> <!-- price-wrap.// -->
 
