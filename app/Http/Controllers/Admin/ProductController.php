@@ -8,6 +8,8 @@ use App\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Controllers\Controller;
+use App\ProductMeta;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -51,17 +53,22 @@ class ProductController extends Controller
      */
     public function store(CreateProductRequest $request, Product $product)
     {
-        $getdata = $request->validated();
-        $getdata['user_id'] = auth()->user()->id;
-        $getdata['slug'] = $product->makeSlugFromTitle($request->name);
-        $product = Product::create($getdata);
+        $getData = $request->validated();
+        $getData['user_id'] = auth()->user()->id;
+        $getData['slug'] = $product->makeSlugFromTitle($request->name);
+        $product = Product::create($getData);
         if ($request->hasFile('image')) {
-            $imageName = time().'_'.$getdata['image']->getClientOriginalName();
+            $imageName = time().'_'.$getData['image']->getClientOriginalName();
             $imageName = preg_replace("/ /", "-", $imageName);
-            $getdata['image']->move(public_path('images'), $imageName);
-            $getdata['url'] = $imageName;
-            $product->image()->create($getdata);
+            $getData['image']->move(public_path('images'), $imageName);
+            $getData['url'] = $imageName;
+            $product->image()->create($getData);
         }
+
+        Cache::put('product_'.$product->id, ['price'=>$request->expected_price,'count'=>0]);
+
+        //creating metas data if there is any
+        (new ProductMeta)->storeMeta($product->id);
         
         return redirect()->route('products.index')->with('successMassage','Product was added.');
     }
@@ -99,6 +106,7 @@ class ProductController extends Controller
     public function update(CreateProductRequest $request, Product $product)
     {
         $product->update($request->validated());
+
         if ($request->hasFile('image')) {
             $imageName = time().'_'.$request->file('image')->getClientOriginalName();
             $getData = preg_replace('/ /', '-', $imageName);
@@ -114,6 +122,9 @@ class ProductController extends Controller
 
             $request->image->move(public_path('images'),$getData);
         }
+        //Create and update metas data if there is any
+        (new ProductMeta)->storeMeta($product->id);
+
         return redirect()->route('products.index')->with('successMassage', 'The product has been successfully updated.');
     }
 
@@ -126,19 +137,29 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //delete all of price and detach all of the shops
-        if (!blank($product->shops)){
-            foreach ($product->shops as $shop){
-                $product->price()->where('shop_id',$shop->id)->first()->delete();
+        //Delete if there is any image
+        if (!blank($product->image)) 
+        {
+            if(file_exists($imageName = public_path().$product->image->url))
+            {
+                unlink($imageName);
             }
-            $product->shops()->detach();
-        }
-
-        //Delete if there are any images
-        if (!empty($product->image) && file_exists($imageName = public_path().$product->image->url)) {
-            unlink($imageName);
             $product->image()->delete();
         }
+
+        // Delete all of prices of this product
+        if(!blank($product->prices))
+        {
+            $product->prices()->delete();
+        }
+
+        if(!blank($product->metas))
+        {
+            $product->metas()->delete();
+        }
+
+        // Delete the cache price of this product
+        Cache::put('product_'.$product->id, 1, -5);
 
         //Delete the product now
         $product->delete();

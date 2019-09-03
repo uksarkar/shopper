@@ -47,37 +47,99 @@ class Product extends Model
         $count = $this->whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
         return $count ? "{$slug}-{$count}" : $slug;
     }
-    public function user(){
+    /**
+     * Making relationship with user
+     * 
+     * @return Collection
+     */
+    public function user()
+    {
         return $this->belongsTo('App\User');
     }
-    public function image(){
+    /**
+     * Making relationship with one image
+     * 
+     * @return Collection
+     */
+    public function image()
+    {
         return $this->morphOne('App\Image', 'imageable');
     }
-    public function test_shops(){
-        return $this->hasManyThrough(Shop::class, Price::class , 'product_id','id','id','shop_id');
-    }
-    public function shops(){
-        return $this->belongsToMany("App\Shop");
-    }
-    public function prices(){
+    /**
+     * Making relationship with many prices
+     * 
+     * @return Collection
+     */
+    public function prices()
+    {
         return $this->hasMany("App\Price");
     }
+    /**
+     * Making relationship with one category
+     * 
+     * @return Collection
+     */
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
-    public function lowestPrice(){
+    /**
+     * Making relationship with many pProductMeta
+     * 
+     * @return Collection
+     */
+    public function metas()
+    {
+        return $this->hasMany(ProductMeta::class);
+    }
+
+    /**
+     * Getting the lowest price and shops count from cache
+     * 
+     * @return array
+     */
+    public function lowestPrice()
+    {
         return Cache::get('product_'.$this->id);
     }
-    public function slug(){
+    
+    /**
+     * Check if the user left any shop for add this product
+     * 
+     * @return bool
+     */
+    public function hasShop()
+    {
+        return !Cache::has('shop_'.auth()->id()."_".$this->id);
+    }
+
+    /**
+     * Creating the full url of product
+     * 
+     * @return string
+     */
+    public function slug()
+    {
         $category = new Category;
         $category_slug = $category->getRoute($this->category_id);
         return $category_slug.'/'.$this->slug;
     }
-    public function monySing(){
+    /**
+     * Getting the price money sing default is `$`
+     * 
+     * @return string
+     */
+    public function monySing()
+    {
         $sing = Cache::has('monySing') ? Cache::get('monySing'):"$";
         return $sing;
     }
 
-    //end of the model
+    /**
+     * End of the model
+     * Shopper is developed by 
+     * Utpal Sarkar
+     * full stack web developer
+     * https://github.com/uksarkar
+     */
 }

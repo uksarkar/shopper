@@ -50,16 +50,6 @@
         });
     });
 </script>
-@if(Route::is("products.show") || Route::is("products.index"))
-    <script>
-        $(document).ready(function() {
-            $(".subbtn").click(function(){
-                $(".formsub").submit();
-                $(this).prop("disabled", true);
-            });
-        });
-    </script>
-@endif
 <script>
     $('[data-toggle="tooltip"]').tooltip();
     $(document).ready(function() {
@@ -157,7 +147,7 @@
             let form = $('#edit-form-bottom');
             form.children('input[name=amounts]').val(amounts);
             form.children('textarea[name=description]').html(description);
-            form.prop('action','/price/'+id);
+            form.prop('action','/admin/price/'+id);
             form.submit();
         })
         //Category options
@@ -270,6 +260,113 @@
         @endif
 
         //End Summer nots
+
+        @if(Route::is('products.create') || Route::is('products.edit'))
+
+        //Start product meta form script
+            let meta_count = 1;
+            var el_parent = [];
+            $('#plus').click(function(e){
+                e.preventDefault();
+                let el = $(".plusItem");
+                el.append(`
+                    <div class="list-group-item" data-id="new-${meta_count}" data-status="create">
+                        <button class="close meta_close" type="button" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <input class="form-control plusName" type="text" name="meta_name" placeholder="Meta Name">
+                        <input class="form-control plusData" type="text" name="meta_data" placeholder="Meta Text">
+                    </div>
+                `);
+                $('#sub').on("click", getParentElement);
+                $('.list-group-item .meta_close').on("click", removeDiv);
+                meta_count++;
+            });
+            $('#sub').click(function(e){
+                e.preventDefault();
+                $(this).html(`
+                    <i class="fa fa-refresh fa-spin"></i> Saving...
+                `).attr('disabled', true);
+                getParentElement();
+                let i = 0,
+                    meta_data = [];
+                el_parent.each(function(){
+                    let name = el_parent[i].children[1].value,
+                        data = el_parent[i].children[2].value,
+                        status = el_parent[i].dataset.status,
+                        id = el_parent[i].dataset.id;
+                        
+                    if(name != '' && data != ''){
+                        meta_data.push({'id': id, 'name': name, 'data':data, 'status': status});
+                    }
+
+                    i++;
+                });
+                request(window.JSON.stringify(meta_data));
+            })
+            var getParentElement = function(){
+                el_parent = $('.plusItem').find('div.list-group-item');
+            }
+            var request = function(meta_data){
+                // Variable to hold request
+                var request;
+                // Abort any pending request
+                if (request) {
+                    request.abort();
+                }
+
+                let token = $('input[name=_token]').val();
+
+                // Fire off the request to /form.php
+                request = $.ajax({
+                    url: "/admin/cache_meta",
+                    type: "post",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Requested-With":"XMLHttpRequest",
+                        "X-CSRF-TOKEN": token
+                    },
+                    data: meta_data
+                });
+
+                // Callback handler that will be called on success
+                request.done(function (response, textStatus, jqXHR){
+                    $("#create-product").submit();
+                });
+
+                // Callback handler that will be called on failure
+                request.fail(function (jqXHR, textStatus, errorThrown){
+                    // Log the error to the console
+                    console.error(
+                        "Error: "+
+                        textStatus, errorThrown
+                    );
+                });
+
+                // Callback handler that will be called regardless
+                // if the request failed or succeeded
+                request.always(function () {
+                    //in leter
+                });
+            }
+
+            // create the click function
+            var removeDiv = function() {
+                if($(this)[0] != window) {
+                    let target = $(this).parent();
+
+                    if(target.data().status == 0) {
+                        target.attr('data-status','delete');
+                        target.hide();
+                    } else {
+                        target.remove();
+                    }
+                }
+            }
+
+            $(function(){
+                $('.list-group-item .meta_close').on("click", removeDiv);
+            });
+        //end product meta form script
+        @endif
 
     });
 </script>

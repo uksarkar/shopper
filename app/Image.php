@@ -27,17 +27,48 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Image extends Model
 {
-    protected $fillable = ['url','imageable_id','imageable_type'];
-    private $dir = '/images/';
     /**
-     * Get all of the owning imageable models.
+     * set the fillable column name
+     * 
+     * @var array
      */
-    public function getUrlAttribute($url){
+    protected $fillable = ['url','imageable_id','imageable_type'];
+
+    /**
+     * The public directory for storing images
+     * 
+     * @var string
+     */
+    private $dir = '/images/';
+
+    /**
+     * Make the image url with public director
+     * 
+     * @return string
+     */
+    public function getUrlAttribute($url)
+    {
         return $this->dir.$url ;
     }
 
+    /**
+     * Make the polymorphic relationship
+     * 
+     * @return Collection
+     */
     public function imageable()
     {
         return $this->morphTo();
     }
+
+
+
+    
+    /**
+     * End of the model
+     * Shopper is developed by 
+     * Utpal Sarkar
+     * full stack web developer
+     * https://github.com/uksarkar
+     */
 }

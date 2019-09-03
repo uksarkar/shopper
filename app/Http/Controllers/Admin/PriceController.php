@@ -23,11 +23,10 @@ class PriceController extends Controller
         $data['shop_id'] = $request->shop;
         $data['user_id'] = auth()->user()->id;
         $data['product_id'] = $request->product;
-        $product = Product::findOrFail($request->product);
-        $product->shops()->attach($request->shop);
+        
         $price = Price::create($data);
 
-        $price->cachePrice($product->id);
+        $price->cachePrice();
 
         return back()->with('successMassage','Product was successfully added.');
     }
@@ -40,9 +39,12 @@ class PriceController extends Controller
      */
     public function update(PriceUpdateRequest $request, Price $price)
     {
-        $update = $price->update($request->all());
+        $data = $request->all();
+        $data['old'] = $price->amounts;
+        
+        $price->update($data);
 
-        $price->cachePrice($update->product_id);
+        $price->cachePrice();
 
         return back()->with('successMessage','Price was updated!');
     }
@@ -55,12 +57,8 @@ class PriceController extends Controller
      */
     public function destroy(Price $price)
     {
-        $product = $price->product;
-        $shop = $price->shop;
-        $product->shops()->detach($shop);
+        $price->cachePrice(true);
         $price->delete();
-
-        $price->cachePrice($price->product_id,true);
 
         return back()->with('successMessage','Product was removed.');
     }

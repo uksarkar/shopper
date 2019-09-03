@@ -1,7 +1,10 @@
 <?php
 
+use App\Product;
+use App\ProductSearch\ProductSearch;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('admin', 'HomeController@admin')->name('admin');
@@ -9,11 +12,26 @@ Route::get('admin', 'HomeController@admin')->name('admin');
 Auth::routes();
 
 //Logged Users routes______________________________________
-Route::group(['middleware'=>['auth','role_or_permission:admin|view account'],'as'=>'home.'], function() {
-   Route::get('/account', 'AccountController@index')->name('account.index');
-   Route::get('/account/shops', 'AccountController@shops')->name('account.shops');
-   Route::get('/account/products', 'AccountController@products')->name('account.products');
-});
+Route::group([
+               'middleware'=>['auth','role_or_permission:admin|view account'],
+               'prefix'=>'account',
+               'as'=>'home.'
+            ], 
+   function() 
+   {
+      Route::get('/', 'AccountController@index')->name('account.index');
+      Route::get('shops', 'AccountController@shops')->name('account.shops');
+      Route::get('products', 'AccountController@products')->name('account.products');
+
+      Route::namespace('User')->group(function(){
+
+         //managing user's shops
+         Route::resource('shops','ShopsController')->except('index');
+
+         //managing user's products
+         Route::resource('products', 'ProductsController')->except('index');
+      });
+   });
 //End logged users routes__________________________________
 
 //Only admins routes_______________________________________
@@ -39,37 +57,48 @@ Route::prefix('admin')->middleware('auth','role_or_permission:admin|view admin')
    Route::get('category/{category}', 'CategoryController@editCategory')->name('config.edit.category');
    Route::put('category/{category}', 'CategoryController@updateCategory')->name('config.update.category');
    Route::delete('category/{category}', 'CategoryController@deleteCategory')->name('config.delete.category');
+
+   //Storing meta data on cache
+   Route::post('cache_meta', 'AdminContentController@cacheMeta')->name('admin.cache_meta');
+
+   //end of the route group
 });
 //End admin routes_________________________________________
 
+//Products search route
+Route::get('/search{slug?}', 'HomeController@search')->where('slug', '^[a-zA-Z0-9-_\/]+$')->name('search');
 
 //Development only_________________________________________
 
-// Route::get('/test','Admin\AdminContentController@index');
+//getting the available shop of the user
+Route::get('/getshop', 'ApiController@returnShop');
 
-Route::get('/test/{slug?}', function($slug){
 
-   // return session()->get('rq_url');
-   $a = $_GET['q'];
 
-   $product = new App\Product;
-
-   $array = explode(',',$a);
-   $view_list = array_search('view list',$array);
-   $view_grid = array_search('view grid',$array);
-   $product_type = array_search('product type',$array);
-   $brand_name = array_search('brand name',$array);
-   $color = array_search('color',$array);
-   $size = array_search('size',$array);
-   if(!blank($view_grid)) return "something";
-
-   return $product->get();
-   
-})->where('slug', '^[a-zA-Z0-9-_\/]+$');
-
-Route::view('test2', function(App\Category $category){
-   return $category->findCategoryBySlug("mobile/apple/i-phone");
+Route::get('/test3', function(App\Product $product){
+   // return Cache::get('tamp_meta_data');
+   // Cache::put('tamp_meta_data_'.auth()->id(), [{"name":"test","data":"this is data"}]);
+   $a = $product->find(12);
+   dd($a->metas());
 });
+
+
+
+Route::get('/test2',function(Product $product) {
+
+   $a = $product->find(12);
+   $b = $a->prices()->paginate(2);
+   // $c = $a->prices()->whereAmounts($b)->count();
+
+   return $b;
+});
+Route::view('/test','test');
+
+Route::get('/test/{id}', function($id){
+   return auth()->user()->availableShops($id);
+});
+
+
 
 // Route::get('{category}',"CategoryController@index");
 
@@ -79,30 +108,35 @@ Route::view('test2', function(App\Category $category){
 // Route::get('put', function(App\Category $category){
 //    $categories = $category->all();
 
-//    return $categories;
+//    return $categories; 
 //    // Cache::put('categories', $categories);
 //    // Cache::forget('categories');
 //    // foreach ($categories as $key => $item) {
 //    //    Cache::put('category_'.$item->id, $item, -1);
 //    // }
 // });
+Route::get('/roles', function (){
+   // $role = Spatie\Permission\Models\Role::create(['name'=>'admin']);
+   // $permission = Spatie\Permission\Models\Permission::findByName('create shop');
+   // $user = App\User::find(2);
+   // $permission = Spatie\Permission\Models\Permission::create(['name'=>'create product']);
+
+   // auth()->user()->revokePermissionTo($permission);
+   // auth()->user()->givePermissionTo($permission);
+   // $role = Spatie\Permission\Models\Role::find(1);
+   // $user->removeRole($role);
+
+   // auth()->user()->assignRole($role);
+
+});
 
 //Find the content category or product, based on url slug
-Route::get('{slug?}', 'CategoryController@index')->where('slug', '^[a-zA-Z0-9-_\/]+$');
+Route::get('{slug?}', 'CategoryController@index')->where('slug', '^[a-zA-Z0-9-_\/]+$')->name('dynamic');
 
 // Route::get('get', function(){
 //    return Cache::get('category_5');
 // });
 
-// Route::get('/roles', function (){
-//    $role = Spatie\Permission\Models\Role::create(['name'=>'admin']);
-//    $permission = Spatie\Permission\Models\Permission::create(['name'=>'edit product']);
-
-//    $role->givePermissionTo($permission);
-
-//    auth()->user()->assignRole($role);
-
-// });
 /*
  * package
  */

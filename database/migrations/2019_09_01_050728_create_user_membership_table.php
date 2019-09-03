@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCategoryPostTable extends Migration
+class CreateUserMembershipTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateCategoryPostTable extends Migration
      */
     public function up()
     {
-        Schema::create('category_post', function (Blueprint $table) {
+        Schema::create('user_membership', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('user_id')->unsigned()->index();
+            $table->integer('membership_id')->unsigned()->index();
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateCategoryPostTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('category_post');
+        Schema::dropIfExists('user_membership');
     }
 }

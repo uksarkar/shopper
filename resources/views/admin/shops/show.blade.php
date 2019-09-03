@@ -75,7 +75,7 @@
                                             </thead>
                                             <tbody>
                                             @foreach($shop->prices as $price)
-                                                <tr data-tr="{{ 'd'.$price->product->id }}">
+                                                <tr data-tr="{{ 'd'.$price->id }}">
                                                     <td class="text-center">
                                                         <div class="thumbnail"><img class="img img-thumbnail" src="@if($price->product->image) {{ $price->product->image->url }} @else https://via.placeholder.com/100x100.png?text=No+Image @endif" width="100" alt="image"></div>
                                                     </td>
@@ -96,16 +96,16 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <button data-edit="{{ 'd'.$price->product->id }}" class="btn btn-info btn-sm formShowBtn">Edit Price</button>
-                                                        <button data-sub="{{ 'b'.$price->product->id }}" class="btn btn-outline-danger btn-sm subbtn">Remove</button>
-                                                        <form data-sub="{{ 'b'.$price->product->id }}" class="formsub" action="{{ route('price.destroy', $price->id) }}" method="POST">
+                                                        <button data-edit="{{ 'd'.$price->id }}" class="btn btn-info btn-sm formShowBtn">Edit Price</button>
+                                                        <button data-sub="{{ 'b'.$price->id }}" class="btn btn-outline-danger btn-sm subbtn">Remove</button>
+                                                        <form data-sub="{{ 'b'.$price->id }}" class="formsub" action="{{ route('price.destroy', $price->id) }}" method="POST">
                                                             @method('DELETE')
                                                             @csrf
                                                         </form>
                                                     </td>
                                                 </tr>
 {{--                                                The form--}}
-                                                <tr data-edit="{{ 'd'.$price->product->id }}" style="display: none">
+                                                <tr data-edit="{{ 'd'.$price->id }}" style="display: none">
                                                         <td class="text-center">
                                                             <div class="thumbnail"><img class="img img-thumbnail" src="@if($price->product->image) {{ $price->product->image->url }} @else https://via.placeholder.com/100x100.png?text=No+Image @endif" width="100" alt="image"></div>
                                                         </td>
@@ -118,7 +118,7 @@
                                                         </td>
                                                         <td>
                                                             @if(!blank($price->description))
-                                                                <textarea data-info="{{ 'e'.$price->product->id }}" id="" cols="30" rows="2"
+                                                                <textarea data-info="{{ 'e'.$price->id }}" id="" cols="30" rows="2"
                                                                           class="form-control">{{ $price->description }}</textarea>
                                                             @else
                                                                 <textarea name="description" id="" cols="30" rows="10"
@@ -127,8 +127,8 @@
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            <button type="button" data-info="{{ 'e'.$price->product->id }}" class="btn btn-outline-success btn-sm sButton">Update</button>
-                                                            <button type="button" data-edit="{{ 'd'.$price->product->id }}" class="btn btn-sm btn-warning xbtn">Cancel</button>
+                                                            <button type="button" data-info="{{ 'e'.$price->id }}" class="btn btn-outline-success btn-sm sButton">Update</button>
+                                                            <button type="button" data-edit="{{ 'd'.$price->id }}" class="btn btn-sm btn-warning xbtn">Cancel</button>
                                                         </td>
                                                 </tr>
                                             @endforeach

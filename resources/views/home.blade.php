@@ -5,9 +5,7 @@
 
     {{-- Slider Section --}}
 
-    @if(App\Helper::sliderSection())
-        @include('helpers.slider')
-    @endif
+    @include('helpers.slider')
 
     {{-- End slider section --}}
     @if ($contents)

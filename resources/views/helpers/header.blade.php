@@ -7,12 +7,12 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarTop">
-                {!! (new App\Menu)->outputMenu() !!}
+                {!! $menu->outputMenu() !!}
                     <ul class="navbar-nav">
                         @guest
-                            <li class="nav-item"><a href="/register" class="nav-link" > Register </a></li>
+                            <li class="nav-item"><a href="/register" class="nav-link" ><i class="fa fa-user-plus"></i> Register </a></li>
                         @else
-                            <li class="nav-item"><a href="#" class="nav-link" onclick="document.getElementById('logout').submit()"> Logout </a></li>
+                            <li class="nav-item"><a href="#" class="nav-link" onclick="document.getElementById('logout').submit()"><i class="fa fa-lock"></i> Logout </a></li>
                             <form id="logout" action="{{ route('logout') }}" method="POST">@csrf</form>
                         @endguest
                     </ul> <!-- navbar-nav.// -->
@@ -24,31 +24,25 @@
         <div class="container">
             <div class="row-sm align-items-center">
                 <div class="col-lg-4-24 col-sm-3">
-                    @if(\App\Helper::dropdownMenu())
                         <div class="category-wrap dropdown py-1">
                         <button type="button" class="btn btn-light  dropdown-toggle" data-toggle="dropdown" ><i class="fa fa-bars"></i> Categories</button>
                         <div class="dropdown-menu">
-                            @foreach(\App\Helper::dropdownMenu() as $menu)
-                                <a class="dropdown-item" href="{{ $menu->key_1 }}">{{ $menu->name }} </a>
-                            @endforeach
+                            @foreach($categories as $category)
+                                <a class="dropdown-item" href="{{ $category->slug() }}">{{ $category->name }} </a>
+                            @endforeach 
                         </div>
                     </div>
-                    @endif
                 </div>
                 <div class="col-lg-11-24 col-sm-8">
-                    <form action="#" class="py-1">
+                    <form action="{{ route('search') }}" method="GET" class="py-1">
                         <div class="input-group w-100">
-                            <select class="custom-select"  name="category_name">
-                                @if(\App\Helper::searchDropdown())
-                                    @foreach(\App\Helper::searchDropdown() as $item)
-                                        <option value="{{ $item->key_1 }}">{{ $item->name }}</option>
-                                    @endforeach
-                                @else
-                                    <option value="0">All type</option>
-                                    <option value="latest">Latest</option>
-                                @endif
+                            <select class="custom-select" name="type">
+                                <option value="0">All type</option>
+                                <option value="latest" @if (old('type') === 'latest')
+                                    selected
+                                @endif>Latest</option>
                             </select>
-                            <input type="text" class="form-control" style="width:50%;" placeholder="Search">
+                            <input name="name" type="text" class="form-control" style="width:50%;" placeholder="Search" value="{{ old('name') }}">
                             <div class="input-group-append">
                                 <button class="btn btn-warning" type="submit">
                                     <i class="fa fa-search"></i> Search

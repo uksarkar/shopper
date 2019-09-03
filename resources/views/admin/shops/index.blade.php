@@ -47,7 +47,7 @@
                                                     </td>
                                                     <td>
                                                         <div>{{ $shop->name }}</div>
-                                                        <div class="small text-muted">Created: {{ $shop->created_at->diffForHumans() }}</div>
+                                                        <div class="small text-muted">Created: @isset($shop->created_at){{ $shop->created_at->diffForHumans() }}@endisset</div>
                                                     </td>
                                                     <td>
                                                         <a href="{{ route("shops.show", $shop->id) }}" class="btn btn-sm btn-primary">View</a>

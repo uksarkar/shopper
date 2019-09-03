@@ -23,32 +23,27 @@
             @endforeach
         </ol>  
         </nav> <!-- col.// -->
-        <div class="col-md-3-24 text-right"> 
-         <a href="#" data-toggle="tooltip" title="List view"> <i class="fa fa-bars"></i></a>
-         <a href="/{{ $category->slug }}" data-toggle="tooltip" title="Grid view"> <i class="fa fa-th"></i></a>
-        </div> <!-- col.// -->
     </div> <!-- row.// -->
     <hr>
-    <div class="row">
-        <div class="col-md-3-24"> <strong>Filter by:</strong> </div> <!-- col.// -->
-        <div class="col-md-21-24"> 
-            <ul class="list-inline">
-              <li class="list-inline-item"><a href="#">Product type</a></li>
-              <li class="list-inline-item"><a href="#">Brand name</a></li>
-              <li class="list-inline-item"><a href="#">Color</a></li>
-              <li class="list-inline-item"><a href="#">Size</a></li>
-              <li class="list-inline-item">
-                  <div class="form-inline">
-                      <label class="mr-2">Price</label>
-                    <input class="form-control form-control-sm" placeholder="Min" type="number">
-                        <span class="px-2"> - </span>
-                    <input class="form-control form-control-sm" placeholder="Max" type="number">
-                    <button type="submit" class="btn btn-sm ml-2">Ok</button>
-                </div>
-              </li>
-            </ul>
-        </div> <!-- col.// -->
-    </div> <!-- row.// -->
+    <form action="{{ route('search') }}" method="get">
+        <input type="hidden" name="name" value="{{ old('name') }}">
+        <div class="row">
+                <div class="col-md-3-24"> <strong>Filter by:</strong> </div> <!-- col.// -->
+                <div class="col-md-21-24"> 
+                    <ul class="list-inline">
+                    <li class="list-inline-item">
+                        <div class="form-inline">
+                            <label class="mr-2">Price</label>
+                            <input name="min" class="form-control form-control-sm" placeholder="Min" type="number" value="{{ old('min') }}">
+                                <span class="px-2"> - </span>
+                            <input name="max" class="form-control form-control-sm" placeholder="Max" type="number" value="{{ old('max') }}">
+                            <button type="submit" class="btn btn-sm ml-2">Ok</button>
+                        </div>
+                    </li>
+                    </ul>
+                </div> <!-- col.// -->
+        </div> <!-- row.// -->
+    </form>
         </div> <!-- card-body .// -->
     </div> <!-- card.// -->
     
@@ -59,6 +54,15 @@
     <div class="row-sm">
         @foreach ($category->products as $product)
         <div class="col-md-3 col-sm-6">
+            @auth
+                @if($product->hasShop() && auth()->user()->can('create product'))
+                    <div class="addProduct text-right">
+                        <button data-id="{{ $product->id }}" class="btn btn-outline-success text-secondary btn-sm circle addProductBtn" type="button" data-toggle="modal" data-target="#addProductModel">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                @endif
+            @endauth
             <figure class="card card-product">
                 <div class="img-wrap"> <img src="@if($product->image){{ $product->image->url }}@else https://via.placeholder.com/300x220.png?text=No+Image @endif"></div>
                 <figcaption class="info-wrap">
@@ -76,6 +80,55 @@
     </div><!-- container // -->
     </section>
     <!-- ========================= SECTION CONTENT .END// ========================= -->
+
+    @auth
+    @if(auth()->user()->can('create product'))
+        <div class="modal fade show" id="addProductModel" tabindex="-1" role="dialog" aria-labelledby="addProductModel" aria-modal="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add product to your shop</h4>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-body">
+                        <form method="POST" id="SubForm" action="{{ route('home.products.store') }}">
+                            @csrf
+                            <input type="hidden" name="product" value="">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text">Shop</span></div>
+                                    <select class="form-control" name="shop" id="shop_options">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text">Price</span></div>
+                                    <input class="form-control" id="amounts" type="number" name="amounts" placeholder="00.000" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend"><span class="input-group-text">Description</span></div>
+                                    <textarea class="form-control" id="textarea-input" name="description" rows="9" placeholder="Content.."></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                    <button id="subBtn" class="btn btn-primary" type="button">Save</button>
+                </div>
+                </div>
+                <!-- /.modal-content-->
+            </div>
+            <!-- /.modal-dialog-->
+        </div>
+    @endif
+@endauth
+
 
     @include('helpers.subscribe')
     @include('helpers.footer')

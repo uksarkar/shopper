@@ -32,7 +32,7 @@
                             <div class="card">
                                 <div class="card-header"><i class="fa fa-edit"></i>Add Product</div>
                                 <div class="card-body">
-                                    <form action="{{ route("products.store") }}" method="post" enctype="multipart/form-data">
+                                    <form id="create-product" action="{{ route("products.store") }}" method="post" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
                                             <div class="col-sm-9">
@@ -44,9 +44,28 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <div class="input-group">
+                                                        <div class="input-group-prepend"><span class="input-group-text">Expected price</span></div>
+                                                        <input class="form-control" id="price" type="number" name="expected_price" placeholder="00.000" required value="{{ old("expected_price") }}">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-group">
                                                         <textarea class="textarea" id="textarea-input" name="description" rows="9" placeholder="Content.." required>{{ old("description") }}</textarea>
                                                     </div>
                                                 </div>
+
+                                                <div class="form-group">
+                                                    <div class="plusItem">
+                                                        <div class="list-group-item" data-status="create" data-id="new-1">
+                                                            <button class="close meta_close" type="button" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                                            <input class="form-control plusName" type="text" name="meta_name"  placeholder="Meta Name">
+                                                            <input class="form-control plusData" type="text" name="meta_data"  placeholder="Meta Text">
+                                                        </div>
+                                                    </div>
+
+                                                    <button id="plus" class="btn btn-secondary mt-3 btn-sm" type="button"><i class="fa fa-plus"></i> one</button>
+                                                </div>
+
                                             </div>
                                             <div class="col-sm-3">
                                                 <!-- image-preview-filename input [CUT FROM HERE]-->
@@ -72,7 +91,7 @@
                                         </div>
                                         <hr>
                                         <div class="form-group form-actions">
-                                            <button class="btn btn-primary float-right" type="submit">Submit</button>
+                                            <button class="btn btn-primary float-right" id="sub" type="submit">Submit</button>
                                         </div>
                                     </form>
                                 </div>

@@ -49,9 +49,9 @@
                                             <div class="card-accent-dark">
                                                 <a href="{{ route("products.edit", $product->id) }}" class="btn btn-primary">Edit</a>
                                                 <button class="btn btn-danger subbtn">Delete</button>
-                                                <button class="btn btn-success" type="button" data-toggle="modal" data-target="#successModal"><i class="icon icon-plus"></i></button>
+                                                <button data-sub="d{{ $product->id }}" class="btn btn-success" type="button" data-toggle="modal" data-target="#successModal"><i class="icon icon-plus"></i></button>
                                             </div>
-                                            <form class="formsub" method="POST" action="{{ route("products.destroy", $product->id) }}">@csrf @method("DELETE")</form>
+                                            <form data-sub="d{{ $product->id }}" class="formsub" method="POST" action="{{ route("products.destroy", $product->id) }}">@csrf @method("DELETE")</form>
                                         </div>
                                     </div>
                                 </div>

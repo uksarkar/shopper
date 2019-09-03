@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\AdminContent;
+use App\Category;
 use Illuminate\Http\Request;
 use App\Menu;
+use App\Search;
 
 class HomeController extends Controller
 {
@@ -17,6 +19,7 @@ class HomeController extends Controller
     {
         $contents = AdminContent::where('content','<>','recommended_FoR_HoMe')->orderBy('id')->get();
         $items = AdminContent::where('content','recommended_FoR_HoMe')->with('products')->first();
+        $categories = Category::all();
 
         return view('home', compact('contents','items'));
     }
@@ -38,12 +41,13 @@ class HomeController extends Controller
         
     }
 
-    public function test(Request $request, Menu $menu){
-        // $items 	= $menu->orderBy('priority')->get();
-        // $output = $menu->getHTML($items);
-        $menu->storeMenu($request->all());
-     
-        return "success";
+    public function search(Request $request){
+        $request->flash();
+        $products = Search::apply($request);
+
+        // return $products;
+        
+        return view('search',compact('products'));
     }
 
     //End of the controller

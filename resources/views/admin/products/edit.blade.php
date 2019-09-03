@@ -32,7 +32,7 @@
                             <div class="card">
                                 <div class="card-header"><i class="fa fa-edit"></i>Edit Product</div>
                                 <div class="card-body">
-                                    <form action="{{ route("products.update", $product->id) }}" method="post" enctype="multipart/form-data">
+                                    <form id="create-product" action="{{ route("products.update", $product->id) }}" method="post" enctype="multipart/form-data">
                                         @method('PATCH')
                                         @csrf
                                         <div class="row">
@@ -48,6 +48,29 @@
                                                         <textarea class="textarea" id="textarea-input" name="description" rows="9" placeholder="Content.." required>{{ $product->description }}</textarea>
                                                     </div>
                                                 </div>
+
+                                                <div class="form-group">
+                                                    <div class="plusItem">
+                                                        @if(blank($product->metas))
+                                                        <div class="list-group-item" data-status="create" data-id="new-1">
+                                                            <button class="close meta_close" type="button" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                                            <input class="form-control plusName" type="text" name="meta_name"  placeholder="Meta Name">
+                                                            <input class="form-control plusData" type="text" name="meta_data"  placeholder="Meta Text">
+                                                        </div>
+                                                        @else
+                                                            @foreach ($product->metas as $meta)
+                                                            <div class="list-group-item" data-status="0" data-id="{{ $meta->id }}">
+                                                                <button class="close meta_close" type="button" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                                                <input class="form-control plusName" type="text" name="meta_name" value="{{ $meta->name }}"  placeholder="Meta Name">
+                                                                <input class="form-control plusData" type="text" name="meta_data" value="{{ $meta->data }}"  placeholder="Meta Text">
+                                                            </div>
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+
+                                                    <button id="plus" class="btn btn-secondary mt-3 btn-sm" type="button"><i class="fa fa-plus"></i> one</button>
+                                                </div>
+
                                             </div>
                                             <div class="col-sm-3">
                                                 <!-- image-preview-filename input [CUT FROM HERE]-->
@@ -73,7 +96,7 @@
                                         </div>
                                         <hr>
                                         <div class="form-group form-actions">
-                                            <button class="btn btn-primary float-right" type="submit">Submit</button>
+                                            <button id="sub" class="btn btn-primary float-right" type="submit">Submit</button>
                                         </div>
                                     </form>
                                 </div>

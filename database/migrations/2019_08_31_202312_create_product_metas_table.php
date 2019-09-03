@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateActivitiesTable extends Migration
+class CreateProductMetasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateActivitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('activities', function (Blueprint $table) {
+        Schema::create('product_metas', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->dateTime('activity');
-            $table->integer('user_id');
+            $table->integer('product_id')->unsigned()->index();
+            $table->string('name');
+            $table->string('data');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateActivitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('activities');
+        Schema::dropIfExists('product_metas');
     }
 }

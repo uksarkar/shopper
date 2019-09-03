@@ -31,11 +31,34 @@ class Price extends Model
      * Author: Utpal Sarkar
      * Url: https://github.com/uksarkar
      */
-    public function cachePrice($product_id, $delete = false) {
-        if($delete){return Cache::put('product_'.$product_id, 1, -5);}
-        $price = $this->where('product_id', $product_id)->orderBy('amounts')->pluck('amounts')->first();
-        $count = $this->whereAmounts($price)->get()->count();
-        return Cache::put('product_'.$product_id, ['price'=>$price,'count'=>$count]);
+    public function cachePrice($delete = false) {
+        
+        if($delete){return Cache::put('product_'.$this->product_id, 1, -5);}
+
+        $price = $this->where('product_id', $this->product_id)->min('amounts');
+        $count = $this->whereAmounts($price)->count();
+        
+        return Cache::put('product_'.$this->product_id, ['price'=>$price,'count'=>$count]);
+    }
+
+    /**
+     * Cache if user has any shop left for add with this product
+     * 
+     * @param Product $product_id
+     * @return bool
+     */
+    public function cacheLeftShop($product_id)
+    {
+        $shops = auth()->user()->availableShops($product_id);
+
+        if(blank($shops))
+        {
+            Cache::put('shop_'.auth()->id()."_".$product_id, false);
+        } else {
+            Cache::put('shop_'.auth()->id()."_".$product_id, true, -5);
+        }
+
+        return true;
     }
 
     //end of the model

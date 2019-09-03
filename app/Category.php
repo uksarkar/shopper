@@ -12,12 +12,7 @@ use Illuminate\Support\Str;
 class Category extends Model
 {
     protected $fillable = ['name','slug','parent_id'];
-    // public function getSlugAttribute(){
-    //     // $categoryRouteService = app(SlugService::class);
 
-    //     // return $categoryRouteService->getRoute($this);
-    //     return $this->getRoute($this->id);
-    // }
     public function products(){
         return $this->hasMany(Product::class);
     }
@@ -70,6 +65,10 @@ class Category extends Model
         $product = Product::where('slug', $this_slug)->firstOrFail();
         $category_slug = $this->getRoute($product->category_id);
         $product->slug = $category_slug.'/'.$product->slug;
+        $product->price = $product->lowestPrice()['price'];
+        $product->count = $product->lowestPrice()['count'];
+        $product->cat_slug = $category_slug;
+        
         return $product->slug == "/".$slug ? $product:false;
     }
     //End of finding product
@@ -99,7 +98,9 @@ class Category extends Model
     }
     //End outputting category tree on admin panel create product page
     
-
+    public function slug(){
+        return $this->getRoute($this->id);
+    }
     //Making the route for category
     private $routes = [];
 

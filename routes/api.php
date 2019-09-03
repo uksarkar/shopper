@@ -1,6 +1,9 @@
 <?php
 
+use App\Menu;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,14 +21,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::post('/menu', function(Illuminate\Http\Request $request, App\Menu $menu){
+Route::post('/menu', function(Request $request, Menu $menu){
     $data_ = $request->all();
     $menu->storeMenu($data_);
+    
     return response('Success', 200);
  });
 
- Route::post('/test', 'HomeController@test');
- Route::get('/test', 'HomeController@test');
+ Route::get('/getshop', 'ApiController@returnShop');
+
+ Route::post('cache_meta', 'ApiController@cacheMeta');
 
 //  Route::post('/test', function(Illuminate\Http\Request $request){
 //     return $request->all();

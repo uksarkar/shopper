@@ -5,16 +5,16 @@
             <div class="card-body">
                 <div class="row row-sm">
                     <aside class="col-md-3">
-                        <h5 class="text-uppercase">{{ \App\Helper::sliderSection()->leftName }}</h5>
+                        <h5 class="text-uppercase">My markets</h5>
                         <ul class="menu-category">
-                            @foreach(\App\Helper::sliderSection()->left_menu->take(6) as $slider)
-                                <li> <a href="{{ $slider->key_1 }}">{{ $slider->name }} </a></li>
+                            @foreach($categories->take(6) as $category)
+                                <li> <a href="{{ $category->slug() }}">{{ $category->name }} </a></li>
                             @endforeach
-                            @if(count(\App\Helper::sliderSection()->left_menu) > 6)
+                            @if(count($categories) > 6)
                                 <li class="has-submenu"> <a href="#">More .....  <i class="icon-arrow-right pull-right"></i></a>
                                     <ul class="submenu">
-                                        @foreach(\App\Helper::sliderSection()->left_menu->slice(6,count(\App\Helper::sliderSection()->left_menu)) as $more)
-                                            <li> <a href="{{ $more->key_1 }}">{{ $more->name }} </a></li>
+                                        @foreach($categories->slice(6,count($categories)) as $category)
+                                            <li> <a href="{{ $category->slug() }}">{{ $category->name }} </a></li>
                                         @endforeach
                                     </ul>
                                 </li>
@@ -26,25 +26,29 @@
 
                         <!-- ================= main slide ================= -->
                         <div class="owl-init slider-main owl-carousel" data-items="1" data-nav="true" data-dots="false">
-                            @foreach(\App\Helper::sliderSection()->images as $image)
-                                <div class="item-slide">
-                                    <img src="{{ $image->name }}">
-                                </div>
-                            @endforeach
+                            <div class="item-slide">
+                                <img src="/images/banners/slide1.jpg">
+                            </div>
+                            <div class="item-slide">
+                                <img src="/images/banners/slide2.jpg">
+                            </div>
+                            <div class="item-slide">
+                                <img src="/images/banners/slide3.jpg">
+                            </div>
                         </div>
                         <!-- ============== main slideshow .end // ============= -->
 
                     </div> <!-- col.// -->
                     <aside class="col-md-3">
 
-                        <h6 class="title-bg bg-secondary"> {{ \App\Helper::sliderSection()->rightName }}</h6>
+                        <h6 class="title-bg bg-secondary">Recommended</h6>
                         <div style="height:280px;">
-                            @foreach(\App\Helper::sliderSection()->right_menu as $menu)
+                            @foreach($items->products->take(3) as $product)
                             <figure class="itemside has-bg border-bottom" style="height: 33%;">
                                 <img class="img-bg" src="images/items/item-sm.png">
                                 <figcaption class="p-2">
-                                    <h6 class="title">{{ $menu->name }} </h6>
-                                    <a href="{{ $menu->key_1 }}">{{ $menu->key_2 }}</a>
+                                    <h6 class="title">{{ $product->name }} </h6>
+                                    <a href="{{ $product->slug() }}">{{ $product->name }}</a>
                                 </figcaption>
                             </figure>
                             @endforeach
@@ -54,11 +58,10 @@
                 </div> <!-- row.// -->
             </div> <!-- card-body .// -->
         </div> <!-- card.// -->
-        @if(!blank(\App\Helper::sliderSection()->banner))
-            <figure class="mt-3 banner p-3">
-                <img src="{{ \App\Helper::sliderSection()->banner->key_1 }}" alt="{{ \App\Helper::sliderSection()->banner->key_2 }}">
-            </figure>
-        @endif
+        <figure class="mt-3 banner p-3">
+            banner goes here
+            {{-- <img src="/images/banners/bg-cpu.jpg" alt="image"> --}}
+        </figure>
 
     </div> <!-- container .//  -->
 </section>

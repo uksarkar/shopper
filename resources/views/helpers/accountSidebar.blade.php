@@ -1,4 +1,4 @@
-<div class="card" style="margin-left:-15px">
+<div class="card mt-3" style="margin-left:-15px">
     <article class="card-group-item">
         <header class="card-header"><h6 class="title">{{ auth()->user()->name }} </h6></header>
         <div class="filter-content">
