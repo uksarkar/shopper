@@ -66,6 +66,14 @@
                                                     <button id="plus" class="btn btn-secondary mt-3 btn-sm" type="button"><i class="fa fa-plus"></i> one</button>
                                                 </div>
 
+                                                {{-- <div class="form-group">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend"><span class="input-group-text">Optional images</span></div>
+                                                        <input class="form-control" type="file" name="images[]" id="images" multiple accept=".png, .jpg, .jpeg">
+                                                    </div>
+                                                    <small class="text-muted">Select multiple images.</small>
+                                                </div> --}}
+
                                             </div>
                                             <div class="col-sm-3">
                                                 <!-- image-preview-filename input [CUT FROM HERE]-->

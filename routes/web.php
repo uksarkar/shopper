@@ -30,6 +30,9 @@ Route::group([
 
          //managing user's products
          Route::resource('products', 'ProductsController')->except('index');
+
+         //managing memberships
+         Route::resource('memberships', 'MembershipController')->only('index','create');
       });
    });
 //End logged users routes__________________________________
@@ -60,6 +63,15 @@ Route::prefix('admin')->middleware('auth','role_or_permission:admin|view admin')
 
    //Storing meta data on cache
    Route::post('cache_meta', 'AdminContentController@cacheMeta')->name('admin.cache_meta');
+
+   //Managing memberships
+   Route::get('memberships', 'AdminContentController@membership')->name('admin.membership');
+   Route::patch('memberships/{membership}', 'AdminContentController@membershipUpdate')->name('admin.membership.update');
+   Route::post('memberships', 'AdminContentController@membershipStore')->name('admin.membership.store');
+   Route::delete('memberships/{membership}', 'AdminContentController@membershipDelete')->name('admin.membership.delete');
+
+   //managing membership request
+   Route::get('membership/request', 'AdminContentController@membershipRequest')->name('admin.membership.request');
 
    //end of the route group
 });

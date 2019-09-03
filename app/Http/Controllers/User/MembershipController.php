@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use App\Membership;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class MembershipController extends Controller
 {
@@ -12,9 +13,11 @@ class MembershipController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Membership $membership)
     {
-        //
+        $memberships = $membership->orderBy('price')->get();
+
+        return view("users.memberships", compact('memberships'));
     }
 
     /**

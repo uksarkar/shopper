@@ -86,7 +86,7 @@ class User extends Authenticatable
      * @return Collection
      */
     public function memberships(){
-        return $this->belongsToMany(App\Membership::class);
+        return $this->belongsToMany(Membership::class);
     }
 
     

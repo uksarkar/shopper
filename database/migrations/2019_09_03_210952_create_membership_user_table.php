@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserMembershipTable extends Migration
+class CreateMembershipUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateUserMembershipTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_membership', function (Blueprint $table) {
+        Schema::create('membership_user', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id')->unsigned()->index();
             $table->integer('membership_id')->unsigned()->index();
+            $table->integer('status')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateUserMembershipTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_membership');
+        Schema::dropIfExists('membership_user');
     }
 }

@@ -6,10 +6,10 @@
                 <a class="list-group-item rounded-0 @if(Route::is('home.account.index'))active @else list-group-item-action @endif" href="{{ route('home.account.index') }}">Account Dashboard</a>
                 <a class="list-group-item rounded-0 @if(Route::is('home.account.shops'))active @else list-group-item-action @endif" href="{{ route('home.account.shops') }}">Shops</a>
                 <a class="list-group-item rounded-0 @if(Route::is('home.account.products'))active @else list-group-item-action @endif" href="{{ route('home.account.products') }}">Products</a>
+                <a class="list-group-item rounded-0 @if(Route::is('home.memberships.index'))active @else list-group-item-action @endif" href="{{ route('home.memberships.index') }}">Membership</a>
                 <a class="list-group-item rounded-0 list-group-item-action" href="#">Favorites</a>
                 <a class="list-group-item rounded-0 list-group-item-action" href="#">Account Information</a>
                 <a class="list-group-item rounded-0 list-group-item-action" href="#">Address Book</a>
-                <a class="list-group-item rounded-0 list-group-item-action" href="#">Membership</a>
                 <a class="list-group-item rounded-0 list-group-item-action" href="#">Newsletter Subscriptions</a>
                 <a class="list-group-item rounded-0 list-group-item-action" href="#">My Reward Points</a>
                 <a class="list-group-item rounded-0 list-group-item-action" href="#">My Questions</a>
