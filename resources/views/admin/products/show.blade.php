@@ -49,7 +49,7 @@
                                             <div class="card-accent-dark">
                                                 <a href="{{ route("products.edit", $product->id) }}" class="btn btn-primary">Edit</a>
                                                 <button class="btn btn-danger subbtn">Delete</button>
-                                                <button data-sub="d{{ $product->id }}" class="btn btn-success" type="button" data-toggle="modal" data-target="#successModal"><i class="icon icon-plus"></i></button>
+                                                {{-- <button data-sub="d{{ $product->id }}" class="btn btn-success" type="button" data-toggle="modal" data-target="#successModal"><i class="icon icon-plus"></i></button> --}}
                                             </div>
                                             <form data-sub="d{{ $product->id }}" class="formsub" method="POST" action="{{ route("products.destroy", $product->id) }}">@csrf @method("DELETE")</form>
                                         </div>
@@ -65,7 +65,7 @@
                             <div class="card">
                                 <div class="card-header"><i class="fa fa-view"></i>Available shop</div>
                                 <div class="card-body">
-                                    @if(!blank($product->shops))
+                                    @if(!blank($product->prices))
                                     <table class="table table-responsive-sm table-hover table-outline mb-0">
                                         <thead class="thead-light">
                                         <tr>
@@ -111,26 +111,20 @@
         </main>
     </div>
     <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog @if(!blank(auth()->user()->shops))modal-success @else modal-warning @endif modal-lg" role="document">
+      <div class="modal-dialog modal-success modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Add this product to your shop.</h4>
+            <h4 class="modal-title">Add this product to any shop.</h4>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
           </div>
           <div class="modal-body">
-              @if(!blank(auth()->user()->shops))
-                  @if(!blank(auth()->user()->hasShops($product)))
-                    <form method="POST" id="SubForm" action="{{ route('price.store') }}">
+            <form method="POST" id="SubForm" action="{{ route('price.store') }}">
                 @csrf
                 <input type="hidden" name="product" value="{{ $product->id }}">
                 <div class="form-group">
                     <div class="input-group">
-                        <div class="input-group-prepend"><span class="input-group-text">Shop</span></div>
-                        <select class="form-control" name="shop" id="shop">
-                            @foreach(auth()->user()->hasShops($product) as $shop)
-                                    <option value="{{ $shop->id }}">{{ $shop->name }}</option>
-                            @endforeach
-                        </select>
+                        <div class="input-group-prepend"><span class="input-group-text">Shop id</span></div>
+                        <input type="text" class="form-control" name="shop">
                     </div>
                 </div>
                 <div class="form-group">
@@ -146,16 +140,6 @@
                     </div>
                 </div>
             </form>
-                      @else
-                      <p class="alert alert-warning mb-1">
-                          Your all of the shops are added with this product!
-                      </p>
-
-                  @endif
-              @else
-              You doesn't have any shop yet! <br>
-                  <a href="{{ route('shops.create') }}" class="btn btn-light">Add Now!</a>
-                  @endif
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>

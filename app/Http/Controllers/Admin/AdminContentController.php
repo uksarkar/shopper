@@ -8,6 +8,8 @@ use App\AdminContent;
 use App\Membership;
 use App\User;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
 
 class AdminContentController extends Controller
 {
@@ -91,9 +93,60 @@ class AdminContentController extends Controller
      */
     public function membershipRequest()
     {
-      $memberships = (new User)->memberships()->with('users')->get();
+      $requests = DB::table('membership_user')
+                ->select(
+                  'membership_user.id',
+                  'memberships.name',
+                  'users.name as requester',
+                  'memberships.price',
+                  'memberships.shop_limit',
+                  'membership_user.status',
+                  'users.id as user_id',
+                  'membership_user.created_at',
+                  'membership_user.updated_at')
+                ->join('users','users.id', '=', 'membership_user.user_id')
+                ->join('memberships', 'memberships.id', '=', 'membership_user.membership_id')
+                ->simplePaginate(5);
 
-      return view('admin.users.membership.request', compact('memberships'));
+      return view('admin.users.membership.request', compact('requests'));
+    }
+
+    /**
+     * Membership management
+     */
+    public function membershipRequestAction(Request $request)
+    {
+      try {
+        
+        DB::table('membership_user')
+        ->where('id', $request->id)
+        ->update(['status'=>$request->status]);
+
+      } catch (\Throwable $th) {
+        throw $th;
+        // throw abort(401);
+      }
+
+      $msg = "approved.";
+      $user = User::find($request->user_id);
+      $permission = Permission::findOrCreate('create shop', 'web');
+
+      switch ($request->status) {
+        case 0:
+          $msg = "pending.";
+          break;
+        case 1:
+          $user->givePermissionTo($permission);
+          $msg = "approved.";
+          break;
+        
+        default:
+          $user->revokePermissionTo($permission);
+          $msg = "rejected.";
+          break;
+      }
+      
+      return back()->with('successMassage', 'Membership request was sat to '.$msg);
     }
 
     //end of the controller

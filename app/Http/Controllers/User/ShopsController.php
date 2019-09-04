@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserCreateShopRequest;
 use App\Shop;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
 
 class ShopsController extends Controller
 {
@@ -55,6 +56,24 @@ class ShopsController extends Controller
 
         //save the shop to database 
         $shop->save();
+
+        //check user membership ability
+        $shops = $request->user()->shops->count();
+        $shops_limit = $request->user()->memberships()->wherePivot('status',1)->get()->sum('shop_limit');
+
+        // If user reach the limit of shop creation then remove the permission
+        if($shops == $shops_limit)
+        {
+            $permission = Permission::findByName('create shop');
+            $request->user()->revokePermissionTo($permission);
+        }
+
+        // If user create this shop first time then give product creation permission
+        if(!$request->user()->can('create product') && $shops > 0)
+        {
+            $perm =  Permission::findOrCreate('create product','web');
+            $request->user()->givePermissionTo($perm);
+        }
 
         //upload the image of the shop, if has any image on the request
         if($request->hasFile('shop_image'))

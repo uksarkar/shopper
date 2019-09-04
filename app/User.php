@@ -86,7 +86,10 @@ class User extends Authenticatable
      * @return Collection
      */
     public function memberships(){
-        return $this->belongsToMany(Membership::class);
+        return $this->belongsToMany(Membership::class)
+                                    ->as('request')
+                                    ->withPivot('status')
+                                    ->withTimestamps();
     }
 
     

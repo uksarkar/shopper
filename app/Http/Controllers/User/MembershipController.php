@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Membership;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\UserCreateMembershipRequest;
 
 class MembershipController extends Controller
 {
@@ -36,9 +37,17 @@ class MembershipController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserCreateMembershipRequest $request)
     {
-        //
+        $membership = Membership::findOrFail($request->plan);
+
+        try {
+            $request->user()->memberships()->attach($membership, ['status'=>0]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+        return back()->with('successMassage','Your request is being verified.');
     }
 
     /**

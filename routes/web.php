@@ -32,7 +32,7 @@ Route::group([
          Route::resource('products', 'ProductsController')->except('index');
 
          //managing memberships
-         Route::resource('memberships', 'MembershipController')->only('index','create');
+         Route::resource('memberships', 'MembershipController')->only('index','store');
       });
    });
 //End logged users routes__________________________________
@@ -72,6 +72,7 @@ Route::prefix('admin')->middleware('auth','role_or_permission:admin|view admin')
 
    //managing membership request
    Route::get('membership/request', 'AdminContentController@membershipRequest')->name('admin.membership.request');
+   Route::post('membership/request', 'AdminContentController@membershipRequestAction')->name('admin.membership.membershipRequestAction');
 
    //end of the route group
 });
@@ -88,21 +89,48 @@ Route::get('/getshop', 'ApiController@returnShop');
 
 
 Route::get('/test3', function(App\Product $product){
-   // return Cache::get('tamp_meta_data');
-   // Cache::put('tamp_meta_data_'.auth()->id(), [{"name":"test","data":"this is data"}]);
-   $a = $product->find(12);
-   dd($a->metas());
+   $row = DB::table('membership_user')
+               ->select(
+                  'membership_user.id',
+                  'memberships.name',
+                  'memberships.price',
+                  'memberships.shop_limit',
+                  'membership_user.status',
+                  'membership_user.created_at',
+                  'membership_user.updated_at')
+               ->join('users','users.id', '=', 'membership_user.user_id')
+               ->join('memberships', 'memberships.id', '=', 'membership_user.membership_id')
+               ->paginate(5);
+
+   // $row = DB::select("SELECT 
+   //          mu.id,
+   //          m.name,
+   //          m.price,
+   //          m.shop_limit,
+   //          mu.status,
+   //          mu.created_at,
+   //          mu.updated_at
+            
+   //          FROM membership_user mu
+   //             JOIN users u
+   //                ON mu.user_id = u.id
+   //             JOIN memberships m
+   //                ON m.id = mu.membership_id
+   //          LIMIT 10"
+   // );
+
+   return $row;
 });
 
 
 
-Route::get('/test2',function(Product $product) {
+Route::get('/test2',function() {
+   $shops = auth()->user()->shops->count();
+   $memberships_count = auth()->user()->memberships()->wherePivot('status',1)->get()->sum('shop_limit');
 
-   $a = $product->find(12);
-   $b = $a->prices()->paginate(2);
-   // $c = $a->prices()->whereAmounts($b)->count();
+   // dd($memberships_count);
 
-   return $b;
+   return "Total shops: ".$shops." Total limit: ".$memberships_count;
 });
 Route::view('/test','test');
 

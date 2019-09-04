@@ -56,7 +56,7 @@
                                     </form>
                                 </div>
                                 <div class="card-body">
-                                    @if(!blank($memberships))
+                                    @if(!blank($requests))
                                     <table class="table table-responsive-sm table-sm">
                                         <thead>
                                             <tr>
@@ -67,27 +67,44 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($memberships as $membership)
+                                            @foreach ($requests as $request)
                                                 <tr>
-                                                    <td>{{ $membership->user->name }}</td>
-                                                    <td>{{ $membership->name }}</td>
+                                                    <td>{{ $request->requester }}</td>
+                                                    <td>{{ $request->name }}</td>
                                                     <td>
-                                                        @if($membership->status == 1)
-                                                            <span class="badge badge-success">Active</span>
-                                                        @elseif($membership->status == 2)
-                                                            <span class="badge badge-danger">Rejected</span>
-                                                        @else
-                                                            <span class="badge badge-warning">Panding</span>
-                                                        @endif
+                                                        @switch($request->status)
+                                                            @case(1)
+                                                                <span class="badge badge-success">Active</span>
+                                                                @break
+                                                            @case(2)
+                                                                <span class="badge badge-danger">Rejected</span>
+                                                                @break
+                                                            @default
+                                                                <span class="badge badge-warning">Panding</span>
+                                                                
+                                                        @endswitch
                                                     </td>
                                                     <td>
-                                                        @if($membership->status == 1)
-                                                            <button class="btn btn-sm btn-outline-danger">Reject</button>
-                                                        @elseif($membership->status == 2)
-                                                            <button class="btn btn-sm disabled">None</button>
-                                                        @else
-                                                            <button class="btn btn-sm btn-outline-success">Accept</button>
-                                                        @endif
+                                                        @switch($request->status)
+                                                            @case(1)
+                                                                <form action="{{ route('admin.membership.membershipRequestAction') }}" method="post">
+                                                                    @csrf
+                                                                    <input type="hidden" name="id" value="{{ $request->id }}">
+                                                                    <input type="hidden" name="user_id" value="{{ $request->user_id }}">
+                                                                    <input type="hidden" name="status" value="2">
+                                                                    <button class="btn btn-sm btn-outline-danger">Reject</button>
+                                                                </form>
+                                                                @break
+                                                            @default
+                                                                <form action="{{ route('admin.membership.membershipRequestAction') }}" method="post">
+                                                                    @csrf
+                                                                    <input type="hidden" name="id" value="{{ $request->id }}">
+                                                                    <input type="hidden" name="user_id" value="{{ $request->user_id }}">
+                                                                    <input type="hidden" name="status" value="1">
+                                                                    <button class="btn btn-sm btn-outline-success">Accept</button>
+                                                                </form>
+                                                                
+                                                        @endswitch
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -98,6 +115,9 @@
                                         No Data...!
                                     </p>
                                     @endif
+                                    <div class="mx-auto flex-column">
+                                        {{ $requests->links() }}
+                                    </div>
                                 </div>
                             </div>
                         </div>

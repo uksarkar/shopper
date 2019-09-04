@@ -20,7 +20,40 @@
                     </div>
                     <div class="card-body">
                         @if(!blank(auth()->user()->prices))
-                        Your products
+                        
+                        <table class="table table-responsive-sm table-hover table-outline mb-0">
+                            <thead class="thead-light">
+                            <tr>
+                                <th class="text-center"><i class="icon-picture"></i> Image</th>
+                                <th>Product Name</th>
+                                <th>Actions</th>
+                                <th>Your Price</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                @foreach(auth()->user()->prices as $price)
+                                    <tr>
+                                        <td class="text-center">
+                                            <div class="thumbnail"><img class="img img-thumbnail" src="@if($price->product->image) {{ $price->product->image->url }} @else https://via.placeholder.com/100x100.png?text=No+Image @endif" width="100" alt="image"></div>
+                                        </td>
+                                        <td>
+                                            <div>{{ $price->product->name }}</div>
+                                            <div class="small text-muted">Created: {{ $price->product->created_at->diffForHumans() }}</div>
+                                        </td>
+                                        <td>
+                                            <a href="/" class="btn btn-sm btn-primary">View</a>
+                                            <a href="/" class="btn btn-sm btn-info">Edit</a>
+                                            <button data-sub="e{{ $price->product->id }}" class="btn btn-danger btn-sm subbtn">Delete</button>
+                                            <form data-sub="e{{ $price->product->id }}" class="formsub" method="POST" action="/">@csrf @method("DELETE")</form>
+                                        </td>
+                                        <td>
+                                            {{-- {{  Str::limit($price->product->description, 70, ' (...)') }} --}}
+                                            {{ $price->amounts }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                         @else
                         <p class="text-dark">
                             @if(auth()->user()->shops->count() > 0 && auth()->user()->can('create product'))

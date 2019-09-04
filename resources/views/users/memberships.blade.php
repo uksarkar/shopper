@@ -36,7 +36,31 @@
                                             <hr>
                                             You can add {{ $membership->shop_limit }} shops.
                                             <hr>
-                                            <button class="btn btn-success">Buy Now!</button>
+                                            @if(blank($hasMembership = auth()->user()->memberships()->find($membership->id)))
+                                            <form action="{{ route('home.memberships.store') }}" method="post">
+                                                @csrf
+                                                <input type="hidden" name="plan" value="{{ $membership->id }}">
+                                                <button class="btn btn-success">Buy Now!</button>
+                                            </form>
+                                            @else
+                                                @switch($hasMembership->request->status)
+                                                    @case(0)
+                                                        <p>
+                                                            Your request is <span class="badge badge-warning">Panding</span>
+                                                        </p>
+                                                        @break
+                                                    @case(1)
+                                                        <p>
+                                                            Your request is <span class="badge badge-success">Active</span>
+                                                        </p>
+                                                        @break
+                                                    @default
+                                                        <p>
+                                                            Your request is <span class="badge badge-secondary">Rejacted</span>
+                                                        </p>
+                                                        
+                                                @endswitch
+                                            @endif
                                         </figcaption>
                                     </figure> <!-- card // -->
                                 </div> <!-- col // -->
