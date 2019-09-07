@@ -65,6 +65,17 @@ class Product extends Model
     {
         return $this->morphOne('App\Image', 'imageable');
     }
+
+    /**
+     *  Making relationship with photos
+     * 
+     * @return Collection
+     */
+    public function photos()
+    {
+        return $this->morphToMany(Photo::class, 'photoable');
+    }
+    
     /**
      * Making relationship with many prices
      * 
@@ -129,10 +140,10 @@ class Product extends Model
      * 
      * @return string
      */
-    public function monySing()
+    public function monySign()
     {
-        $sing = Cache::has('monySing') ? Cache::get('monySing'):"$";
-        return $sing;
+        $sign = Cache::has('mSign') ? Cache::get('mSign'):"$";
+        return $sign;
     }
 
     /**

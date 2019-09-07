@@ -30,7 +30,7 @@
                                             <h6 class="title ">Golden Membership</h6>
                                             <div class="price-wrap">
                                                 <span class="price-new">
-                                                    <span class="text-success">{{ $moneySing.$membership->price }}</span>
+                                                    <span class="text-success">{{ $moneySign.$membership->price }}</span>
                                                 </span>
                                             </div> <!-- price-wrap.// -->
                                             <hr>
@@ -51,7 +51,7 @@
                                                         @break
                                                     @case(1)
                                                         <p>
-                                                            Your request is <span class="badge badge-success">Active</span>
+                                                            This pack is <span class="badge badge-success">activeted</span>
                                                         </p>
                                                         @break
                                                     @default

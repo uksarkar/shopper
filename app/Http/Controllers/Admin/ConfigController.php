@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use \Spatie\Permission\Models\Role;
 use App\Menu;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -36,8 +37,13 @@ class ConfigController extends Controller
      */
     public function siteNameLogoUpdate(Request $request)
     {
-        config()->set('site.header.name',$request->site_name);
-        config()->set('site.header.logo',$request->url);
+        
+        Cache::putMany([
+            "mSign", $request->money,
+            "site_name"=> $request->site_name,
+            "site_logo"=> $request->url,
+            "favicon"=> $request->favicon
+        ]);
 
         return back()->with('successMassage','Logo and Name is successfully updated.');
     }

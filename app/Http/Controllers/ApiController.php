@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -23,4 +24,5 @@ class ApiController extends Controller
 
       return "success!";
     }
+
 }

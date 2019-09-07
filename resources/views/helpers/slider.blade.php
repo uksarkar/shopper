@@ -43,15 +43,17 @@
 
                         <h6 class="title-bg bg-secondary">Recommended</h6>
                         <div style="height:280px;">
-                            @foreach($items->products->take(3) as $product)
-                            <figure class="itemside has-bg border-bottom" style="height: 33%;">
-                                <img class="img-bg" src="images/items/item-sm.png">
-                                <figcaption class="p-2">
-                                    <h6 class="title">{{ $product->name }} </h6>
-                                    <a href="{{ $product->slug() }}">{{ $product->name }}</a>
-                                </figcaption>
-                            </figure>
-                            @endforeach
+                            @if(!blank($items))
+                                @foreach($items->products->take(3) as $product)
+                                <figure class="itemside has-bg border-bottom" style="height: 33%;">
+                                    <img class="img-bg" src="@if($product->image->count() > 0) {{ $product->image->url }} @endif">
+                                    <figcaption class="p-2">
+                                        <h6 class="title">{{ $product->name }} </h6>
+                                        <a href="{{ $product->slug() }}">{{ $product->name }}</a>
+                                    </figcaption>
+                                </figure>
+                                @endforeach
+                            @endif
                         </div>
 
                     </aside>

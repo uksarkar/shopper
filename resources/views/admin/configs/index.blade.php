@@ -29,32 +29,48 @@
                             <div class="card">
                                 <div class="card-header">All Settings</div>
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-sm-2 text-right">
-                                            <p class="bg-light p-1 rounded">Site Name:</p>
-                                            <p class="bg-light p-1 rounded">Site Logo:</p>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <p>
-                                                {{ config('site.header.name') }}
-                                            </p>
-                                            <p>
-                                                <img src="{{ config('site.header.logo') }}" alt="logo">
-                                            </p>
-                                        </div>
-                                        <div class="col-sm-4">
-                                        </div>
-                                    </div>
+                                    <table class="table table-responsive-sm table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <td class="bg-dark">Site Name :</td>
+                                                <td class="pl-4">{{ $site_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="bg-dark">Site Logo :</td>
+                                                <td class="pl-4"><img src="{{ $site_logo }}" alt="logo"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="bg-dark">Favicon :</td>
+                                                <td class="pl-4"><img src="{{ $favicon}}" alt="logo"></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="bg-dark">Money Sign :</td>
+                                                <td class="pl-4">{{ $moneySign }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                     <hr>
                                     <div class="row">
                                         <div class="col-sm-12">
+                                            <h4 class="bg-dark rounded p-1">Edit</h4>
                                             <form action="{{ route('config.siteNameLogoUpdate') }}" method="post" class="form-group">
                                                 @csrf
-                                                @method('PUT')
-                                                <label for="site-name">Site Name:</label>
-                                                <input class="form-control" type="text" name="site_name" value="{{ config('site.header.name') }}" placeholder="Site Name">
-                                                <label for="url">Site Logo:</label>
-                                                <input class="form-control" type="text" name="url" value="{{ config('site.header.logo') }}">
+                                                <div class="form-group">
+                                                    <label class="bg-secondary rounded p-1" for="site-name">Site Name:</label>
+                                                    <input class="form-control" type="text" name="site_name" value="{{ $site_name }}" placeholder="Site Name">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="bg-secondary rounded p-1" for="url">Site Logo:</label>
+                                                    <input class="form-control" type="text" name="url" value="{{ $site_logo }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="bg-secondary rounded p-1" for="favicon">Site Favicon:</label>
+                                                    <input class="form-control" type="text" name="favicon" value="{{ $favicon }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="bg-secondary rounded p-1" for="moneySign">Money Sign:</label>
+                                                    <input class="form-control" type="text" name="money" value="{{ $moneySign }}">
+                                                </div>
                                                 <button class="btn btn-info btn-sm">Update</button>
                                             </form>
                                         </div>

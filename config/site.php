@@ -3,7 +3,8 @@
 
     return [
         'header'=>[
-            'name'=>'Shoper',
-            'logo'=>'/images/shopper.png'
+            'name'=>'Shopper',
+            'logo'=>'/images/shopper.png',
+            'favicon'=>'/images/favicon.ico'
         ]
     ];

@@ -56,7 +56,7 @@ class LoginController extends Controller
         {
             return redirect()->route('admin');
         }
-        return redirect($this->redirectTo);
+        return redirect(url()->previous());
     }
 
     //End of this controller

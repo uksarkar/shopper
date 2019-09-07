@@ -5,6 +5,9 @@
 <script src="{{ asset("assets/vendors/pace-progress/js/pace.min.js") }}"></script>
 <script src="{{ asset("assets/vendors/perfect-scrollbar/js/perfect-scrollbar.min.js") }}"></script>
 <script src="{{ asset("assets/vendors/@coreui/coreui/js/coreui.min.js") }}"></script>
+
+<script src="{{ asset("assets/js/dropzone.js") }}"></script>
+
 @if(Route::is('admin'))
     <!-- Plugins and scripts required by this view-->
     <script src="{{ asset("assets/vendors/chart.js/js/Chart.min.js") }}"></script>
@@ -369,4 +372,165 @@
         @endif
 
     });
+</script>
+
+
+<script>
+Dropzone.autoDiscover = false;
+$(document).ready(function(){
+    var myDropzone = new Dropzone('form#dropzone-uploader',{
+                            paramName: "photo",
+                            maxFiles:12,
+                            maxFilesize: 1,
+                            acceptedFiles: 'image/*',
+                            dictInvalidFileType: 'This form only accepts images.',
+                            success: function(file, response){
+                                $('#all_photos>.row').prepend(`
+                                        <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                                            <div class="thumbnail img-btn" data-id="${response.photo.id}" data-url="${response.photo.path}">
+                                                <img class="img-thumbnail"
+                                                    src="${response.photo.path}">
+                                            </div>
+                                        </div>`);
+                                    }
+                        });
+
+    $("#photo_add_btn").click(function(){
+        Photos.createPreview();
+        Photos.createValue();
+    });
+
+    $('.image-plus-btn').click(function(){
+        Photos.sendRequest();
+    });
+
+    $(document).on('click','.load-more', function(){
+        let path = $(this).data().next;
+        $(this).prepend(`<i class="fa fa-refresh fa-spin"></i> &nbsp;`);
+        Photos.sendRequest(path);
+    });
+
+    $(document).on('click','.img-btn', function(e){Photos.selectPhotos(e)});
+
+    $(document).on('click', '.image-prev-remove', function(e){Photos.removePhoto(e)});
+
+    var Photos = function(){
+        return {
+            loadPhotos: function(url){
+                var request;
+                // Abort any pending request
+                if (request) {
+                    request.abort();
+                }
+
+                // Fire off the request to 
+                request = $.ajax({
+                    url,
+                    type: "get",
+                    contentType: "application/json; charset=utf-8"
+                });
+
+                // Callback handler that will be called on success
+                request.done(function (response, textStatus, jqXHR){
+                    Photos.createGallary(response);
+                    $('div.loading').remove();
+                });
+
+                // Callback handler that will be called on failure
+                request.fail(function (jqXHR, textStatus, errorThrown){
+                    // Log the error to the console
+                    console.error(
+                        "The following error occurred: "+
+                        textStatus, errorThrown
+                    );
+                });
+            },
+
+            sendRequest: function(req = false){
+                let hasFiles = $("#all_photos>.row").find('.img-btn')
+                    path = req ? req:"/admin/get-photos";
+
+                if(req || hasFiles.length === 0){
+                    Photos.loadPhotos(path);
+                }
+            },
+
+            createGallary: function(photos){
+                let gallary = $('#all_photos>.row');
+
+                $(".load-more").parent().remove();
+                photos.data.forEach(function(photo){
+                    gallary.append(`
+                    <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                        <div class="thumbnail img-btn" data-id="${photo.id}" data-url="${photo.path}">
+                            <img class="img-thumbnail"
+                                    src="${photo.path}">
+                        </div>
+                    </div>`);
+                });
+
+                if(photos.next_page_url){
+                    $('#all_photos').append(`
+                        <div class="mx-auto mt-3"><button class="btn btn-sm btn-outline-success load-more" data-next="${photos.next_page_url}">Load more</button></div>
+                    `);
+                }
+            },
+
+            selectPhotos: function(e){
+                let self = $(e.currentTarget),
+                    i = self.find('i');
+
+                if(i.length > 0){
+                    i.remove();
+                    self.removeClass('checked');
+                } else {
+                    self.prepend(`<i class="fa fa-check"></i>`).addClass('checked');
+                }
+            },
+
+            createValue: function () {
+                let checked = $('div#photo_preview .image-prev'),
+                    input = $('input[name=photos]'),
+                    val = [];
+
+                $.each(checked, function(i){
+                    val.push(checked[i].dataset.id);
+                });
+
+                input.val(val);
+            },
+
+            createPreview: function(){
+                let checked = $('div.img-btn.checked'),
+                    prev = $('#photo_preview');
+                    
+                prev.children('div.image-plus-btn').remove();
+                checked.each(function(){
+                    let already = $(".image-prev[data-id=" + $(this).data().id + "]");
+                    
+                    if(already.length === 0){
+                        prev.append(`
+                            <div class="image-prev" data-id="${$(this).data().id}" style="background-image:url(${$(this).data().url})">
+                                <button type="button" class="image-prev-remove"></button>
+                                &nbsp;
+                            </div>
+                            `);
+                    }
+                });
+                prev.append(`<div class="image-plus-btn" data-toggle="modal" data-target="#successModal"><i class="fa fa-plus fa-3x"></i></div>`);
+
+                $('.image-prev-remove').click(this.removePhoto);
+            },
+
+            removePhoto: function(e) {
+                let self = $(e.currentTarget);
+                self.parent().slideUp("fast", function() { 
+                                    self.parent().remove();
+                                    Photos.createValue();
+                                });
+            }
+        }
+    }();
+    
+})
 </script>

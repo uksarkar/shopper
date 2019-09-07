@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="Bootstrap-ecommerce by Vosidiy">
 
-<title>@yield('title', 'Shoper') </title>
+<title>@yield('title', $site_name) </title>
 
-<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+<link rel="shortcut icon" type="image/x-icon" href="{{ $favicon }}">
 
 <!-- jQuery -->
 <script src="{{ asset('js/jquery-2.0.0.min.js') }}" type="text/javascript"></script>

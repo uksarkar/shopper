@@ -8,6 +8,7 @@ use App\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Controllers\Controller;
+use App\Photo;
 use App\ProductMeta;
 use Illuminate\Support\Facades\Cache;
 
@@ -70,6 +71,12 @@ class ProductController extends Controller
         //creating metas data if there is any
         (new ProductMeta)->storeMeta($product->id);
         
+        //create if has any photos
+        if($request->has('photos')){
+            $photos = explode(",",$request->photos);
+            $product->photos()->sync($photos);
+        }
+        
         return redirect()->route('products.index')->with('successMassage','Product was added.');
     }
 
@@ -125,6 +132,12 @@ class ProductController extends Controller
         //Create and update metas data if there is any
         (new ProductMeta)->storeMeta($product->id);
 
+        //create if has any photos
+        if($request->has('photos')){
+            $photos = explode(",",$request->photos);
+            $product->photos()->sync($photos);
+        }
+
         return redirect()->route('products.index')->with('successMassage', 'The product has been successfully updated.');
     }
 
@@ -153,9 +166,16 @@ class ProductController extends Controller
             $product->prices()->delete();
         }
 
+        //delete all of the metas of this product
         if(!blank($product->metas))
         {
             $product->metas()->delete();
+        }
+
+        //delete all of the photos of the product
+        if(!blank($product->photos))
+        {
+            $product->photos()->detach();
         }
 
         // Delete the cache price of this product

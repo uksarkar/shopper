@@ -7,7 +7,9 @@
     <meta name="description" content="Laravel App">
     <meta name="author" content="Utpal Sarkar">
     <meta name="keyword" content="Laravel,App">
-    <title>@yield('title', config('app.name'))</title>
+    <title>@yield('title', $site_name)</title>
+    
+    <link rel="shortcut icon" type="image/x-icon" href="{{ $favicon }}">
     <!-- Icons-->
     <link href="{{ asset("assets/vendors/@coreui/icons/css/coreui-icons.min.css") }}" rel="stylesheet">
     <link href="{{ asset("assets/vendors/flag-icon-css/css/flag-icon.min.css") }}" rel="stylesheet">
@@ -16,6 +18,10 @@
     <!-- Main styles for this application-->
     <link href="{{ asset("assets/css/style.css") }}" rel="stylesheet">
     <link href="{{ asset("assets/vendors/pace-progress/css/pace.min.css") }}" rel="stylesheet">
+
+    <link href="{{ asset("assets/css/dropzone.css") }}" rel="stylesheet">
+
+
     @if(Route::is('config.homeCustomization'))
         <link rel="stylesheet" href="{{ asset('assets/css/nestable-style.css') }}" />
     @endif
@@ -196,6 +202,79 @@
                 padding-top: 5px;
                 border-top-left-radius: 0.25rem;
                 border-bottom-left-radius: 0.25rem;
+            }
+            .image-plus-btn{
+                border: 1px dashed #7b7b7b;
+                padding: 13px 20px;
+                border-radius: 5px;
+                max-width: min-content;
+                position: relative;
+                left: 5px;
+                color: #a2a2a2;
+                transition: all 0.2s ease-in-out;
+                cursor: pointer;
+            }
+            .image-plus-btn:hover{
+                border: 1px dashed #27b8ff;
+                color: #0070ff;
+            }
+            .image-prev{
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: contain;
+                width: 75px;
+                height: 70px;
+                transition-duration: 150ms;
+                transition-property: transform;
+            }
+            .image-prev:hover{
+                box-shadow: 0px 0px 3px #868686;
+                transform: scale(1.05);
+                background-color: #e8e8e8;
+                z-index: 9;
+            }
+            #photo_preview{
+                display: flex;
+                transition: all 0.2ms ease-in-out;
+            }
+            .image-prev-remove{
+                position: absolute;
+                right: -12px;
+                top: -12px;
+                border: 1px dashed red;
+                background: #fdd;
+                border-radius: 100%;
+                height: 17px;
+                width: 17px;
+                font-size: inherit;
+                text-rendering: auto;
+                font: normal normal normal 10px/1 FontAwesome;
+                color: red;    
+                opacity: 0;
+                transform: scale(0.25);
+                transition-duration: 150ms;
+                transition-property: transform, opacity;
+            }
+            .image-prev-remove::before{
+                content: "\f00d";
+                position: relative;
+                left: -4px;
+                top: -1px;
+            }
+            .image-prev-remove:focus{
+                outline: 0;
+            }
+            .image-prev:hover .image-prev-remove{
+                opacity: 1;
+                transform: scale(1);
+                transition-delay: 333ms;
+            }
+            .img-btn>i{
+                position: absolute;
+                color: #eee;
+                border: 1px solid gray;
+                border-radius: 100%;
+                background-color: #19ac29;
             }
         </style>
 </head>

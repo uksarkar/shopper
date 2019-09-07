@@ -45,7 +45,7 @@ Route::prefix('admin')->middleware('auth','role_or_permission:admin|view admin')
    Route::resource('price', 'PriceController')->only('store','update','destroy');
 
    Route::get('config', 'ConfigController@index')->name('config');
-   Route::put('config/name', 'ConfigController@siteNameLogoUpdate')->name('config.siteNameLogoUpdate');
+   Route::post('config/name', 'ConfigController@siteNameLogoUpdate')->name('config.siteNameLogoUpdate');
    Route::get('config/home', 'ConfigController@homeCustomization')->name('config.homeCustomization');
    Route::post('config/home/content', 'ConfigController@createContent')->name('config.createContent');
    Route::put('config/home/content/{content}', 'ConfigController@updateContent')->name('config.updateContent');
@@ -74,6 +74,10 @@ Route::prefix('admin')->middleware('auth','role_or_permission:admin|view admin')
    Route::get('membership/request', 'AdminContentController@membershipRequest')->name('admin.membership.request');
    Route::post('membership/request', 'AdminContentController@membershipRequestAction')->name('admin.membership.membershipRequestAction');
 
+   // Product photos managing
+   Route::resource('photos', 'MediaController')->only('index','store');
+   Route::get('get-photos', 'MediaController@getPhotos');
+
    //end of the route group
 });
 //End admin routes_________________________________________
@@ -88,49 +92,24 @@ Route::get('/getshop', 'ApiController@returnShop');
 
 
 
-Route::get('/test3', function(App\Product $product){
-   $row = DB::table('membership_user')
-               ->select(
-                  'membership_user.id',
-                  'memberships.name',
-                  'memberships.price',
-                  'memberships.shop_limit',
-                  'membership_user.status',
-                  'membership_user.created_at',
-                  'membership_user.updated_at')
-               ->join('users','users.id', '=', 'membership_user.user_id')
-               ->join('memberships', 'memberships.id', '=', 'membership_user.membership_id')
-               ->paginate(5);
+// Route::get('/test3', '');
 
-   // $row = DB::select("SELECT 
-   //          mu.id,
-   //          m.name,
-   //          m.price,
-   //          m.shop_limit,
-   //          mu.status,
-   //          mu.created_at,
-   //          mu.updated_at
-            
-   //          FROM membership_user mu
-   //             JOIN users u
-   //                ON mu.user_id = u.id
-   //             JOIN memberships m
-   //                ON m.id = mu.membership_id
-   //          LIMIT 10"
-   // );
-
-   return $row;
+Route::post('/admin/upload-photos', function(Request $request){
+   dd($request->all());
 });
 
 
 
 Route::get('/test2',function() {
-   $shops = auth()->user()->shops->count();
-   $memberships_count = auth()->user()->memberships()->wherePivot('status',1)->get()->sum('shop_limit');
+   // $shops = auth()->user()->shops->count();
+   // $memberships_count = auth()->user()->memberships()->wherePivot('status',1)->get()->sum('shop_limit');
 
    // dd($memberships_count);
 
-   return "Total shops: ".$shops." Total limit: ".$memberships_count;
+   // return "Total shops: ".$shops." Total limit: ".$memberships_count;
+   // Cache::putMany(['test'=>'testing','rr'=>"ee"]);
+   // Cache::put('mSign', '$');
+   return Cache::get('mSign');
 });
 Route::view('/test','test');
 

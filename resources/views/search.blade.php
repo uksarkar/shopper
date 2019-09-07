@@ -80,7 +80,7 @@
                 <figcaption class="info-wrap">
                     <a href="{{ $product->slug() }}" class="title">{{ $product->name }}</a>
                     <div class="price-wrap">
-                        Starting at <span class="text-success">{{ $product->monySing() }}{{ $product->lowestPrice()['price'] }}</span> in {{ $product->lowestPrice()['count'] }} shops.
+                        Starting at <span class="text-success">{{ $product->monySign() }}{{ $product->lowestPrice()['price'] }}</span> in {{ $product->lowestPrice()['count'] }} shops.
                     </div> <!-- price-wrap.// -->
                 </figcaption>
             </figure> <!-- card // -->

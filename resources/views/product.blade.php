@@ -39,10 +39,11 @@
           <div> <a href="@isset($product->image){{ $product->image->url }}@endisset" data-fancybox=""><img src="@isset($product->image){{ $product->image->url }}@endisset"></a></div>
         </div> <!-- slider-product.// -->
         <div class="img-small-wrap">
-          <div class="item-gallery"> <img src="images/items/1.jpg"></div>
-          <div class="item-gallery"> <img src="images/items/2.jpg"></div>
-          <div class="item-gallery"> <img src="images/items/3.jpg"></div>
-          <div class="item-gallery"> <img src="images/items/4.jpg"></div>
+            @if(!blank($product->photos))
+                @foreach ($product->photos as $photo)
+                    <div class="item-gallery"  data-fancybox="preview" data-width="1500" data-height="1000"> <img src="{{ $photo->path }}"></div>
+                @endforeach
+            @endif
         </div> <!-- slider-nav.// -->
         </article> <!-- gallery-wrap .end// -->
                 </aside>
@@ -53,7 +54,7 @@
         
         <div class="mb-3"> 
             <var class="price h3 text-warning"> 
-                <span class="currency">{{ $product->monySing() }}</span><span class="num">{{ $product->lowestPrice()['price'] }}</span>
+                <span class="currency">{{ $product->monySign() }}</span><span class="num">{{ $product->lowestPrice()['price'] }}</span>
             </var>
         </div> <!-- price-detail-wrap .// -->
         {{-- <dl>
@@ -126,7 +127,7 @@
                             @foreach ($prices as $price)
                                 <tr>
                                     <td><a href="/shop/{{ $price->shop->id }}" class="btn btn-link">{{ $price->shop->name }}</a></td>
-                                    <td>{{$product->monySing(). $price->amounts }}</td>
+                                    <td>{{$product->monySign(). $price->amounts }}</td>
                                     <td>{{ $price->shop->location }}</td>
                                 </tr>
                             @endforeach
@@ -161,7 +162,7 @@
                             <figcaption class="info-wrap">
                                 <a href="{{ $like_product->slug() }}" class="title">{{ $like_product->name }}</a>
                                 <div class="price-wrap mb-3">
-                                    <span class="price-new">{{ $product->monySing().$like_product->lowestPrice()['price'] }}</span>
+                                    <span class="price-new">{{ $product->monySign().$like_product->lowestPrice()['price'] }}</span>
                                 </div> <!-- price-wrap.// -->
                             </figcaption>
                     </figure> <!-- card-product // -->

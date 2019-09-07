@@ -30,7 +30,7 @@
                     <div class="col-sm-5">
                         <div class="card">
                             <div class="card-body">
-                                <img class="img img-responsive" src="@isset($shop->image){{ $shop->image->url }}@endisset" alt="{{ $shop->name }}">
+                                <img style="width:100%" src="@isset($shop->image){{ $shop->image->url }}@endisset" alt="{{ $shop->name }}">
                             </div>
                         </div>
                     </div>
@@ -48,11 +48,11 @@
                                         </tr>
                                         <tr>
                                         <td><i class="fa fa-clock"></i>  Created at</td>
-                                        <td>: {{ $shop->created_at->diffForHumans() }}</td>
+                                        <td>: @if(!blank($shop->created_at)){{ $shop->created_at->diffForHumans() }}@endif</td>
                                         </tr>
                                         <tr>
                                         <td><i class="fa fa-history"></i>  Last update</td>
-                                        <td>: {{ $shop->updated_at->diffForHumans() }}</td>
+                                        <td>: @if(!blank($shop->updated_at)){{ $shop->updated_at->diffForHumans() }}@endif</td>
                                         </tr>
                                         <tr>
                                         <td><i class="fa fa-sort-numeric-down"></i>  Total products</td>

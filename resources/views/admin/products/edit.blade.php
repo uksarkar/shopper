@@ -70,6 +70,24 @@
 
                                                     <button id="plus" class="btn btn-secondary mt-3 btn-sm" type="button"><i class="fa fa-plus"></i> one</button>
                                                 </div>
+                                                {{-- Creating image  --}}
+                                                <div class="form-group">
+                                                    <div class="photo_preview" id="photo_preview">
+                                                        @if(!blank($product->photos))
+                                                            @foreach ($product->photos as $photo)
+                                                            <div class="image-prev" data-id="{{ $photo->id }}" style="background-image:url({{ $photo->path }})">
+                                                                <button type="button" class="image-prev-remove"></button>
+                                                                &nbsp;
+                                                            </div>
+                                                            @endforeach
+                                                        @endif
+                                                        <div class="image-plus-btn" data-toggle="modal" data-target="#successModal">
+                                                            <i class="fa fa-plus fa-3x"></i>
+                                                        </div>
+                                                    </div>
+                                                    <small class="text-muted">Select multiple images.</small>
+                                                    <input type="hidden" name="photos">
+                                                </div>
 
                                             </div>
                                             <div class="col-sm-3">
@@ -109,6 +127,58 @@
             </div>
         </main>
     </div>
+
+
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-success modal-lg" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Photos</h4>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active show" data-toggle="tab" href="#all_photos">Photos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#upload_photos">Upload</a>
+                    </li>
+                </ul>
+                
+                <div class="tab-content">
+                    <div id="all_photos" class="tab-pane fade in active show">
+                        <div class="loading text-center m-5">
+                            <i class="fa fa-refresh fa-spin fa-5x"></i>
+                            <br>
+                            Loading photos...
+                        </div>
+                        <div class="row">
+                        </div>
+                    </div>
+                    <div id="upload_photos" class="tab-pane fade">
+                        <form id="dropzone-uploader" action="{{ route('photos.store') }}" class="dropzone rounded">
+                            @csrf
+                            <div class="dz-message d-flex flex-column">
+                                <i class="fa fa-cloud-upload fa-3x"></i>
+                                Drag &amp; Drop here or click
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                <button id="photo_add_btn" class="btn btn-success" type="button" data-dismiss="modal">Save</button>
+            </div>
+            </div>
+            <!-- /.modal-content-->
+        </div>
+        <!-- /.modal-dialog-->
+    </div>
+    <!-- /.modal-->
+
+
     <footer class="app-footer">
         <div><a href="https://github.com/utpalongit">Utpal Sarkar</a><span>&copy; 2019.</span></div>
         <div class="ml-auto"><span>Powered by</span> Utpal Sarkar</div>
