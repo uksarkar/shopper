@@ -121,20 +121,7 @@ Route::get('/test/{id}', function($id){
 
 // Route::get('{category}',"CategoryController@index");
 
-// Route::any('{category}/{slug}', 'CategoryController@index')
-// ->where('slug','^[a-zA-Z0-9-_\/]+$');
-
-// Route::get('put', function(App\Category $category){
-//    $categories = $category->all();
-
-//    return $categories; 
-//    // Cache::put('categories', $categories);
-//    // Cache::forget('categories');
-//    // foreach ($categories as $key => $item) {
-//    //    Cache::put('category_'.$item->id, $item, -1);
-//    // }
-// });
-Route::get('/roles', function (){
+// Route::get('/roles', function (){
    // $role = Spatie\Permission\Models\Role::create(['name'=>'admin']);
    // $permission = Spatie\Permission\Models\Permission::findByName('create shop');
    // $user = App\User::find(2);
@@ -147,7 +134,7 @@ Route::get('/roles', function (){
 
    // auth()->user()->assignRole($role);
 
-});
+// });
 
 //Find the content category or product, based on url slug
 Route::get('{slug?}', 'CategoryController@index')->where('slug', '^[a-zA-Z0-9-_\/]+$')->name('dynamic');
