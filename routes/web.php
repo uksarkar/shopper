@@ -29,7 +29,9 @@ Route::group([
          Route::resource('shops','ShopsController')->except('index');
 
          //managing user's products
-         Route::resource('products', 'ProductsController')->except('index');
+         // Route::resource('products', 'ProductsController')->except('index');
+         Route::post("products", "ProductsController@store")->name("products.store");
+         Route::patch("products", "ProductsController@update")->name("products.update");
 
          //managing memberships
          Route::resource('memberships', 'MembershipController')->only('index','store');

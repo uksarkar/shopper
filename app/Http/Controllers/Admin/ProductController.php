@@ -72,7 +72,7 @@ class ProductController extends Controller
         (new ProductMeta)->storeMeta($product->id);
         
         //create if has any photos
-        if($request->has('photos')){
+        if($request->has('photos') && !blank($request->photos)){
             $photos = explode(",",$request->photos);
             $product->photos()->sync($photos);
         }
@@ -133,9 +133,11 @@ class ProductController extends Controller
         (new ProductMeta)->storeMeta($product->id);
 
         //create if has any photos
-        if($request->has('photos')){
+        if($request->has('photos') && !blank($request->photos)){
             $photos = explode(",",$request->photos);
             $product->photos()->sync($photos);
+        } else {
+            $product->photos()->detach();
         }
 
         return redirect()->route('products.index')->with('successMassage', 'The product has been successfully updated.');

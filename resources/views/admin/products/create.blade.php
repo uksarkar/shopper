@@ -20,8 +20,8 @@
             <div class="container-fluid">
                 <div class="animated fadeIn">
                     @if(count($errors) > 0)
-                        @foreach($errors as $error)
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Success!</strong> {{ $error }}
+                        @foreach($errors->all() as $error)
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Coution!</strong> {{ $error }}
                                 <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                             </div>
                         @endforeach
@@ -170,5 +170,12 @@
         <div class="ml-auto"><span>Powered by</span> Utpal Sarkar</div>
     </footer>
     @include('admin.layouts.footer')
+
+    <script>
+        $(document).ready(function(){
+            $("ul.tree-css>li").first().children("label").children("input[type=radio]").attr("checked", true);
+        })
+    </script>
+
     </body>
 @endsection

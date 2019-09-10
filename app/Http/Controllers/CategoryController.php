@@ -36,7 +36,7 @@ class CategoryController extends Controller
                             ->limit(10)
                             ->get();
 
-            $prices = $product->prices()->paginate(25);
+            $prices = $product->prices()->orderBy("amounts")->paginate(25);
             
             //return the view
             return view('product', compact('product','similar_products','prices'));

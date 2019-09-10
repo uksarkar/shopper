@@ -36,7 +36,7 @@ class Price extends Model
         if($delete){return Cache::put('product_'.$this->product_id, 1, -5);}
 
         $price = $this->where('product_id', $this->product_id)->min('amounts');
-        $count = $this->whereAmounts($price)->count();
+        $count = $this->where('product_id', $this->product_id)->whereAmounts($price)->count();
         
         return Cache::put('product_'.$this->product_id, ['price'=>$price,'count'=>$count]);
     }

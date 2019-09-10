@@ -19,7 +19,6 @@ class CreatePricesTable extends Migration
             $table->integer('product_id')->index()->unsigned();
             $table->integer('old')->nullable();
             $table->integer('amounts');
-            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

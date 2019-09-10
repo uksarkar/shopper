@@ -27,8 +27,7 @@ class CreatePriceRequest extends FormRequest
         return [
             'shop' => 'required',
             'product' => 'required|integer',
-            'amounts' => 'required|numeric',
-            'description' => 'sometimes|string'
+            'amounts' => 'required|numeric'
         ];
     }
 }

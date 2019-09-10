@@ -74,27 +74,25 @@ class Category extends Model
     //End of finding product
 
     //Outputting Category tree in admin panels create product page
-    public function outputHTML($category, $parent_id = null, $category_id = null) { 
+    public function outputHTML($category, $parent_id = 0, $category_id = null) { 
 	    $result = null;
-        foreach ($category as $k => $item) 
-            if ($item->parent_id == $parent_id) { 
-            $ul_class = ($item->parent_id == null) ? "rounded border-tree tree-css pb-2":null;
-            if($category_id == null){
-                $selected = ($k == 0 && $item->parent_id == null) ? "checked":null;
-            } else {
-                $selected = $category_id == $item->id ? "checked":null;
-            }
-            $result .= "<li class=\"form-check\">
-            <label class=\"form-check-label\">
-                <input type=\"radio\" class=\"form-check-input\" $selected name=\"category_id\" value=\"$item->id\">$item->name
-            </label>". $this->outputHTML($category, $item->id, $category_id) ."</li>";
+        foreach ($category as $item) 
+            if ($item->parent_id == $parent_id) {
+
+                $ul_class = ($item->parent_id == 0) ? "rounded border-tree tree-css pb-2":null;
+                $selected = ($category_id == $item->id) ? "checked":null;
+
+                $result .= "<li class=\"form-check\">
+                <label class=\"form-check-label\">
+                    <input type=\"radio\" class=\"form-check-input\" $selected name=\"category_id\" value=\"$item->id\">$item->name
+                </label>". $this->outputHTML($category, $item->id, $category_id) ."</li>";
             } 
         return $result ?  "\n<ul class=\"$ul_class\">\n$result</ul>\n" : null; 
     }
 
     public function outputTree($category_id = null){
       $category = $this->all();
-      return $this->outputHTML($category,null, $category_id);
+      return $this->outputHTML($category,0, $category_id);
     }
     //End outputting category tree on admin panel create product page
     

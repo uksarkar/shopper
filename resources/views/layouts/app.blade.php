@@ -32,6 +32,10 @@
 <link href="{{ asset('css/ui.css') }}" rel="stylesheet" type="text/css"/>
 <link href="{{ asset('css/responsive.css') }}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
 
+@if(session()->has("successMassage") || $errors->count() > 0)
+    <link rel="stylesheet" href="{{ asset("css/iziToast.min.css") }}">
+@endif
+
 <!-- custom javascript -->
 <script src="{{ asset('js/script.js') }}" type="text/javascript"></script>
 
@@ -45,7 +49,9 @@
 </head>
 <body>
     @yield('content')
-
+    @if(session()->has("successMassage") || $errors->count() > 0)
+        <script src="{{ asset("js/iziToast.min.js") }}"></script>
+    @endif
     <script type="text/javascript">
         $(document).ready(function(){
             var request = function(product_id){
@@ -111,6 +117,16 @@
                 let product_id = $(this).data().id,
                     product_input = $("#SubForm").find("input[name=product]");
                 product_input.val(product_id);
+
+                let img = $(this).parent().parent().find("img").attr("src"),
+                    name = $(this).parent().parent().find("a").text();
+                    
+                $("#model-product-img").html(`
+                    <img src="${img}" style="max-height: 200px; max-width: 100%;">
+                `);
+
+                $("#model-product-name").html(name);
+
                 request(product_id);
             });
 
@@ -122,6 +138,26 @@
                 $("#SubForm").submit();
                 $('body').find("input, select, button, textarea").attr('disabled',true);
             });
+
+            @if($errors->count() > 0)
+                @foreach($errors->all() as $error)
+                    iziToast.warning({
+                        timeout: false,
+                        transitionIn: 'flipInX',
+                        transitionOut: 'flipOutX',
+                        title: 'Caution',
+                        message: "{{ $error }}",
+                    });
+                @endforeach
+            @endif
+
+            @if(session()->has("successMassage"))
+                iziToast.success({
+                    timeout: 10000,
+                    title: 'OK',
+                    message: '{{ session()->get("successMassage") }}',
+                });
+            @endif
         
         });
     </script>

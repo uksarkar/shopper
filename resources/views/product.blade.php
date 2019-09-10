@@ -41,7 +41,7 @@
         <div class="img-small-wrap">
             @if(!blank($product->photos))
                 @foreach ($product->photos as $photo)
-                    <div class="item-gallery"  data-fancybox="preview" data-width="1500" data-height="1000"> <img src="{{ $photo->path }}"></div>
+                    <div class="item-gallery"> <a href="{{ $photo->path }}" data-fancybox="preview"><img src="{{ $photo->path }}"></a></div>
                 @endforeach
             @endif
         </div> <!-- slider-nav.// -->
@@ -75,7 +75,7 @@
                     @if(!blank($product->prices))
                         {{ $product->prices()->orderBy('amounts')->first()->shop->name }}
                     @else
-                        This product is not available in any shop yet!
+                        This product is not available at any shop yet!
                     @endif
                 </div> <!-- col.// -->
             </div> <!-- row.// -->
@@ -183,10 +183,10 @@
 @auth
     @if(auth()->user()->can('create product'))
         <div class="modal fade show" id="addProductModel" tabindex="-1" role="dialog" aria-labelledby="addProductModel" aria-modal="true">
-            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-dialog" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add product to your shop</h4>
+                    <h4 class="modal-title">Add this product to your shop</h4>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                 </div>
                 <div class="modal-body">
@@ -205,12 +205,6 @@
                                 <div class="input-group">
                                     <div class="input-group-prepend"><span class="input-group-text">Price</span></div>
                                     <input class="form-control" id="amounts" type="number" name="amounts" placeholder="00.000" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <div class="input-group-prepend"><span class="input-group-text">Description</span></div>
-                                    <textarea class="form-control" id="textarea-input" name="description" rows="9" placeholder="Content.."></textarea>
                                 </div>
                             </div>
                         </form>

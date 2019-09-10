@@ -87,34 +87,34 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add product to your shop</h4>
+                    <h4 class="modal-title">Add this product to your shop.</h4>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                 </div>
                 <div class="modal-body">
-                    <div class="modal-body">
-                        <form method="POST" id="SubForm" action="{{ route('home.products.store') }}">
-                            @csrf
-                            <input type="hidden" name="product" value="">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <div class="input-group-prepend"><span class="input-group-text">Shop</span></div>
-                                    <select class="form-control" name="shop" id="shop_options">
-                                    </select>
+                    <div class="row">
+                        <div class="col-sm-4" id="model-product-img">
+                            {{-- jQuery Will add the image here --}}
+                        </div>
+                        <div class="col-sm-8">
+                            <h4 id="model-product-name" class="mb-2"></h4>
+                            <form method="POST" id="SubForm" action="{{ route('home.products.store') }}">
+                                @csrf
+                                <input type="hidden" name="product" value="">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend"><span class="input-group-text">Shop</span></div>
+                                        <select class="form-control" name="shop" id="shop_options">
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <div class="input-group-prepend"><span class="input-group-text">Price</span></div>
-                                    <input class="form-control" id="amounts" type="number" name="amounts" placeholder="00.000" required>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend"><span class="input-group-text">Price</span></div>
+                                        <input class="form-control" id="amounts" type="number" name="amounts" placeholder="00.000" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <div class="input-group-prepend"><span class="input-group-text">Description</span></div>
-                                    <textarea class="form-control" id="textarea-input" name="description" rows="9" placeholder="Content.."></textarea>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -132,4 +132,5 @@
 
     @include('helpers.subscribe')
     @include('helpers.footer')
+
 @endsection

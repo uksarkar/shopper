@@ -33,7 +33,8 @@ class AccountController extends Controller
      */
     public function products()
     {
-        return view('users.products');
+        $prices = auth()->user()->prices()->with(["product","shop"])->paginate(25);
+        return view('users.products', compact("prices"));
     }
 
     /**

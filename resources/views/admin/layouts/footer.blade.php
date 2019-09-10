@@ -414,6 +414,10 @@ $(document).ready(function(){
 
     $(document).on('click', '.image-prev-remove', function(e){Photos.removePhoto(e)});
 
+    $(function(){
+        Photos.createValue();
+    });
+
     var Photos = function(){
         return {
             loadPhotos: function(url){

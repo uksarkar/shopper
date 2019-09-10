@@ -45,51 +45,56 @@ class ProductsController extends Controller
      */
     public function store(CreatePriceRequest $request, Shop $shop, Product $product)
     {
-        //hold the valid request data
-        $data = $request->validated();
+        try {
 
-        //find if the request product is valid or get fail
-        $product = $product->findOrFail($data['product']); 
+            //hold the valid request data
+            $data = $request->validated();
 
-        
-        $price = new Price;
+            //find if the request product is valid or get fail
+            $product = $product->findOrFail($data['product']); 
 
-        //save the product to all of the users available shops
-        if($data['shop'] == 0 && !blank($shops = auth()->user()->availableShops($product->id))) {
-            foreach ($shops as $shop) {
-                $price->create([
-                    'amounts'=>$data['amounts'],
-                    'description'=>$data['description'],
-                    'product_id'=>$product->id,
-                    'shop_id'=>$shop->id
-                ]);
+            
+            $price = new Price;
+
+            //save the product to all of the users available shops
+            if($data['shop'] == 0 && !blank($shops = auth()->user()->availableShops($product->id))) {
+                foreach ($shops as $shop) {
+                    $price->create([
+                        'amounts'=>$data['amounts'],
+                        'product_id'=>$product->id,
+                        'shop_id'=>$shop->id
+                    ]);
+                }
+
+                $price->cacheLeftShop($product->id);
+
+                $price->product_id = $product->id;
+                $price->cachePrice();
+
+                return back()->with('successMassage', 'This product is added to your all shops!');
             }
 
-            $price->cacheLeftShop($product->id);
+            //find if the request shop is valid or get fail
+            $shop = $shop->findOrFail($data['shop']); 
 
+            // abort the request if the user is not the owner of the shop
+            if($shop->userNotOwnerOrAdmin()) return abort(401); 
+
+            $price->amounts = $data['amounts'];
             $price->product_id = $product->id;
+            $price->shop_id = $shop->id;
+
+            $price->save();
+
+            $price->cacheLeftShop($product->id);
             $price->cachePrice();
 
-            return back()->with('successMassage', 'Your all of the shops now has this product.');
+            return back()->with('successMassage', 'Product was successfully added!');
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return abort(403);
         }
-
-        //find if the request shop is valid or get fail
-        $shop = $shop->findOrFail($data['shop']); 
-
-        // abort the request if the user is not the owner of the shop
-        if($shop->userNotOwnerOrAdmin()) return abort(401); 
-
-        $price->amounts = $data['amounts'];
-        $price->description = $data['description'];
-        $price->product_id = $product->id;
-        $price->shop_id = $shop->id;
-
-        $price->save();
-
-        $price->cacheLeftShop($product->id);
-        $price->cachePrice();
-
-        return back()->with('successMassage', 'Product was successfully added!');
     }
 
     /**
@@ -121,9 +126,38 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CreatePriceRequest $request, Price $price)
     {
-        //
+        try {
+            //hold the valid request data
+            $data = $request->validated();
+
+            //find if the request product is valid or get fail
+            Product::findOrFail($data['product']);
+
+            //find if the request shop is valid or get fail
+            $shop = Shop::findOrFail($data['shop']); 
+
+            // abort the request if the user is not the owner of the shop
+            if($shop->userNotOwnerOrAdmin()) return abort(401); 
+
+            // get the price now
+            $price = $price->findOrFail($request->price);
+            
+            // Let's update the price
+            $price->update(["amounts"=>$data["amounts"]]);
+
+            // Calculate lowest price and cache it
+            $price->cachePrice();
+
+            //return back with massage
+            return back()->with('successMassage', 'Product was successfully updated!');
+            
+        } catch (\Throwable $th) {
+            //throw $th;
+            return abort(401, "Unrecognized!");
+        }
+        
     }
 
     /**
