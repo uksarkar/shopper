@@ -16,7 +16,7 @@
                         My Products
                     </div>
                     <div class="card-body">
-                        @if(!blank($prices))
+                        @if(!blank($products))
                         
                         <table class="table table-responsive-sm table-hover table-outline mb-0">
                             <thead class="thead-light">
@@ -24,30 +24,44 @@
                                 <th class="text-center"><i class="icon-picture"></i> Image</th>
                                 <th>Product Name</th>
                                 <th>Actions</th>
-                                <th>Your Price</th>
                             </tr>
                             </thead>
                             <tbody>
-                                @foreach($prices as $price)
+                                @foreach($products as $product)
                                     <tr>
                                         <td class="text-center">
                                             <div class="thumbnail">
-                                                <img class="img img-thumbnail" src="@if($price->product->image) {{ $price->product->image->url }} @else https://via.placeholder.com/100x100.png?text=No+Image @endif" width="100" alt="image">
+                                                <img class="img img-thumbnail e{{ $product->id }}" src="@if($product->image) {{ $product->image->url }} @else https://via.placeholder.com/100x100.png?text=No+Image @endif" width="100" alt="image">
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="Name">{{ $price->product->name }}</div>
-                                            <div class="small text-muted">Created: {{ $price->product->created_at->diffForHumans() }}</div>
+                                            <div class="Name">{{ $product->name }}</div>
+                                            <div class="small text-muted">Created: {{ $product->created_at->diffForHumans() }}</div>
+                                            <div class="list-group">
+                                                @foreach ($product->prices as $price)
+                                                <div class="list-group-item rounded-0  list-group-item-action ">
+                                                    <a href="{{ route('home.shops.show',$price->shop->id) }}">
+                                                            {{ $price->shop->name }}
+                                                    </a>
+                                                    <button class="btn btn-sm btn-outline-info float-right p-edit-button" type="button" data-toggle="modal" data-target="#addProductModel" data-id="{{ $product->id }}" data-shop="{{ $price->shop->name }}" data-shop-id="{{ $price->shop->id }}" data-amounts="{{ $price->amounts }}" data-price="{{ $price->id }}">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button data-sub="e{{ $price->id }}" class="btn btn-outline-danger btn-sm mx-1 float-right subbtn">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                    <span class="float-right">
+                                                        {{ $moneySign. $price->amounts }}
+                                                    </span>
+                                                    <form data-sub="e{{ $price->id }}" class="formsub" method="POST" action="{{ route("home.products.destroy",$price->id) }}">@csrf @method("DELETE")</form>
+                                                </div>
+                                                @endforeach
+                                            </div>
                                         </td>
                                         <td>
-                                            <a href="{{ $price->product->slug() }}" class="btn btn-sm btn-primary">View</a>
-                                            <button class="btn btn-sm btn-info p-edit-button" type="button" data-toggle="modal" data-target="#addProductModel" data-id="{{ $price->product->id }}" data-shop="{{ $price->shop->name }}" data-shop-id="{{ $price->shop->id }}" data-amounts="{{ $price->amounts }}" data-price="{{ $price->id }}">Edit</button>
-                                            <button data-sub="e{{ $price->product->id }}" class="btn btn-outline-danger btn-sm subbtn">Remove</button>
-                                            <form data-sub="e{{ $price->product->id }}" class="formsub" method="POST" action="/">@csrf @method("DELETE")</form>
-                                        </td>
-                                        <td class="amt">
-                                            {{-- {{  Str::limit($price->product->description, 70, ' (...)') }} --}}
-                                            {{ $moneySign.$price->amounts }}
+                                            <a href="{{ $product->slug() }}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-eye"></i>
+                                                View Product
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -58,17 +72,17 @@
                             @if(auth()->user()->shops->count() > 0 && auth()->user()->can('create product'))
                                 You doesn't have any product yet. <br> <br>
                                 <p class="bg-light px-5 py-2 mt-3 my-auto">
-                                    Search your product and click the plus button to add it.
+                                    Search products and click the plus button to add it.
                                 </p>
                             @else 
-                                You doesn't have any shop yet.
+                                Add one shop first.
                             @endif
                         </p>
                         @endif
                     </div>
                     <div class="card-footer">
                         <div class="mx-auto flex-column">
-                            {{ $prices->links() }}
+                            {{ $products->links() }}
                         </div>
                     </div>
                 </div>
@@ -130,9 +144,9 @@
     <script>
         $(document).ready(function(){
             $(".p-edit-button").click(function(){
-                let img = $(this).parent().parent().find("img").attr("src"),
+                let id = $(this).data().id,
+                    img = $('.e'+id).attr("src"),
                     name = $(this).parent().parent().find(".Name").text(),
-                    id = $(this).data().id,
                     amounts = $(this).data().amounts,
                     shop_name = $(this).data().shop,
                     shop_id= $(this).data("shop-id"),

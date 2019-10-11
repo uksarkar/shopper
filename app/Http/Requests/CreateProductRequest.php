@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Auth;
 
 class CreateProductRequest extends FormRequest
 {
@@ -14,7 +13,7 @@ class CreateProductRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check();
+        return auth()->user()->hasRole('admin');
     }
 
     /**
@@ -27,6 +26,7 @@ class CreateProductRequest extends FormRequest
         return [
             'name' => 'required|string',
             'description' => 'required|string',
+            'expected_price' => 'required|string',
             'category_id' => 'required',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];

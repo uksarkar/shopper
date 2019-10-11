@@ -16,6 +16,7 @@ class UserCreateShopRequest extends FormRequest
         //if the user has permission to create shop or user is admin then authorize the request
         if(auth()->check()){
             if(auth()->user()->can('create shop') || auth()->user()->hasRole('admin')) return true;
+            return false;
         }
 
         //for unauthorized user
@@ -31,8 +32,7 @@ class UserCreateShopRequest extends FormRequest
     {
         return [
             'shop_name'=>'string|max:60|required',
-            'shop_location'=>'string|max:120|required',
-            'shop_description'=>'string|max:1000|required',
+            'shop_url'=>'string|required',
             'shop_image'=>'sometimes|image|mimes:jpg,png,jpeg|max:3072'
         ];
     }

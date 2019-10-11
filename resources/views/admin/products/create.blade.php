@@ -45,7 +45,7 @@
                                                 <div class="form-group">
                                                     <div class="input-group">
                                                         <div class="input-group-prepend"><span class="input-group-text">Expected price</span></div>
-                                                        <input class="form-control" id="price" type="number" name="expected_price" placeholder="00.000" required value="{{ old("expected_price") }}">
+                                                        <input class="form-control" id="price" type="text" name="expected_price" placeholder="00.000" required value="{{ old("expected_price") }}">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">

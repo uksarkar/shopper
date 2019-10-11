@@ -139,6 +139,15 @@
                 $('body').find("input, select, button, textarea").attr('disabled',true);
             });
 
+            $(".subbtn").on('click', function(){
+                let id = $(this).data("sub");
+
+                $("form[data-sub="+id+"]").submit();
+            });
+
+
+            //Errors and success massage handaling
+
             @if($errors->count() > 0)
                 @foreach($errors->all() as $error)
                     iziToast.warning({

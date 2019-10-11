@@ -66,7 +66,8 @@ class ProductController extends Controller
             $product->image()->create($getData);
         }
 
-        Cache::put('product_'.$product->id, ['price'=>$request->expected_price,'count'=>0]);
+        // FIXME: should fix this letter
+        // Cache::put('product_'.$product->id, ['price'=>$request->expected_price,'count'=>0]);
 
         //creating metas data if there is any
         (new ProductMeta)->storeMeta($product->id);
@@ -129,7 +130,7 @@ class ProductController extends Controller
 
             $request->image->move(public_path('images'),$getData);
         }
-        //Create and update metas data if there is any
+        //Create and update meta data if there is any
         (new ProductMeta)->storeMeta($product->id);
 
         //create if has any photos

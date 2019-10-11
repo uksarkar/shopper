@@ -68,7 +68,11 @@
                 <figcaption class="info-wrap">
                     <a href="{{ $product->slug() }}" class="title">{{ $product->name }}</a>
                     <div class="price-wrap">
-                        Starting at <span class="text-success">{{ $product->monySign() }}{{ $product->lowestPrice()['price'] }}</span> in {{ $product->lowestPrice()['count'] }} shops.
+                        @if($product->lowestPrice()['price'])
+                            Starting at <span class="text-success">{{ $product->monySign() }}{{ $product->lowestPrice()['price'] }}</span> in {{ $product->lowestPrice()['count'] }} shops.
+                        @else
+                            Expecting {{ $product->monySign(). $product->expected_price }}
+                        @endif
                     </div> <!-- price-wrap.// -->
                 </figcaption>
             </figure> <!-- card // -->

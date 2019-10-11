@@ -33,7 +33,7 @@ use App\Category;
  */
 class Product extends Model
 {
-    protected $fillable = ['name','slug','description','category_id','user_id','shope_id'];
+    protected $fillable = ['name','slug','description','expected_price','category_id','user_id','shope_id'];
 
     /**
      * Create a product slug.

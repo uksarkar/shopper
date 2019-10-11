@@ -34,7 +34,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-2">
-                                        <div class="img-thumbnail mt-n5 text-center"><img src="@if($user->image){{ $user->image->url }} @else https://via.placeholder.com/140x140.png?text=140x140 @endif" alt="{{ $user->name }}" height="140"></div>
+                                        <div class="img-thumbnail mt-n5 text-center"><img src="@if($user->image){{ $user->image->url }} @else {{ asset('/img/avatars/none.png') }} @endif" alt="{{ $user->name }}" height="140"></div>
                                         </div>
                                         <div class="col-sm-10">
                                             <div class="btn btn-secondary disabled">{{ $user->name }}</div>
@@ -51,7 +51,7 @@
                                                         <div class="bg-primary p-1 rounded mt-2">{{ $role->name }}</div>
                                                     @endforeach
                                                 </div>
-                                                @endif
+                                            @endif
                                                 <div class="bg-light p-1 rounded mt-3">
                                                     Location: {{ $user->location }}
                                                 </div>
@@ -63,7 +63,7 @@
                                             <ul class="list-group">
                                                 <li class="list-group-item">Name: {{ $user->name }}</li>
                                                 <li class="list-group-item">Last Active: @if($user->lastActive()) {{ $user->lastActive()->diffForHumans() }}@else Not active yet @endif</li>
-                                                <li class="list-group-item">Products added: @if($user->products) {{ count($user->products) }} @else No products ware added. @endif</li>
+                                                {{-- <li class="list-group-item">Products added: @if($user->products) {{ count($user->products) }} @else No products ware added. @endif</li> --}}
                                                 <li class="list-group-item">Email: {{ $user->email }} @if($user->email_verified_at) <span class="badge badge-pill badge-success">Verified</span> @else <span class="badge badge-pill badge-warning">Not verified</span> @endif</li>
                                             </ul>
                                         </div>
@@ -114,10 +114,7 @@
                                         </tbody>
                                     </table>
                                     @else
-                                    This user doesn't add any shop yet!
-                                    <p>
-                                        <a href="{{ route('shops.create') }}" class="btn btn-light active mt-3" type="button">Add Now!</a>
-                                    </p>
+                                        This user haven't any shop yet!
                                     @endif
                                 </div>
                             </div>

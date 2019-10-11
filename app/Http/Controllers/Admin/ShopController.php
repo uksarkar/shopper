@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CreateShopRequest;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
-
+use App\User;
+use Spatie\Permission\Models\Permission;
 
 class ShopController extends Controller
 {
@@ -112,12 +113,18 @@ class ShopController extends Controller
      */
     public function destroy(Shop $shop)
     {
-        //delete all of price and detach all of the product
-        if (!blank($shop->shops)){
-            foreach ($shop->products as $product){
-                $shop->price()->where('product_id',$product->id)->first()->delete();
+        //delete all of the prices first
+        if (!blank($shop->prices)){
+            foreach ($shop->prices as $price){
+                //find the price
+                $thePrice = $shop->prices()->find($price->id);
+
+                //Let's delete the price
+                $thePrice->delete();
+                
+                //Update product's price
+                $thePrice->cachePrice();
             }
-            $shop->products()->detach();
         }
 
         //Delete if there are any images
@@ -126,8 +133,22 @@ class ShopController extends Controller
             $shop->image()->delete();
         }
 
+        //find the shops user
+        $user  = User::find($shop->user_id);
+
         //Delete the shop now
         $shop->delete();
+
+        //Let's give the user create shop permission, if have any left
+        $shops = $user->shops->count();
+        $shops_limit = $user->memberships()->wherePivot('status',1)->get()->sum('shop_limit');
+
+        // If user reach the limit of shop creation then remove the permission
+        if($shops < $shops_limit)
+        {
+            $permission = Permission::findByName('create shop');
+            $user->givePermissionTo($permission);
+        }
 
         //return the response
         return redirect()->route('shops.index')->with('successMassage','The shop has been successfully deleted.');

@@ -5,6 +5,7 @@ use App\ProductSearch\ProductSearch;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
 
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('admin', 'HomeController@admin')->name('admin');
@@ -12,39 +13,41 @@ Route::get('admin', 'HomeController@admin')->name('admin');
 Auth::routes();
 
 //Logged Users routes______________________________________
-Route::group([
-               'middleware'=>['auth','role_or_permission:admin|view account'],
-               'prefix'=>'account',
-               'as'=>'home.'
-            ], 
-   function() 
-   {
+Route::group(
+   [
+      'middleware' => ['auth', 'role_or_permission:admin|view account'],
+      'prefix' => 'account',
+      'as' => 'home.'
+   ],
+   function () {
       Route::get('/', 'AccountController@index')->name('account.index');
       Route::get('shops', 'AccountController@shops')->name('account.shops');
       Route::get('products', 'AccountController@products')->name('account.products');
 
-      Route::namespace('User')->group(function(){
+      //all the controller from User folder
+      Route::namespace('User')->group(function () {
 
          //managing user's shops
-         Route::resource('shops','ShopsController')->except('index');
+         Route::resource('shops', 'ShopsController')->except('index');
 
          //managing user's products
-         // Route::resource('products', 'ProductsController')->except('index');
          Route::post("products", "ProductsController@store")->name("products.store");
          Route::patch("products", "ProductsController@update")->name("products.update");
+         Route::delete("products/{price}", "ProductsController@destroy")->name("products.destroy");
 
          //managing memberships
-         Route::resource('memberships', 'MembershipController')->only('index','store');
+         Route::resource('memberships', 'MembershipController')->only('index', 'store');
       });
-   });
+   }
+);
 //End logged users routes__________________________________
 
 //Only admins routes_______________________________________
-Route::prefix('admin')->middleware('auth','role_or_permission:admin|view admin')->namespace('Admin')->group( function (){
+Route::prefix('admin')->middleware('auth', 'role_or_permission:admin|view admin')->namespace('Admin')->group(function () {
    Route::resource('products', 'ProductController');
    Route::resource('shops', 'ShopController');
    Route::resource('users', 'UsersController');
-   Route::resource('price', 'PriceController')->only('store','update','destroy');
+   Route::resource('price', 'PriceController')->only('store', 'update', 'destroy');
 
    Route::get('config', 'ConfigController@index')->name('config');
    Route::post('config/name', 'ConfigController@siteNameLogoUpdate')->name('config.siteNameLogoUpdate');
@@ -77,7 +80,7 @@ Route::prefix('admin')->middleware('auth','role_or_permission:admin|view admin')
    Route::post('membership/request', 'AdminContentController@membershipRequestAction')->name('admin.membership.membershipRequestAction');
 
    // Product photos managing
-   Route::resource('photos', 'MediaController')->only('index','store');
+   Route::resource('photos', 'MediaController')->only('index', 'store');
    Route::get('get-photos', 'MediaController@getPhotos');
 
    //end of the route group
@@ -96,13 +99,18 @@ Route::get('/getshop', 'ApiController@returnShop');
 
 // Route::get('/test3', '');
 
-Route::post('/admin/upload-photos', function(Request $request){
-   dd($request->all());
+Route::get('/test3', function (Request $request) {
+   $p = Product::whereHas('prices', function($q) use($request){
+      $q->where('user_id', $request->user()->id);
+  })->with('prices','prices.shop');
+   dd($p->toSql());
 });
 
 
 
-Route::get('/test2',function() {
+
+
+Route::get('/test2', function () {
    // $shops = auth()->user()->shops->count();
    // $memberships_count = auth()->user()->memberships()->wherePivot('status',1)->get()->sum('shop_limit');
 
@@ -111,11 +119,14 @@ Route::get('/test2',function() {
    // return "Total shops: ".$shops." Total limit: ".$memberships_count;
    // Cache::putMany(['test'=>'testing','rr'=>"ee"]);
    // Cache::put('mSign', '$');
-   return Cache::get('mSign');
-});
-Route::view('/test','test');
+   // return Cache::get('mSign');
 
-Route::get('/test/{id}', function($id){
+   $permission = Permission::findByName('create shop');
+   auth()->user()->givePermissionTo($permission);
+});
+Route::view('/test', 'test');
+
+Route::get('/test/{id}', function ($id) {
    return auth()->user()->availableShops($id);
 });
 
@@ -123,20 +134,22 @@ Route::get('/test/{id}', function($id){
 
 // Route::get('{category}',"CategoryController@index");
 
-// Route::get('/roles', function (){
-   // $role = Spatie\Permission\Models\Role::create(['name'=>'admin']);
-   // $permission = Spatie\Permission\Models\Permission::findByName('create shop');
+Route::get('/roles', function () {
+   $role = Spatie\Permission\Models\Role::findOrCreate('member', 'web');
+   //$permission = Spatie\Permission\Models\Permission::findOrCreate('create shop');
+   $permission = Spatie\Permission\Models\Permission::findOrCreate('view account');
    // $user = App\User::find(2);
    // $permission = Spatie\Permission\Models\Permission::create(['name'=>'create product']);
 
    // auth()->user()->revokePermissionTo($permission);
-   // auth()->user()->givePermissionTo($permission);
-   // $role = Spatie\Permission\Models\Role::find(1);
+   //auth()->user()->givePermissionTo($permission);
+   //$role = Spatie\Permission\Models\Role::find(2);
+   // $role->givePermissionTo($permission);
    // $user->removeRole($role);
 
    // auth()->user()->assignRole($role);
 
-// });
+});
 
 //Find the content category or product, based on url slug
 Route::get('{slug?}', 'CategoryController@index')->where('slug', '^[a-zA-Z0-9-_\/]+$')->name('dynamic');

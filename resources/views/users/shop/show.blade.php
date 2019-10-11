@@ -1,13 +1,13 @@
 @extends('layouts.app')
 @section('title')
-    Ditails of {{ $shop->name }}
+    Details of {{ $shop->name }}
 @endsection
 @section('content')
     @include('helpers.header')
 <!-- ========================= SECTION TOPBAR ========================= -->
 <section class="section-topbar border-top padding-y-sm">
         <div class="container">
-            <span>Ditails of {{ $shop->name }}</span>
+            <span>Details of <strong>{{ $shop->name }}</strong></span>
         </div> <!-- container.// -->
         </section>
         <!-- ========================= SECTION TOPBAR .// ========================= -->
@@ -43,20 +43,24 @@
                                 <table class="table table-responsive-sm">
                                     <tbody>
                                         <tr>
-                                        <td><i class="fa fa-map-marker-alt"></i>  Location</td>
-                                        <td>: {{ $shop->location }}</td>
+                                            <td><i class="fa fa-map-marker-alt"></i>  Website</td>
+                                            <td>:</td>
+                                            <td> {{ $shop->url }}</td>
                                         </tr>
                                         <tr>
-                                        <td><i class="fa fa-clock"></i>  Created at</td>
-                                        <td>: @if(!blank($shop->created_at)){{ $shop->created_at->diffForHumans() }}@endif</td>
+                                            <td><i class="fa fa-clock"></i>  Created at</td>
+                                            <td>:</td>
+                                            <td> @if(!blank($shop->created_at)){{ $shop->created_at->diffForHumans() }}@endif</td>
                                         </tr>
                                         <tr>
-                                        <td><i class="fa fa-history"></i>  Last update</td>
-                                        <td>: @if(!blank($shop->updated_at)){{ $shop->updated_at->diffForHumans() }}@endif</td>
+                                            <td><i class="fa fa-history"></i>  Last update</td>
+                                            <td>:</td>
+                                            <td> @if(!blank($shop->updated_at)){{ $shop->updated_at->diffForHumans() }}@endif</td>
                                         </tr>
                                         <tr>
-                                        <td><i class="fa fa-sort-numeric-down"></i>  Total products</td>
-                                        <td>: {{ $shop->prices->count() }}</td>
+                                            <td><i class="fa fa-sort-numeric-down"></i>  Total products</td>
+                                            <td>:</td>
+                                            <td> {{ $shop->prices->count() }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -64,7 +68,11 @@
                             @if(auth()->id() === $shop->user_id)
                             <div class="card-footer text-right">
                                 <a href="{{ route('home.shops.edit', $shop->id) }}" class="btn btn-secondary">Edit shop</a>
-                                <button class="btn btn-danger">Delete Shop</button>
+                                <button class="btn btn-danger" onclick="document.getElementById('delete').submit();">Delete Shop</button>
+                                <form id="delete" action="{{ route('home.shops.destroy',$shop->id) }}" method="post">
+                                @csrf
+                                @method('DELETE')
+                                </form>
                             </div>
                             @endif
                         </div>
@@ -74,29 +82,12 @@
         </div>
 
         <div class="card mt-3">
-            <div class="card-header">Shop Descriptions</div>
-            <div class="card-body">
-                {!! $shop->description !!}
-            </div>
-        </div>
-
-        <div class="card mt-3">
             <div class="card-header">
                 Shop products
-                @if(!blank($shop->prices) && auth()->id() === $shop->user_id)
-                    <a href="/" class="btn btn-success btn-sm float-right">
-                        <i class="fa fa-plus"></i> Add new product
-                    </a>
-                @endif
             </div>
             <div class="card-body">
                 @if(blank($shop->prices))
                     There is no product is added to this shop. <br><br>
-                    @if(auth()->id() === $shop->user_id)
-                        <a href="/" class="btn btn-success btn-sm">
-                            <i class="fa fa-plus"></i> Add product now
-                        </a>
-                    @endif
                 @else 
                     <table class="table table-responsive-sm table-hover table-outline mb-0">
                         <thead class="thead-light">

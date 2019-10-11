@@ -44,7 +44,7 @@
                                                         <label for="imageUpload"></label>
                                                     </div>
                                                     <div class="avatar-preview">
-                                                        <div id="imagePreview" style="background-image: url('@if($user->image){{ $user->image->url }}@else https://via.placeholder.com/300x300.png?text=Image @endif');">
+                                                        <div id="imagePreview" style="background-image: url('@if($user->image){{ $user->image->url }}@else {{ asset('img/avatars/none.png') }} @endif');">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -54,22 +54,31 @@
                                                 <div class="form-group">
                                                     <div class="input-group">
                                                         <div class="input-group-prepend"><span class="input-group-text">Name</span></div>
-                                                        <input class="form-control" id="name" type="text" name="name" placeholder="Full Name" required value="@if(old('name')){{old('name')}}@else{{ $user->name }}@endif">
+                                                        <input class="form-control" id="name" type="text" name="name" placeholder="Full Name" required value="{{old('name', $user->name)}}">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend"><span class="input-group-text">Location</span></div>
+                                                        <input class="form-control" id="location" type="text" name="location" placeholder="#Street" required value="{{ old("location", $user->location) }}">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend"><span class="input-group-text">Phone</span></div>
+                                                        <input class="form-control" id="phone" type="text" name="phone" placeholder="01xxxxxxxxx" required value="{{ old("phone",$user->phone) }}">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <div class="input-group">
                                                         <div class="input-group-prepend"><span class="input-group-text">Email</span></div>
-                                                        <input class="form-control" id="email" type="email" name="email" placeholder="email@example.com" required value="@if(old('email')){{old('email')}}@else{{ $user->email }}@endif">
+                                                        <input class="form-control" id="email" type="email" name="email" placeholder="email@example.com" required value="{{ old('email',$user->email) }}">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend"><span class="input-group-text">User Role</span></div>
-                                                        <select class="form-control" name="role_id" id="role">
-                                                            <option value="1">role</option>
-                                                        </select>
-                                                    </div>
+                                                    @foreach($roles as $role)
+                                                        <label class="checkbox-inline"><input type="checkbox" name="roles[]" value="{{ $role->id }}" @if($user->hasRole($role->name)) checked @endif>{{ $role->name }}</label>
+                                                    @endforeach
                                                 </div>
                                                 <div class="form-group form-actions">
                                                     <button class="btn btn-sm btn-primary float-right" type="submit">Submit</button>

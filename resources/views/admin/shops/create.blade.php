@@ -53,23 +53,17 @@
                                                 <div class="form-group">
                                                     <div class="input-group">
                                                         <div class="input-group-prepend"><span class="input-group-text">Name</span></div>
-                                                        <input class="form-control" id="name" type="text" name="name" placeholder="Shop Name" required value="{{ old("name") }}">
+                                                        <input class="form-control" id="name" type="text" name="shop_name" placeholder="Shop Name" required value="{{ old('shop_name') }}">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <div class="input-group">
-                                                        <div class="input-group-prepend"><span class="input-group-text">Location</span></div>
-                                                        <input class="form-control" id="location" type="text" name="location" placeholder="#street 124, #Road 5" required value="{{ old("location") }}">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend"><span class="input-group-text">Description</span></div>
-                                                        <textarea class="form-control" id="textarea-input" name="description" rows="9" placeholder="Content.." required>{{ old("description") }}</textarea>
+                                                        <div class="input-group-prepend"><span class="input-group-text">Website</span></div>
+                                                        <input class="form-control" id="url" type="text" name="shop_url" placeholder="url" required value="{{ old('shop_url') }}">
                                                     </div>
                                                 </div>
                                                 <div class="form-group form-actions">
-                                                    <button class="btn btn-sm btn-primary float-right" type="submit">Submit</button>
+                                                    <button class="btn btn-primary float-right" type="submit">Submit</button>
                                                 </div>
                                             </div>
                                         </div>

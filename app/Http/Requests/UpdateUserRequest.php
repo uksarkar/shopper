@@ -26,8 +26,11 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'size:11'],
+            'location' => ['required', 'string'],
             'email' => Rule::unique('users')->ignore($this->route()->user->id),
-            'role_id' => ['required','integer'],
+            'roles' => ['required','array'],
+            'roles.*' => ['integer'],
             'image' => ['sometimes','image','mimes:jpg,jpeg,png,gif,svg','max:2048']
         ];
     }

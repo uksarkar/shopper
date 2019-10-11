@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Product;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -33,8 +34,12 @@ class AccountController extends Controller
      */
     public function products()
     {
-        $prices = auth()->user()->prices()->with(["product","shop"])->paginate(25);
-        return view('users.products', compact("prices"));
+        $user_id = auth()->id();
+        $products = Product::whereHas('prices', function($q) use($user_id){
+            $q->where('user_id', $user_id);
+        })->with('prices','prices.shop')->paginate(25);
+        
+        return view('users.products', compact("products"));
     }
 
     /**

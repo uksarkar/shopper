@@ -13,7 +13,7 @@ class CreateUserRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->check();
+        return auth()->user()->hasRole('admin');
     }
 
     /**
@@ -26,9 +26,24 @@ class CreateUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'location' => ['required', 'string'],
+            'phone' => ['required', 'string', 'size:11'],
             'password' => ['required', 'string', 'min:8'],
-            'role_id' => ['required','integer'],
+            'roles' => ['required','array'],
+            'roles.*' => ['integer'],
             'image' => ['sometimes','image','mimes:jpg,jpeg,png,gif,svg','max:2048']
+        ];
+    }
+    
+    /**
+     * Get the validation messages that apply to the request.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'roles.required'=> 'Please select a role for the user.'
         ];
     }
 }

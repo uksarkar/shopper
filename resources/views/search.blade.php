@@ -80,7 +80,11 @@
                 <figcaption class="info-wrap">
                     <a href="{{ $product->slug() }}" class="title">{{ $product->name }}</a>
                     <div class="price-wrap">
-                        Starting at <span class="text-success">{{ $product->monySign() }}{{ $product->lowestPrice()['price'] }}</span> in {{ $product->lowestPrice()['count'] }} shops.
+                        @if($product->lowestPrice()['price'])
+                            Starting at <span class="text-success">{{ $product->monySign() }}{{ $product->lowestPrice()['price'] }}</span> in {{ $product->lowestPrice()['count'] }} shops.
+                        @else
+                            Expecting {{ $product->monySign(). $product->expected_price }}
+                        @endif
                     </div> <!-- price-wrap.// -->
                 </figcaption>
             </figure> <!-- card // -->
@@ -119,12 +123,6 @@
                                     <div class="input-group">
                                         <div class="input-group-prepend"><span class="input-group-text">Price</span></div>
                                         <input class="form-control" id="amounts" type="number" name="amounts" placeholder="00.000" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend"><span class="input-group-text">Description</span></div>
-                                        <textarea class="form-control" id="textarea-input" name="description" rows="9" placeholder="Content.."></textarea>
                                     </div>
                                 </div>
                             </form>

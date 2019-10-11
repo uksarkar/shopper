@@ -25,8 +25,7 @@ class CreateShopRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:60',
-            'location' => 'required|string|max:60',
-            'description' => 'sometimes|string|max:300',
+            'url' => 'required|string',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];
     }

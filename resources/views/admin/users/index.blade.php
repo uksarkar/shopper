@@ -34,7 +34,6 @@
                                         <tr>
                                             <th class="text-center"><i class="icon-people"></i></th>
                                             <th>User</th>
-                                            <th class="text-center">Country</th>
                                             <th>Usage</th>
                                             <th class="text-center">Shops</th>
                                             <th>Activity</th>
@@ -44,20 +43,23 @@
                                         @foreach($users as $user)
                                             <tr>
                                                 <td class="text-center">
-                                                    <div class="avatar"><img class="img-avatar" src="@if($user->image){{ $user->image->url }}@else https://via.placeholder.com/100x100.png?text=No+Image @endif">@if($user->isOnline())<span class="avatar-status badge-success"></span>@else <span class="avatar-status badge-secondary"></span>@endif</div>
+                                                    <div class="avatar"><img class="img-avatar" src="@if($user->image){{ $user->image->url }}@else {{ asset('img/avatars/none.png') }} @endif">@if($user->isOnline())<span class="avatar-status badge-success"></span>@else <span class="avatar-status badge-secondary"></span>@endif</div>
                                                 </td>
                                                 <td>
                                                     <div>{{ $user->name }}</div>
-                                                    <div class="small text-muted"><span></span> | Registered: {{ $user->created_at->format('M d Y') }}</div>
+                                                    <div class="small text-muted">Registered: {{ $user->created_at->format('M d Y') }}</div>
                                                 </td>
-                                                <td class="text-center"><i class="flag-icon flag-icon-bd h4 mb-0" id="us" title="bd"></i></td>
                                                 <td>
                                                     <a href="{{ route("users.show", $user->id) }}" class="btn btn-primary">View Profile</a>
                                                     <a href="{{ route("users.edit", $user->id) }}" class="btn btn-secondary">Edit Profile</a>
                                                 </td>
-                                                <td class="text-center"><span class="badge badge-pill badge-light">@if(count($user->shops) > 0){{ count($user->shops) }}@endif</span></td>
+                                                <td class="text-center">@if(count($user->shops) > 0)<span class="badge badge-pill badge-info">{{ count($user->shops) }}</span>@else <span class="badge badge-pill badge-light">0</span>@endif</td>
                                                 <td>
-                                                    <div class="small text-muted">Last Active</div><strong>@if($user->lastActive() && !$user->isOnline()){{ $user->lastActive()->diffForHumans() }}@elseif($user->isOnline())Online Now @else Not Available @endif</strong>
+                                                    @if($user->hasRole('banned'))
+                                                        <strong class="text-danger">Banned!</strong>
+                                                    @else
+                                                        <div class="small text-muted">Last Active</div><strong>@if($user->lastActive() && !$user->isOnline()){{ $user->lastActive()->diffForHumans() }}@elseif($user->isOnline())<span class="text-success">Online Now </span>@else Not Available @endif</strong>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             @endforeach

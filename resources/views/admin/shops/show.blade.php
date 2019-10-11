@@ -62,7 +62,7 @@
                             <div class="card">
                                 <div class="card-header"><i class="fa fa-view"></i>Available Products</div>
                                 <div class="card-body">
-                                    @if(!blank($shop->products))
+                                    @if(!blank($shop->prices))
                                         <table class="table table-responsive-sm table-hover table-outline mb-0">
                                             <thead class="thead-light">
                                             <tr>
@@ -87,8 +87,8 @@
                                                         <p class="bg-light p-1 rounded">{{ $price->amounts }}</p>
                                                     </td>
                                                     <td>
-                                                        @if(!blank($price->description))
-                                                            {{  Str::limit($price->description, 70, ' (...)') }}
+                                                        @if(!blank($price->product->description))
+                                                            {{  Str::limit($price->product->description, 70, ' (...)') }}
                                                             @else
                                                             <p>
                                                                 No descriptions are available!
@@ -117,14 +117,6 @@
                                                             <input data-info="{{ 'e'.$price->id }}" type="text" value="{{ $price->amounts }}" class="form-control">
                                                         </td>
                                                         <td>
-                                                            @if(!blank($price->description))
-                                                                <textarea data-info="{{ 'e'.$price->id }}" id="" cols="30" rows="2"
-                                                                          class="form-control">{{ $price->description }}</textarea>
-                                                            @else
-                                                                <textarea name="description" id="" cols="30" rows="10"
-                                                                          class="form-control">
-                                                                </textarea>
-                                                            @endif
                                                         </td>
                                                         <td>
                                                             <button type="button" data-info="{{ 'e'.$price->id }}" class="btn btn-outline-success btn-sm sButton">Update</button>

@@ -40,6 +40,10 @@
                                     <div class="row">
                                         <div class="col-sm-3">
                                             <img src="@if($product->image){{ $product->image->url }}@else https://via.placeholder.com/300x300.png?text=No+Image @endif" alt="Image" width="300" class="img img-thumbnail">
+                                            <hr>
+                                            <p class="bg-light p-1 rounded">
+                                                Expected price: {{ $product->expected_price }}
+                                            </p>
                                         </div>
                                         <div class="col-sm-9">
                                             <h4 class="card-title">{{ $product->name }}</h4>
@@ -48,8 +52,7 @@
                                             </div>
                                             <div class="card-accent-dark">
                                                 <a href="{{ route("products.edit", $product->id) }}" class="btn btn-primary">Edit</a>
-                                                <button class="btn btn-danger subbtn">Delete</button>
-                                                {{-- <button data-sub="d{{ $product->id }}" class="btn btn-success" type="button" data-toggle="modal" data-target="#successModal"><i class="icon icon-plus"></i></button> --}}
+                                                <button class="btn btn-danger subbtn" data-sub="d{{ $product->id }}">Delete</button>
                                             </div>
                                             <form data-sub="d{{ $product->id }}" class="formsub" method="POST" action="{{ route("products.destroy", $product->id) }}">@csrf @method("DELETE")</form>
                                         </div>
@@ -89,7 +92,7 @@
                                                     <p class="bg-light p-1 rounded">{{ $price->amounts }}</p>
                                                 </td>
                                                 <td>
-                                                    {{  $price->shop->location }}
+                                                    {{  $price->shop->url }}
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -110,47 +113,7 @@
             </div>
         </main>
     </div>
-    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-success modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Add this product to any shop.</h4>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-          </div>
-          <div class="modal-body">
-            <form method="POST" id="SubForm" action="{{ route('price.store') }}">
-                @csrf
-                <input type="hidden" name="product" value="{{ $product->id }}">
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend"><span class="input-group-text">Shop id</span></div>
-                        <input type="text" class="form-control" name="shop">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend"><span class="input-group-text">Price</span></div>
-                        <input class="form-control" id="amounts" type="number" name="amounts" placeholder="00.000" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend"><span class="input-group-text">Description</span></div>
-                        <textarea class="form-control" id="textarea-input" name="description" rows="9" placeholder="Content.."></textarea>
-                    </div>
-                </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-            <button id="productSub" class="btn btn-success" type="button">Save changes</button>
-          </div>
-        </div>
-        <!-- /.modal-content-->
-      </div>
-      <!-- /.modal-dialog-->
-    </div>
-    <!-- /.modal-->
+
     <footer class="app-footer">
         <div><a href="https://github.com/utpalongit">Utpal Sarkar</a><span>&copy; 2019.</span></div>
         <div class="ml-auto"><span>Powered by</span> Utpal Sarkar</div>

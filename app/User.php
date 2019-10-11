@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name','location','phone', 'email', 'password',
+        'name', 'location', 'phone', 'email', 'password',
     ];
 
     /**
@@ -39,60 +39,68 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    
+
     /**
      * Making relationship with one image
      * 
      * @return Collection
      */
-    public function image(){
+    public function image()
+    {
         return $this->morphOne('App\Image', 'imageable');
     }
 
-    
+
     /**
      * Making relationship with many products
+     * it will return the admin details who is added product to database
      * 
      * @return Collection
      */
-    public function products(){
+    public function adminProducts()
+    {
         return $this->hasMany("App\Product");
     }
 
-    
+
     /**
      * Making relationship with many shops
+     * will return the end user shops
      * 
      * @return Collection
      */
-    public function shops(){
+    public function shops()
+    {
         return $this->hasMany("App\Shop");
     }
 
-    
+
     /**
      * Making relationship with many prices
+     * will return the end user all prices
      * 
      * @return Collection
      */
-    public function prices(){
-        return $this->hasManyThrough(Price::class,Shop::class);
+    public function prices()
+    {
+        return $this->hasMany(Price::class);
     }
 
-    
+
     /**
      * Making relationship with many memberships
      * 
      * @return Collection
      */
-    public function memberships(){
+    public function memberships()
+    {
         return $this->belongsToMany(Membership::class)
-                                    ->as('request')
-                                    ->withPivot('status')
-                                    ->withTimestamps();
+            ->as('request')
+            ->withPivot('status')
+            ->withTimestamps();
     }
 
-    
+
     /**
      * Make sure that if user is online now, (5min)
      * 
@@ -103,7 +111,7 @@ class User extends Authenticatable
         return Cache::has('user-is-online-' . $this->id);
     }
 
-    
+
     /**
      * Get the users last active time
      * 
@@ -113,10 +121,10 @@ class User extends Authenticatable
      */
     public function lastActive()
     {
-        return Cache::has('user-active-time-' . $this->id) ? Cache::get('user-active-time-' . $this->id):false;
+        return Cache::has('user-active-time-' . $this->id) ? Cache::get('user-active-time-' . $this->id) : false;
     }
-    
-    
+
+
     /**
      * only for development
      * 
@@ -124,14 +132,15 @@ class User extends Authenticatable
      * 
      * @return bool
      */
-    public function hasShops($product){
-        $shops = $this->shops()->whereDoesntHave('prices', function ($query) use($product) {
-            $query->where('product_id','=', $product->id);
+    public function hasShops($product)
+    {
+        $shops = $this->shops()->whereDoesntHave('prices', function ($query) use ($product) {
+            $query->where('product_id', '=', $product->id);
         })->get();
         return $shops;
     }
 
-    
+
     /**
      * only for development
      * 
@@ -139,8 +148,9 @@ class User extends Authenticatable
      * 
      * @return bool
      */
-    public function availableShops($id){
-        $shops = $this->shops()->whereDoesntHave('prices', function ($query) use($id) {
+    public function availableShops($id)
+    {
+        $shops = $this->shops()->whereDoesntHave('prices', function ($query) use ($id) {
             $query->where('product_id', $id);
         })->get();
         return $shops;
@@ -148,7 +158,7 @@ class User extends Authenticatable
 
 
 
-    
+
     /**
      * End of the model
      * Shopper is developed by 

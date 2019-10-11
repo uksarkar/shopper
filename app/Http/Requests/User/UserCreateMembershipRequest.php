@@ -13,11 +13,7 @@ class UserCreateMembershipRequest extends FormRequest
      */
     public function authorize()
     {
-        if(auth()->check())
-        {
-            return true;
-        }
-        return false;
+        return auth()->check();
     }
 
     /**

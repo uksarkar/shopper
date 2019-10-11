@@ -19,9 +19,9 @@
             </ol>
             <div class="container-fluid">
                 <div class="animated fadeIn">
-                    @if(count($errors) > 0)
-                        @foreach($errors as $error)
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Success!</strong> {{ $error }}
+                    @if(count($errors->all()) > 0)
+                        @foreach($errors->all() as $error)
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Caution!</strong> {{ $error }}
                                 <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                             </div>
                     @endforeach
@@ -43,7 +43,7 @@
                                                         <label for="imageUpload"></label>
                                                     </div>
                                                     <div class="avatar-preview">
-                                                        <div id="imagePreview" style="background-image: url(https://via.placeholder.com/300x300.png?text=Image);">
+                                                        <div id="imagePreview" style="background-image: url({{ asset('img/avatars/none.png') }});">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -54,6 +54,18 @@
                                                     <div class="input-group">
                                                         <div class="input-group-prepend"><span class="input-group-text">Name</span></div>
                                                         <input class="form-control" id="name" type="text" name="name" placeholder="Full Name" required value="{{ old("name") }}">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend"><span class="input-group-text">Location</span></div>
+                                                        <input class="form-control" id="location" type="text" name="location" placeholder="#Street" required value="{{ old("location") }}">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend"><span class="input-group-text">Phone</span></div>
+                                                        <input class="form-control" id="phone" type="text" name="phone" placeholder="01xxxxxxxxx" required value="{{ old("phone") }}">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -69,14 +81,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend"><span class="input-group-text">User Role</span></div>
-                                                        <select class="form-control" name="role_id" id="role">
-                                                            {{-- @foreach($roles as $role)
-                                                                <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                                            @endforeach --}}
-                                                        </select>
-                                                    </div>
+                                                    @foreach($roles as $role)
+                                                        <label class="checkbox-inline"><input type="checkbox" name="roles[]" value="{{ $role->id }}">{{ $role->name }}</label>
+                                                    @endforeach
                                                 </div>
                                                 <div class="form-group form-actions">
                                                     <button class="btn btn-sm btn-primary float-right" type="submit">Submit</button>

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use Spatie\Permission\Models\Role;
 
 class UsersController extends Controller
 {
@@ -31,7 +32,8 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view("admin.users.create");
+        $roles = Role::all();
+        return view("admin.users.create",['roles'=>$roles]);
     }
 
     /**
@@ -42,7 +44,7 @@ class UsersController extends Controller
      */
     public function store(CreateUserRequest $request, User $user)
     {
-        $data = $request->all();
+        $data = $request->validated();
         $data['password'] = bcrypt($request->password);
         $User = $user->create($data);
         if($request->hasFile('image'))
@@ -52,7 +54,9 @@ class UsersController extends Controller
             $request->image->move(public_path('images'), $imageName);
             $User->image()->create(["url"=>$imageName]);
         }
-        $User->roles()->attach($request->role_id);
+
+        // assign all selected roles for the user
+        $User->assignRole($request->input('roles'));
 
         return redirect()->route('users.index')->with('successMassage', 'User has been successfully added.');
     }
@@ -105,11 +109,9 @@ class UsersController extends Controller
             }
             $request->image->move(public_path("images"), $imageName);
         }
-        if ($role = Role::findOrFail($request->role_id)) {
-            $user->roles()->detach();
-            $user->roles()->attach($request->role_id);
-            $user->save();
-        }
+        
+        // assign all selected roles for the user
+        $user->syncRoles($request->input('roles'));
 
         return redirect()->route("users.show", $user->id);
     }

@@ -24,8 +24,7 @@
                         <form action="{{ route('home.shops.store') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <input class="form-control" type="text" name="shop_name" placeholder="Shop name" required> <br>
-                            <input class="form-control" type="text" name="shop_location" placeholder="Shop location" required> <br>
-                            <textarea class="form-control" name="shop_description" id="" cols="30" placeholder="Shop description" rows="10" required></textarea> <br>
+                            <input class="form-control" type="text" name="shop_url" placeholder="http://www.url.com" required> <br>
                             
                             <input class="form-control" type="file" name="shop_image" accept=".png, .jpg, .jpeg" required> <br>
 

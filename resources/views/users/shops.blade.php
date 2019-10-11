@@ -38,10 +38,9 @@
                                     <article class="col-sm-6">
                                             <h4 class="title"> {{ $shop->name }}  </h4>
                                             <br>
-                                            <p> {{ Str::limit($shop->description, 150, ' (...)') }} </p>
                                             <dl class="dlist-align">
-                                              <dt>Location</dt>
-                                              <dd>{{ $shop->location }}</dd>
+                                              <dt>URL: </dt>
+                                              <dd>{{ $shop->url }}</dd>
                                             </dl>  <!-- item-property-hor .// -->
                                             <dl class="dlist-align">
                                               <dt>Products</dt>
@@ -51,8 +50,6 @@
                                     </article> <!-- col.// -->
                                     <aside class="col-sm-3 border-left">
                                         <div class="action-wrap">
-                                            <p class="text-success">Free shipping</p>
-                                            <br>
                                             <p>
                                                 <a href="{{ route('home.shops.edit', $shop->id) }}" class="btn btn-primary"> Edit </a>
                                                 <a href="{{ route('home.shops.show',$shop->id) }}" class="btn btn-secondary"> Details  </a>

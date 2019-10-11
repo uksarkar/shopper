@@ -11,14 +11,33 @@ class Shop extends Model
      * 
      * @var array
      */
-    protected $fillable = ["name","description","user_id","location"];
+    protected $fillable = ["name","user_id","url"];
 
+    
+    /**
+     * Making relationship with user
+     * will return the owner of the shop
+     * 
+     * @return Collection
+     */
     public function user(){
         return $this->belongsTo("App\User");
     }
+    
+    /**
+     * Making relationship with many prices
+     * 
+     * @return Collection
+     */
     public function prices(){
         return $this->hasMany("App\Price");
     }
+    
+    /**
+     * Making relationship with images
+     * 
+     * @return Collection
+     */
     public function image(){
         return $this->morphOne('App\Image', 'imageable');
     }
@@ -58,7 +77,7 @@ class Shop extends Model
 
     /**
      * Check if the user is not the owner of the shop or not any admin
-     * then return true
+     * then return true or false
      * 
      * @return bool
      */

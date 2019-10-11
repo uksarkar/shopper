@@ -17,7 +17,7 @@ class CreatePricesTable extends Migration
             $table->bigIncrements('id');
             $table->integer('shop_id')->index()->unsigned();
             $table->integer('product_id')->index()->unsigned();
-            $table->integer('old')->nullable();
+            $table->integer('user_id')->index()->unsigned();
             $table->integer('amounts');
             $table->timestamps();
         });

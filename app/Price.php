@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
 
 class Price extends Model
 {
-    protected $fillable = ['shop_id','product_id','user_id','amounts','description'];
+    protected $fillable = ['shop_id','product_id','user_id','amounts'];
 
     public function product(){
         return $this->belongsTo("App\Product");
@@ -32,6 +32,7 @@ class Price extends Model
      * Url: https://github.com/uksarkar
      */
     public function cachePrice($delete = false) {
+        // dd($this->product_id);
         
         if($delete){return Cache::put('product_'.$this->product_id, 1, -5);}
 

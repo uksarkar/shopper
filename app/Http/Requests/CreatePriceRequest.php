@@ -27,7 +27,6 @@ class CreatePriceRequest extends FormRequest
             'shop'=>'required|integer',
             'product'=>'required|integer',
             'amounts'=>'required|integer',
-            'description'=>'sometimes|max:300'
         ];
     }
 }

@@ -62,7 +62,8 @@ class ProductsController extends Controller
                     $price->create([
                         'amounts'=>$data['amounts'],
                         'product_id'=>$product->id,
-                        'shop_id'=>$shop->id
+                        'shop_id'=>$shop->id,
+                        'user_id'=>auth()->id()
                     ]);
                 }
 
@@ -74,6 +75,8 @@ class ProductsController extends Controller
                 return back()->with('successMassage', 'This product is added to your all shops!');
             }
 
+            //save the product to one shop__________________________________
+
             //find if the request shop is valid or get fail
             $shop = $shop->findOrFail($data['shop']); 
 
@@ -83,6 +86,7 @@ class ProductsController extends Controller
             $price->amounts = $data['amounts'];
             $price->product_id = $product->id;
             $price->shop_id = $shop->id;
+            $price->user_id = auth()->id();
 
             $price->save();
 
@@ -92,8 +96,8 @@ class ProductsController extends Controller
             return back()->with('successMassage', 'Product was successfully added!');
 
         } catch (\Throwable $th) {
-            //throw $th;
-            return abort(403);
+            // throw $th;
+            // return abort(403);
         }
     }
 
@@ -166,8 +170,26 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Price $price)
     {
-        //
+        try {
+
+            //Take the product of this price for cache updating
+            $product_id = $price->product_id;
+
+            //Let's delete the price
+            $price->delete();
+
+            //Update cache now 
+            $price->cacheLeftShop($product_id);
+            $price->product_id = $product_id;
+            $price->cachePrice();
+
+            //Let's send the response to the user
+            return back()->with("successMassage","Product was successfully deleted.");
+        } catch (\Throwable $th) {
+            // throw $th;
+            return abort(501);
+        }
     }
 }
