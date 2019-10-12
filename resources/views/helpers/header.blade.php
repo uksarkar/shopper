@@ -112,6 +112,18 @@
                                     </a>
                                 </div>
                             @endguest
+                            
+                            <a href="#" data-toggle="dropdown" data-offset="20,10">
+                                <div class="icontext">
+                                    <div class="icon-wrap">&nbsp;         &nbsp;</div>
+                                        <div class="text-wrap text-dark">
+                                            &nbsp;&nbsp;
+                                            &nbsp;&nbsp;
+                                            &nbsp;&nbsp;
+                                            &nbsp;&nbsp;
+                                        </div>
+                                </div>
+                            </a>
                         </div> <!-- col.// -->
                     </div> <!-- widgets-wrap.// row.// -->
                 </div> <!-- col.// -->
