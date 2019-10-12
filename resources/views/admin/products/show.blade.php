@@ -1,5 +1,9 @@
 @extends('admin.layouts.app')
 
+@section('title')
+    View {{ $product->name }}
+@endsection
+
 @section('content')
     <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
     @include("admin.layouts.header")
@@ -12,10 +16,7 @@
                 <li class="breadcrumb-item active">Admin</li>
                 <li class="breadcrumb-item"><a href="{{ route("products.index") }}">All Products</a></li>
                 <li class="breadcrumb-item active">View Product</li>
-                <!-- Breadcrumb Menu-->
-                <li class="breadcrumb-menu d-md-down-none">
-                    <div class="btn-group" role="group" aria-label="Button group"><a class="btn" href="/"><i class="icon-graph"></i>  Dashboard</a></div>
-                </li>
+                @include('admin.layouts.breadcrumbMenu')
             </ol>
             <div class="container-fluid">
                 <div class="animated fadeIn">
@@ -30,7 +31,7 @@
                         <div class="alert alert-success">
                             {{ session()->get('successMassage') }}
                         </div>
-                        @endif
+                    @endif
                 <!-- /.row-->
                     <div class="row">
                         <div class="col-lg-12">
@@ -86,7 +87,13 @@
                                                 </td>
                                                 <td>
                                                     <a href="{{ route('shops.show', $price->shop->id ) }}">{{ $price->shop->name }}</a>
-                                                    <div class="small text-muted">By: {{ $price->shop->user->name }}</div>
+                                                    <div class="small text-muted">
+                                                        @if($price->shop->user)
+                                                            By: {{ $price->shop->user->name }}
+                                                        @else
+                                                            The user was deleted.
+                                                        @endif
+                                                    </div>
                                                 </td>
                                                 <td>
                                                     <p class="bg-light p-1 rounded">{{ $price->amounts }}</p>
@@ -99,7 +106,7 @@
                                         </tbody>
                                     </table>
                                         @else
-                                        <div class="bg-cyan p-1 rounded">
+                                        <div class="bg-secondary p-2 rounded">
                                             This product is not available at any shop yet.
                                         </div>
                                     @endif

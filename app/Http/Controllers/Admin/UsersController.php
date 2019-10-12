@@ -33,7 +33,7 @@ class UsersController extends Controller
     public function create()
     {
         $roles = Role::all();
-        return view("admin.users.create",['roles'=>$roles]);
+        return view("admin.users.create", ['roles' => $roles]);
     }
 
     /**
@@ -47,12 +47,11 @@ class UsersController extends Controller
         $data = $request->validated();
         $data['password'] = bcrypt($request->password);
         $User = $user->create($data);
-        if($request->hasFile('image'))
-        {
-            $imageName = time().'_'.$request->image->getClientOriginalName();
-            $imageName = preg_replace('/ /','-', $imageName);
+        if ($request->hasFile('image')) {
+            $imageName = time() . '_' . $request->image->getClientOriginalName();
+            $imageName = preg_replace('/ /', '-', $imageName);
             $request->image->move(public_path('images'), $imageName);
-            $User->image()->create(["url"=>$imageName]);
+            $User->image()->create(["url" => $imageName]);
         }
 
         // assign all selected roles for the user
@@ -69,8 +68,8 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
-        // $products = Product::all();
-        return view("admin.users.show", compact("user"));
+        $admins = Role::where('name', 'admin')->count();
+        return view("admin.users.show", compact("user", "admins"));
     }
 
     /**
@@ -82,7 +81,7 @@ class UsersController extends Controller
     public function edit(User $user)
     {
         $roles = Role::all();
-        return view("admin.users.edit", compact("user","roles"));
+        return view("admin.users.edit", compact("user", "roles"));
     }
 
     /**
@@ -95,21 +94,20 @@ class UsersController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $user->update($request->validated());
-        if($request->hasFile('image')){
-            $imageName = time().'_'.$request->file('image')->getClientOriginalName();
+        if ($request->hasFile('image')) {
+            $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
             $imageName = preg_replace("/ /", "-", $imageName);
-            if($user->image){
-                if(file_exists($oldImage = public_path().$user->image->url))
-                {
+            if ($user->image) {
+                if (file_exists($oldImage = public_path() . $user->image->url)) {
                     unlink($oldImage);
                 }
-                $user->image()->update(["url"=>$imageName]);
+                $user->image()->update(["url" => $imageName]);
             } else {
-                $user->image()->create(["url"=>$imageName]);
+                $user->image()->create(["url" => $imageName]);
             }
             $request->image->move(public_path("images"), $imageName);
         }
-        
+
         // assign all selected roles for the user
         $user->syncRoles($request->input('roles'));
 
@@ -119,11 +117,20 @@ class UsersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  User $user
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        if ($user->image) {
+            if (file_exists($oldImage = public_path() . $user->image->url)) {
+                unlink($oldImage);
+            }
+            $user->image()->delete();
+        }
+
+        $user->delete();
+
+        return redirect()->route('users.index')->with('successMassage', 'User was deleted.');
     }
 }

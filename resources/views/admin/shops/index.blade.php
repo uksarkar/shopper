@@ -1,5 +1,9 @@
 @extends('admin.layouts.app')
 
+@section('title')
+    All shops
+@endsection
+
 @section('content')
     <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
     @include("admin.layouts.header")
@@ -11,10 +15,7 @@
                 <li class="breadcrumb-item"><i class="icon-home"></i></li>
                 <li class="breadcrumb-item active">Admin</li>
                 <li class="breadcrumb-item active">All Shops</li>
-                <!-- Breadcrumb Menu-->
-                <li class="breadcrumb-menu d-md-down-none">
-                    <div class="btn-group" role="group" aria-label="Button group"><a class="btn" href="/"><i class="icon-graph"></i>  Dashboard</a></div>
-                </li>
+                @include('admin.layouts.breadcrumbMenu')
             </ol>
             <div class="container-fluid">
                 <div class="animated fadeIn">
@@ -36,7 +37,7 @@
                                             <th class="text-center"><i class="icon-picture"></i> Image</th>
                                             <th>Shop Name</th>
                                             <th>Actions</th>
-                                            <th>Descriptions</th>
+                                            <th>Website</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -56,7 +57,7 @@
                                                         <form data-sub="{{ 'f'.$shop->id }}" class="formsub" method="POST" action="{{ route("shops.destroy", $shop->id) }}">@csrf @method("DELETE")</form>
                                                     </td>
                                                     <td>
-                                                        {{  Str::limit($shop->description, 70, ' (...)') }}
+                                                        {{  $shop->url }}
                                                     </td>
                                                 </tr>
                                             @endforeach

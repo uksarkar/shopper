@@ -1,5 +1,9 @@
 @extends('admin.layouts.app')
 
+@section('title')
+    Login to admin panel
+@endsection
+
 @section("content")
     <body class="app flex-row align-items-center">
 

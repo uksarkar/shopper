@@ -1,5 +1,9 @@
 @extends('admin.layouts.app')
 
+@section('title')
+    Customize the home page
+@endsection
+
 @section('content')
     <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
     @include("admin.layouts.header")
@@ -12,10 +16,7 @@
                 <li class="breadcrumb-item active">Admin</li>
                 <li class="breadcrumb-item"><a href="{{ route('config') }}">Settings</a></li>
                 <li class="breadcrumb-item active">Home Customizer</li>
-                <!-- Breadcrumb Menu-->
-                <li class="breadcrumb-menu d-md-down-none">
-                    <div class="btn-group" role="group" aria-label="Button group"><a class="btn" href="/admin"><i class="icon-graph"></i>  Dashboard</a></div>
-                </li>
+                @include('admin.layouts.breadcrumbMenu')
             </ol>
             <div class="container-fluid">
                 <div class="animated fadeIn">

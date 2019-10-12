@@ -193,7 +193,7 @@
 
             // Fire off the request to /form.php
             request = $.ajax({
-                url: "/api/menu",
+                url: "/admin/config/menu",
                 type: "post",
                 contentType: "application/json; charset=utf-8",
                 data: sendData

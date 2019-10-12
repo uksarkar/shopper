@@ -13,10 +13,7 @@
                 <li class="breadcrumb-item"><a href="{{ route('products.index') }}">product</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('config.category') }}">Categories</a></li>
                 <li class="breadcrumb-item active">Edit Category</li>
-                <!-- Breadcrumb Menu-->
-                <li class="breadcrumb-menu d-md-down-none">
-                    <div class="btn-group" role="group" aria-label="Button group"><a class="btn" href="/admin"><i class="icon-graph"></i>  Dashboard</a></div>
-                </li>
+                @include('admin.layouts.breadcrumbMenu')
             </ol>
             <div class="container-fluid">
                 <div class="animated fadeIn">

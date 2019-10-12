@@ -113,17 +113,6 @@
                                 </div>
                             @endguest
                         </div> <!-- col.// -->
-                        <div class="col-auto">
-                            <a href="#" class="widget-header">
-                                <div class="icontext">
-                                    <div class="icon-wrap"><i class="text-warning icon-sm  fa fa-heart"></i></div>
-                                    <div class="text-wrap text-dark">
-                                        <span class="small round badge badge-secondary">0</span>
-                                        <div>Favorites</div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div> <!-- col.// -->
                     </div> <!-- widgets-wrap.// row.// -->
                 </div> <!-- col.// -->
             </div> <!-- row.// -->

@@ -39,13 +39,14 @@ class ConfigController extends Controller
     {
         
         Cache::putMany([
-            "mSign", $request->money,
             "site_name"=> $request->site_name,
             "site_logo"=> $request->url,
             "favicon"=> $request->favicon
         ]);
 
-        return back()->with('successMassage','Logo and Name is successfully updated.');
+        Cache::put("mSign", $request->money);
+
+        return back()->with('successMassage','Data was successfully updated.');
     }
 
     /**
@@ -186,6 +187,16 @@ class ConfigController extends Controller
         $content->products()->detach($request->product_id);
 
         return back()->with('successMassage', 'Products was removed!');
+      }
+
+      /**
+       * Saving menu to database
+       */
+      public function saveMenu(Request $request, Menu $menu){
+        $data_ = $request->all();
+        $menu->storeMenu($data_);
+        
+        return response('Success', 200);
       }
 
     

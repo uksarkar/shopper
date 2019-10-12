@@ -276,6 +276,11 @@
                 border-radius: 100%;
                 background-color: #19ac29;
             }
+            .delete-photo-btn{
+                position: relative;
+                top: -44px;
+                left: -2px;
+            }
         </style>
 </head>
 @yield('content')

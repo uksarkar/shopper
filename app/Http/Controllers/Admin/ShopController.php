@@ -43,13 +43,18 @@ class ShopController extends Controller
     public function store(CreateShopRequest $request, Shop $shop)
     {
         $getData = $request->validated();
-        $getData['user_id'] = auth()->user()->id;
-        $shop = $shop->create($getData);
-        if($request->hasFile('image')){
-            $imageName = time().'_'.$request->image->getClientOriginalName();
-            $imageName = preg_replace('/ /','-', $imageName);
+
+        $shop->user_id = auth()->id();
+        $shop->name = $getData['shop_name'];
+        $shop->url = $getData['shop_url'];
+        $shop->save();
+
+        if ($request->hasFile('image')) {
+            $imageName = time() . '_' . $request->image->getClientOriginalName();
+            $imageName = preg_replace('/[^a-zA-Z0-9]/', '-', $imageName);
+            $imageName = preg_replace('/-+/', '-', $imageName);
             $request->image->move(public_path('images'), $imageName);
-            $shop->image()->create(['url'=>$imageName]);
+            $shop->image()->create(['url' => $imageName]);
         }
 
         return redirect()->route('shops.index')->with('successMassage', 'Shop was successfully added.');
@@ -86,20 +91,25 @@ class ShopController extends Controller
      */
     public function update(CreateShopRequest $request, Shop $shop)
     {
-        $shop->update($request->validated());
+        $getData = $request->validated();
+
+        $shop->name = $getData['shop_name'];
+        $shop->url = $getData['shop_url'];
+        $shop->save();
+
         if ($request->hasFile('image')) {
-            $imageName = time().'_'.$request->file('image')->getClientOriginalName();
+            $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
             $getData = preg_replace('/ /', '-', $imageName);
 
             if (!empty($shop->image)) {
-                if (file_exists($oldImage = public_path().$shop->image->url)){
+                if (file_exists($oldImage = public_path() . $shop->image->url)) {
                     unlink($oldImage);
                 }
-                $shop->image()->update(['url'=>$getData]);
+                $shop->image()->update(['url' => $getData]);
             } else {
-                $shop->image()->create(['url'=>$getData]);
+                $shop->image()->create(['url' => $getData]);
             }
-            $request->image->move(public_path('images'),$getData);
+            $request->image->move(public_path('images'), $getData);
         }
         return redirect()->route('shops.index')->with('successMassage', 'The shop has been successfully updated.');
     }
@@ -114,21 +124,21 @@ class ShopController extends Controller
     public function destroy(Shop $shop)
     {
         //delete all of the prices first
-        if (!blank($shop->prices)){
-            foreach ($shop->prices as $price){
+        if (!blank($shop->prices)) {
+            foreach ($shop->prices as $price) {
                 //find the price
                 $thePrice = $shop->prices()->find($price->id);
 
                 //Let's delete the price
                 $thePrice->delete();
-                
+
                 //Update product's price
                 $thePrice->cachePrice();
             }
         }
 
         //Delete if there are any images
-        if (!empty($shop->image) && file_exists($imageName = public_path().$shop->image->url)) {
+        if (!empty($shop->image) && file_exists($imageName = public_path() . $shop->image->url)) {
             unlink($imageName);
             $shop->image()->delete();
         }
@@ -141,16 +151,15 @@ class ShopController extends Controller
 
         //Let's give the user create shop permission, if have any left
         $shops = $user->shops->count();
-        $shops_limit = $user->memberships()->wherePivot('status',1)->get()->sum('shop_limit');
+        $shops_limit = $user->memberships()->wherePivot('status', 1)->get()->sum('shop_limit');
 
         // If user reach the limit of shop creation then remove the permission
-        if($shops < $shops_limit)
-        {
+        if ($shops < $shops_limit) {
             $permission = Permission::findByName('create shop');
             $user->givePermissionTo($permission);
         }
 
         //return the response
-        return redirect()->route('shops.index')->with('successMassage','The shop has been successfully deleted.');
+        return redirect()->route('shops.index')->with('successMassage', 'The shop has been successfully deleted.');
     }
 }

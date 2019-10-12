@@ -1,5 +1,9 @@
 @extends('admin.layouts.app')
 
+@section('title')
+    Profile of {{ $user->name }}
+@endsection
+
 @section('content')
     <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
     @include("admin.layouts.header")
@@ -12,10 +16,7 @@
                 <li class="breadcrumb-item active">Admin</li>
                 <li class="breadcrumb-item"><a href="{{ route("users.index") }}">All Users</a></li>
                 <li class="breadcrumb-item active">User Profile</li>
-                <!-- Breadcrumb Menu-->
-                <li class="breadcrumb-menu d-md-down-none">
-                    <div class="btn-group" role="group" aria-label="Button group"><a class="btn" href="/"><i class="icon-graph"></i>  Dashboard</a></div>
-                </li>
+                @include('admin.layouts.breadcrumbMenu')
             </ol>
             <div class="container-fluid">
                 <div class="animated fadeIn">
@@ -34,12 +35,18 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-2">
-                                        <div class="img-thumbnail mt-n5 text-center"><img src="@if($user->image){{ $user->image->url }} @else {{ asset('/img/avatars/none.png') }} @endif" alt="{{ $user->name }}" height="140"></div>
+                                        <div class="img-thumbnail mt-n5 text-center"><img class="img rounded img-fluid" src="@if($user->image){{ $user->image->url }} @else {{ asset('/img/avatars/none.png') }} @endif" alt="{{ $user->name }}" height="140"></div>
                                         </div>
                                         <div class="col-sm-10">
                                             <div class="btn btn-secondary disabled">{{ $user->name }}</div>
                                         <a data-toggle="tooltip" data-placement="top" title="Edit User" href="{{ route("users.edit", $user->id)}}" class="btn btn-outline-primary"><i class="icon icon-pencil"></i></a>
-                                        <button type="button" data-toggle="tooltip" data-placement="top" title="Delete User" class="btn btn-outline-danger"><i class="icon icon-trash"></i></button>
+                                        @if($user->hasRole('admin') && $admins > 1 && auth()->id() != $user->id || !$user->hasRole('admin'))
+                                            <button type="button" onclick="event.preventDefault(); document.getElementById('user-delete').submit();" data-toggle="tooltip" data-placement="top" title="Delete User" class="btn btn-outline-danger"><i class="icon icon-trash"></i></button>
+                                            <form id="user-delete" action="{{ route('users.destroy', $user->id) }}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        @endif
                                         </div>
                                     </div>
                                     <div class="row">
@@ -85,9 +92,9 @@
                                         <thead class="thead-light">
                                         <tr>
                                             <th class="text-center"><i class="icon-picture"></i> Image</th>
-                                            <th>Product Name</th>
+                                            <th>Shop Name</th>
                                             <th>Actions</th>
-                                            <th>Descriptions</th>
+                                            <th>Website</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -107,7 +114,7 @@
                                                         <form class="formsub" method="POST" action="{{ route("shops.destroy", $shop->id) }}">@csrf @method("DELETE")</form>
                                                     </td>
                                                     <td>
-                                                        {{  Str::limit($shop->description, 80, ' (...)') }}
+                                                        {{  $shop->url }}
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -121,7 +128,7 @@
                         </div>
                     </div>
                 <!-- /.row -->
-                @if(count($user->products) > 0)
+                @if(count($user->adminProducts) > 0)
                 <!-- .row -->
                     <div class="row">
                         <div class="col-sm-12">
@@ -138,7 +145,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($user->products as $product)
+                                            @foreach($user->adminProducts as $product)
                                                 <tr>
                                                     <td class="text-center">
                                                         <div class="thumbnail"><img class="img img-thumbnail" src="@if($product->image) {{ $product->image->url }} @else https://via.placeholder.com/100x100.png?text=No+Image @endif" width="100" alt="image"></div>

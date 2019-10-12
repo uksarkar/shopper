@@ -70,9 +70,8 @@
 
                 // Fire off the request to /form.php
                 request = $.ajax({
-                    url: "/getshop",
+                    url: "/account/getShops",
                     type: "get",
-                    // contentType: "application/json; charset=utf-8",
                     data: {product_id}
                 });
 

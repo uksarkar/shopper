@@ -1,5 +1,9 @@
 @extends('admin.layouts.app')
 
+@section('title')
+    Create new user
+@endsection
+
 @section('content')
     <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
     @include("admin.layouts.header")
@@ -12,10 +16,7 @@
                 <li class="breadcrumb-item active">Admin</li>
                 <li class="breadcrumb-item"><a href="{{ route("users.index") }}">All Users</a></li>
                 <li class="breadcrumb-item active">Add User</li>
-                <!-- Breadcrumb Menu-->
-                <li class="breadcrumb-menu d-md-down-none">
-                    <div class="btn-group" role="group" aria-label="Button group"><a class="btn" href="/"><i class="icon-graph"></i>  Dashboard</a></div>
-                </li>
+                @include('admin.layouts.breadcrumbMenu')
             </ol>
             <div class="container-fluid">
                 <div class="animated fadeIn">
@@ -80,10 +81,13 @@
                                                         <input class="form-control" id="password" type="password" name="password" placeholder="Password" required />
                                                     </div>
                                                 </div>
-                                                <div class="form-group">
-                                                    @foreach($roles as $role)
-                                                        <label class="checkbox-inline"><input type="checkbox" name="roles[]" value="{{ $role->id }}">{{ $role->name }}</label>
-                                                    @endforeach
+                                                <div class="form-group form-inline bg-secondary p-3 rounded">
+                                                        @foreach($roles as $role)
+                                                        <div class="custom-control custom-checkbox custom-control-inline">
+                                                            <input id="in{{ $role->id }}" type="checkbox" name="roles[]" value="{{ $role->id }}" class="custom-control-input">
+                                                            <label class="custom-control-label" for="in{{ $role->id }}">{{ $role->name }}</label>
+                                                        </div>
+                                                        @endforeach
                                                 </div>
                                                 <div class="form-group form-actions">
                                                     <button class="btn btn-sm btn-primary float-right" type="submit">Submit</button>

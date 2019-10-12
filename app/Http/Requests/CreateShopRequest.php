@@ -24,8 +24,8 @@ class CreateShopRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:60',
-            'url' => 'required|string',
+            'shop_name' => 'required|string|max:60',
+            'shop_url' => 'required|string',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];
     }

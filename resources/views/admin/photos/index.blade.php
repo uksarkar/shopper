@@ -1,5 +1,9 @@
 @extends('admin.layouts.app')
 
+@section('title')
+    All uploaded photos
+@endsection
+
 @section('content')
     <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
     @include("admin.layouts.header")
@@ -11,10 +15,7 @@
                 <li class="breadcrumb-item"><i class="icon-home"></i></li>
                 <li class="breadcrumb-item active">Admin</li>
                 <li class="breadcrumb-item active">All Photos</li>
-                <!-- Breadcrumb Menu-->
-                <li class="breadcrumb-menu d-md-down-none">
-                    <div class="btn-group" role="group" aria-label="Button group"><a class="btn" href="/"><i class="icon-graph"></i>  Dashboard</a></div>
-                </li>
+                @include('admin.layouts.breadcrumbMenu')
             </ol>
             <div class="container-fluid">
                 <div class="animated fadeIn">
@@ -41,21 +42,20 @@
                                     <div class="tab-content">
                                         <div id="all_photos" class="tab-pane fade in active show">
                                             @if(!blank($photos))
-                                                    
-                                            <div class="jumbotron">
-                                                <h1><i class="fa fa-camera-retro" aria-hidden="true"></i> Lenses</h1>
-                                                <p>Images provided free of copyright by wonderful people</p>
-                                            </div>
 
                                             <div class="row flex">
                                                 @foreach ($photos as $photo)
-                                                <div class="col-lg-4 col-sm-6">
-                                                    <div class="thumbnail">
-                                                        <img src="{{ $photo->path }}">
-                                                    </div>
+                                                <div class="col-sm-3">
+                                                    <img class="img img-thumbnail img-fluid" src="{{ $photo->path }}">
+                                                    <form action="{{ route('photos.destroy', $photo->id) }}" method="post">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button class="btn btn-link text-danger delete-photo-btn" type="submit"><i class="fa fa-2x fa-trash-o"></i></button>
+                                                    </form>
                                                 </div>
                                                 @endforeach
                                             </div>
+
                                             @else
                                                 <p>No photo to show</p>
                                             @endif
@@ -63,7 +63,13 @@
                                             <div class="mx-auto flex-column">{{ $photos->links() }}</div>
                                         </div>
                                         <div id="upload_photos" class="tab-pane fade">
-                                            upload
+                                            <form id="dropzone-uploader" action="{{ route('photos.store') }}" class="dropzone rounded">
+                                                @csrf
+                                                <div class="dz-message d-flex flex-column">
+                                                    <i class="fa fa-cloud-upload fa-3x"></i>
+                                                    Drag &amp; Drop here or click
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
