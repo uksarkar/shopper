@@ -8,13 +8,14 @@ use App\Http\Requests\User\CreatePriceRequest;
 use App\Price;
 use App\Product;
 use App\Shop;
+use App\Variant;
 
 class ProductsController extends Controller
 {
 
     public function __construct()
     {
-        $this->middleware('role_or_permission:admin|create product', ['create','store']);
+        $this->middleware('role_or_permission:admin|create product', ['create', 'store']);
     }
 
     /**
@@ -43,7 +44,7 @@ class ProductsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreatePriceRequest $request, Shop $shop, Product $product)
+    public function store(CreatePriceRequest $request, Shop $shop, Product $product, Variant $variant)
     {
         try {
 
@@ -51,52 +52,96 @@ class ProductsController extends Controller
             $data = $request->validated();
 
             //find if the request product is valid or get fail
-            $product = $product->findOrFail($data['product']); 
+            $product = $product->findOrFail($data['product']);
 
-            
+
             $price = new Price;
 
+            $isSuccess = false;
+
             //save the product to all of the users available shops
-            if($data['shop'] == 0 && !blank($shops = auth()->user()->availableShops($product->id))) {
+            if ($data['shop'] == 0 && !blank($shops = auth()->user()->availableShops($product->id))) {
                 foreach ($shops as $shop) {
-                    $price->create([
-                        'amounts'=>$data['amounts'],
-                        'product_id'=>$product->id,
-                        'shop_id'=>$shop->id,
-                        'user_id'=>auth()->id()
-                    ]);
+                    $newPrice = null;
+
+                    if ($request->has('name') && $request->has('price')) {
+                        $newPrice = $price->create([
+                            'product_id' => $product->id,
+                            'shop_id' => $shop->id,
+                            'user_id' => auth()->id()
+                        ]);
+                        $variant->createNewVariants($request->name, $request->price, $newPrice->id);
+                        $isSuccess = true;
+                    }
+                    if (!blank($request->variants)) {
+                        foreach ($request->variants as $key => $item) {
+                            if (!blank($item)) {
+
+                                if (!$newPrice) {
+                                    $newPrice = $price->create([
+                                        'product_id' => $product->id,
+                                        'shop_id' => $shop->id,
+                                        'user_id' => auth()->id()
+                                    ]);
+                                    $isSuccess = true;
+                                }
+
+                                $newPrice->Variants()->attach([$key => ["amounts" => $item]]);
+                            }
+                        }
+                    }
                 }
 
                 $price->cacheLeftShop($product->id);
 
                 $price->product_id = $product->id;
                 $price->cachePrice();
-
-                return back()->with('successMassage', 'This product is added to your all shops!');
+                if ($isSuccess) {
+                    return back()->with('successMassage', 'This product is added to your all shops!');
+                } else {
+                    return back()->with('failedMassage', 'Please provide valid price!');
+                }
+            } else if ($data['shop'] == 0 && blank($shops = auth()->user()->availableShops($product->id))) {
+                return abort(401);
             }
 
             //save the product to one shop__________________________________
 
             //find if the request shop is valid or get fail
-            $shop = $shop->findOrFail($data['shop']); 
+            $shop = $shop->findOrFail($data['shop']);
 
             // abort the request if the user is not the owner of the shop
-            if($shop->userNotOwnerOrAdmin()) return abort(401); 
+            if ($shop->userNotOwnerOrAdmin()) return abort(401);
 
-            $price->amounts = $data['amounts'];
             $price->product_id = $product->id;
             $price->shop_id = $shop->id;
             $price->user_id = auth()->id();
 
-            $price->save();
+            if ($request->has('name') && $request->has('price')) {
+                $isSuccess = $price->save();
+                $variant->createNewVariants($request->name, $request->price, $price->id);
+            }
+            if (!blank($request->variants)) {
+                foreach ($request->variants as $key => $item) {
+                    if (!blank($item)) {
+                        if (!$isSuccess) {
+                            $isSuccess = $price->save();
+                        }
+                        $price->Variants()->attach([$key => ["amounts" => $item]]);
+                    }
+                }
+            }
 
             $price->cacheLeftShop($product->id);
             $price->cachePrice();
 
-            return back()->with('successMassage', 'Product was successfully added!');
-
+            if ($isSuccess) {
+                return back()->with('successMassage', 'Product was successfully added!');
+            } else {
+                return back()->with('failedMassage', 'Please provide valid price!');
+            }
         } catch (\Throwable $th) {
-            // throw $th;
+            throw $th;
             // return abort(403);
         }
     }
@@ -140,28 +185,37 @@ class ProductsController extends Controller
             Product::findOrFail($data['product']);
 
             //find if the request shop is valid or get fail
-            $shop = Shop::findOrFail($data['shop']); 
-
+            $shop = Shop::findOrFail($data['shop']);
+            
             // abort the request if the user is not the owner of the shop
-            if($shop->userNotOwnerOrAdmin()) return abort(401); 
+            if ($shop->userNotOwnerOrAdmin()) return abort(401);
 
             // get the price now
             $price = $price->findOrFail($request->price);
-            
+
             // Let's update the price
-            $price->update(["amounts"=>$data["amounts"]]);
+            $isUpdating = false;
+            if (!blank($request->variants)) {
+                foreach ($request->variants as $key => $item) {
+                    if (!blank($item)) {
+                        if(!$isUpdating) {
+                            $price->variants()->detach();
+                            $isUpdating = true;
+                        }
+                        $price->Variants()->attach([$key => ["amounts" => $item]]);
+                    }
+                }
+            }
 
             // Calculate lowest price and cache it
             $price->cachePrice();
 
             //return back with massage
             return back()->with('successMassage', 'Product was successfully updated!');
-            
         } catch (\Throwable $th) {
-            //throw $th;
-            return abort(401, "Unrecognized!");
+            throw $th;
+            // return abort(401, "Unrecognized!");
         }
-        
     }
 
     /**
@@ -177,6 +231,9 @@ class ProductsController extends Controller
             //Take the product of this price for cache updating
             $product_id = $price->product_id;
 
+            // Detach all variants
+            $price->variants()->detach();
+
             //Let's delete the price
             $price->delete();
 
@@ -186,7 +243,7 @@ class ProductsController extends Controller
             $price->cachePrice();
 
             //Let's send the response to the user
-            return back()->with("successMassage","Product was successfully deleted.");
+            return back()->with("successMassage", "Product was successfully deleted.");
         } catch (\Throwable $th) {
             // throw $th;
             return abort(501);

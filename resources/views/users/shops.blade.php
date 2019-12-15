@@ -3,84 +3,50 @@
     Your Shops
 @endsection
 @section('content')
-    @include('helpers.header')
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-3">
-                @include('helpers.accountSidebar')
-            </div>
-            <div class="col-sm-9">
-                @if(session()->has('successMassage'))
-                    <div class="alert alert-success alert-dismissible mt-2 fade show" role="alert"><strong>Success!</strong> {{ session()->get('successMassage') }}
-                        <button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+<!-- Start main container -->
+@include('users.sidebar')
+<div class="container mx-auto mt-2 min-h-screen rounded bg-white p-2">
+    <div class="bg-white">
+        <h1>
+            Shops
+            @if (auth()->user()->can('create shop'))
+            <a href="{{ route('home.shops.create') }}" class="float-right text-base bg-green-700 rounded p-1 text-white m-1">
+                Add new shop
+            </a>
+            @endif
+        </h1>
+        <hr />
+        @if(!blank(auth()->user()->shops))
+            @foreach (auth()->user()->shops as $shop)
+                <div class="flex flex-wrap border-b border-gray-400 rounded m-1 p-2">
+                    <div class="w-full md:w-3/12 flex items-center justify-center border-r border-gray-400">
+                    <img class="h-16" src="@if(!blank($shop->image)){{ $shop->image->url }}@endif" />
                     </div>
-                @endif
-                <div class="card mt-3">
-                    <div class="card-header">
-                        My Shops
-                        @if (auth()->user()->can('create shop'))
-                            <a href="{{ route('home.shops.create') }}" class="btn btn-sm btn-success float-right">
-                                Add new shop
-                            </a>
-                        @endif
+                    <div class="w-full md:w-7/12">
+                    <h2 class="ml-2">{{ $shop->name }}</h2>
+                    <p class="p-2 text-xs text-gray-600">
+                        @if(!blank($shop->prices)){{ count($shop->prices) }} Products @else No Product @endif
+                    </p>
                     </div>
-                    <div class="card-body">
-                        {{-- Showing users all Shops --}}
-                        @if(!blank(auth()->user()->shops))
-                            @foreach (auth()->user()->shops as $shop)
-                            <article class="card card-product">
-                                <div class="card-body">
-                                <div class="row">
-                                    <aside class="col-sm-3">
-                                        <div class="img-wrap"><img src="@if(!blank($shop->image)){{ $shop->image->url }}@endif"></div>
-                                    </aside> <!-- col.// -->
-                                    <article class="col-sm-6">
-                                            <h4 class="title"> {{ $shop->name }}  </h4>
-                                            <br>
-                                            <dl class="dlist-align">
-                                              <dt>URL: </dt>
-                                              <dd>{{ $shop->url }}</dd>
-                                            </dl>  <!-- item-property-hor .// -->
-                                            <dl class="dlist-align">
-                                              <dt>Products</dt>
-                                              <dd>@if(!blank($shop->products)){{ count($shop->products) }}@else No Product @endif</dd>
-                                            </dl>  <!-- item-property-hor .// -->
-                                        
-                                    </article> <!-- col.// -->
-                                    <aside class="col-sm-3 border-left">
-                                        <div class="action-wrap">
-                                            <p>
-                                                <a href="{{ route('home.shops.edit', $shop->id) }}" class="btn btn-primary"> Edit </a>
-                                                <a href="{{ route('home.shops.show',$shop->id) }}" class="btn btn-secondary"> Details  </a>
-                                            </p>
-                                        </div> <!-- action-wrap.// -->
-                                    </aside> <!-- col.// -->
-                                </div> <!-- row.// -->
-                                </div> <!-- card-body .// -->
-                            </article>
-                            @endforeach
-                        @else
-                        <p class="bg-light p-1">
-                            You doesn't have any shop yet.
-                        </p>
-                        <p>
-                            @can('create shop')
-                                <a href="{{ route('home.shops.create') }}" class="btn btn-success">
-                                    Add your shop
-                                </a>
-                            @else 
-                                Please upgrade your membership to add new shop.
-                            @endcan
-                        </p>
-                        @endif
-                        {{-- End Shops --}}
+                    <div class="w-full md:w-2/12 text-right relative">
+                        <button @click="showTooltips($event)" title="options" data-options="btn" class="px-2 relative z-10 bg-gray-200 focus:outline-none border border-transparent transition-250 rounded hover:border-blue-800">
+                            <i class="fa fa-ellipsis-v relative z-m1" aria-hidden="true"></i>
+                        </button>
+                        <div class="hidden bg-white text-left right-0 absolute z-20 border border-gray-300 shadow-md rounded p-2 m-1 options">
+                            <ul>
+                                <li class="cursor-pointer border-b border-gray-400 hover:text-green-700 transition-250">
+                                    <a href="{{ route('home.shops.show',$shop->id) }}">View details</a>
+                                </li>
+                                <li class="cursor-pointer hover:text-green-700 transition-250">
+                                    <a href="{{ route('home.shops.edit', $shop->id) }}">Edit details</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            @endforeach
+        @endif
     </div>
-
-    @include('helpers.subscribe')
-    @include('helpers.footer')
+</div>
+<!-- End main container -->
 @endsection

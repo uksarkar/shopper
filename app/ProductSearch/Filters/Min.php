@@ -15,7 +15,7 @@ class Min implements Filter
      */
     public static function apply(Builder $builder, $value)
     {
-        return $builder->whereHas('prices',function(Builder $query) use($value){
+        return $builder->whereHas('prices.variants', function(Builder $query) use($value){
             $query->havingRaw('MIN(amounts) >= '.$value);
         });
     }

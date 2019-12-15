@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use App\Category;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Product
@@ -33,7 +34,7 @@ use App\Category;
  */
 class Product extends Model
 {
-    protected $fillable = ['name','slug','description','expected_price','category_id','user_id','shope_id'];
+    protected $fillable = ['name', 'slug', 'short_description', 'description', 'expected_price', 'category_id', 'user_id', 'shope_id'];
 
     /**
      * Create a product slug.
@@ -75,7 +76,7 @@ class Product extends Model
     {
         return $this->morphToMany(Photo::class, 'photoable');
     }
-    
+
     /**
      * Making relationship with many prices
      * 
@@ -111,9 +112,43 @@ class Product extends Model
      */
     public function lowestPrice()
     {
-        return Cache::get('product_'.$this->id);
+        $variants = Variant::all();
+        foreach ($variants as $variant) {
+            if (Cache::has('product_' . $variant->variant_name . "_" . $this->id)) {
+                return Cache::get('product_' . $variant->variant_name . "_" . $this->id);
+            }
+        }
     }
-    
+    /**
+     * Get product shops with lowest prices and variants
+     */
+    public function getShops(){
+        $allPrices = $this->prices;
+        $finalOutput = [];
+        foreach($allPrices as $price) {
+            $shop = $price->shop;
+            $variants = $price->variants()->orderBy('id')->get();
+            $outputVariants = [];
+            foreach($variants as $variant){
+                array_push($outputVariants, [
+                    "variant_name"=>$variant->variant_name,
+                    "price"=>$variant->pivot->amounts
+                ]);
+            }
+            $rating = !blank($rate = $shop->reviews()->avg('rating')) ? number_format($rate, 2) : 0.00;
+            $vArray = [
+                "shop_name" => $shop->name,
+                "shop_id" => $shop->id,
+                "shop_image" => $shop->image->url,
+                "shop_url" => "/shop/".$shop->id,
+                "shop_rating" => $rating,
+                "variants" => $outputVariants
+            ];
+            array_push($finalOutput, $vArray);
+        }
+        return $finalOutput;
+    }
+
     /**
      * Check if the user left any shop for add this product
      * 
@@ -121,7 +156,7 @@ class Product extends Model
      */
     public function hasShop()
     {
-        return !Cache::has('shop_'.auth()->id()."_".$this->id);
+        return !Cache::has('shop_' . auth()->id() . "_" . $this->id);
     }
 
     /**
@@ -133,7 +168,7 @@ class Product extends Model
     {
         $category = new Category;
         $category_slug = $category->getRoute($this->category_id);
-        return $category_slug.'/'.$this->slug;
+        return $category_slug . '/' . $this->slug;
     }
     /**
      * Getting the price money sing default is `$`
@@ -142,7 +177,7 @@ class Product extends Model
      */
     public function monySign()
     {
-        $sign = Cache::has('mSign') ? Cache::get('mSign'):"$";
+        $sign = Cache::has('mSign') ? Cache::get('mSign') : "$";
         return $sign;
     }
 

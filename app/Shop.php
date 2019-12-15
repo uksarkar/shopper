@@ -23,6 +23,17 @@ class Shop extends Model
     public function user(){
         return $this->belongsTo("App\User");
     }
+
+
+    /**
+     * Making relationship with reviews
+     * 
+     * @return Collection
+     */
+    public function reviews()
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
     
     /**
      * Making relationship with many prices

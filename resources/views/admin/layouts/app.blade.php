@@ -281,6 +281,23 @@
                 top: -44px;
                 left: -2px;
             }
+            .input-container{
+                padding: 15px;
+                border: 1px solid #eee;
+                border-radius: 5px;
+            }
+            .input-container .type-item {
+                border-bottom: 1px solid #777;
+                padding-bottom: 5px;
+            }
+            .data-view > .row > .col-sm-4 , .data-view > .row > .col-sm-8 {
+                margin-bottom: 5px;
+                padding-bottom: 5px;
+                border-bottom: 1px solid #777;
+            }
+            .hidden {
+                display: none;
+            }
         </style>
 </head>
 @yield('content')

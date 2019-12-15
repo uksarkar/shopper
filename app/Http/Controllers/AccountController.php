@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Product;
 use Illuminate\Http\Request;
+use App\Variant;
 
 class AccountController extends Controller
 {
@@ -38,8 +39,9 @@ class AccountController extends Controller
         $products = Product::whereHas('prices', function($q) use($user_id){
             $q->where('user_id', $user_id);
         })->with('prices','prices.shop')->paginate(25);
+        $variants = Variant::all();
         
-        return view('users.products', compact("products"));
+        return view('users.products', compact("products","variants"));
     }
 
     /**

@@ -67,6 +67,7 @@ class Category extends Model
         $product->slug = $category_slug.'/'.$product->slug;
         $product->price = $product->lowestPrice()['price'];
         $product->count = $product->lowestPrice()['count'];
+        $product->variant = $product->lowestPrice()['variant'];
         $product->cat_slug = $category_slug;
         
         return $product->slug == "/".$slug ? $product:false;

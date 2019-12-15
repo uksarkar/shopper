@@ -7,19 +7,29 @@
         "watch-poll": "npm run watch -- --watch-poll",
         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
         "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "prod-tailwind": "cross-env NODE_ENV=production postcss resources/css/tailwind.css -o public/css/tailwind.css"
     },
     "devDependencies": {
+        "@fullhuman/postcss-purgecss": "^1.2.0",
+        "autoprefixer": "^9.7.2",
         "axios": "^0.19",
         "bootstrap": "^4.0.0",
         "cross-env": "^5.1",
+        "cssnano": "^4.1.10",
         "jquery": "^3.2",
         "laravel-mix": "^4.0.7",
+        "laravel-mix-postcss-config": "^1.0.2",
         "lodash": "^4.17.13",
+        "mix-tailwindcss": "^1.2.0",
         "popper.js": "^1.12",
+        "postcss-cli": "^6.1.2",
         "resolve-url-loader": "^2.3.1",
         "sass": "^1.15.2",
         "sass-loader": "^7.1.0",
+        "tailwindcss": "^1.1.4",
+        "tailwindcss-plugins": "^0.3.0",
+        "tailwindcss-transitions": "^2.1.0",
         "vue-template-compiler": "^2.6.10"
     }
 }

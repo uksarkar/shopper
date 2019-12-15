@@ -234,12 +234,36 @@
         }).then(function(data) {
         window.emojis = Object.keys(data);
         window.emojiUrls = data; 
-        });;
+        });
 
         $(".textarea").summernote({
             width: 800,
             height: 300,
             placeholder: 'Product descriptions....',
+            hint: {
+                match: /:([\-+\w]+)$/,
+                search: function (keyword, callback) {
+                callback($.grep(emojis, function (item) {
+                    return item.indexOf(keyword)  === 0;
+                }));
+                },
+                template: function (item) {
+                var content = emojiUrls[item];
+                return '<img src="' + content + '" width="20" /> :' + item + ':';
+                },
+                content: function (item) {
+                var url = emojiUrls[item];
+                if (url) {
+                    return $('<img />').attr('src', url).css('width', 20)[0];
+                }
+                return '';
+                }
+            }
+        });
+        $(".short_textarea").summernote({
+            width: 800,
+            height: 150,
+            placeholder: 'Product\'s short descriptions....',
             hint: {
                 match: /:([\-+\w]+)$/,
                 search: function (keyword, callback) {

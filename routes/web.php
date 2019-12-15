@@ -5,7 +5,18 @@ Route::get('admin', 'HomeController@admin')->name('admin');
 
 Auth::routes();
 
+// get products prices celled by axios in vue
+Route::get("/getProductPrices", "HomeController@getAllPrices");
+// search feck shops
+Route::get('/feck-shops{q?}', 'HomeController@searchFeckShops')->where('q', '^[a-zA-Z0-9-_\/]+$');
+Route::get('/feck-customers{q?}', 'HomeController@searchFeckUsers')->where('q', '^[a-zA-Z0-9-_\/]+$');
+// view shop
+Route::get('/shop/{shop}', 'HomeController@viewShop')->name('view-shop');
+Route::get('/user/{user}', 'HomeController@viewUser')->name('view-customer');
+
 //Logged Users routes______________________________________
+Route::middleware('auth')->resource('review', 'ReviewController')->only('store');
+
 Route::group(
    [
       'middleware' => ['auth', 'role_or_permission:admin|view account'],
@@ -89,22 +100,22 @@ Route::get('/search{slug?}', 'HomeController@search')->where('slug', '^[a-zA-Z0-
 
 //Development only_________________________________________
 
-// Route::get('/roles', function () {
-//    $role = Spatie\Permission\Models\Role::findOrCreate('member', 'web');
-//    //$permission = Spatie\Permission\Models\Permission::findOrCreate('create shop');
-//    $permission = Spatie\Permission\Models\Permission::findOrCreate('view account');
-//    // $user = App\User::find(2);
-//    // $permission = Spatie\Permission\Models\Permission::create(['name'=>'create product']);
 
-//    // auth()->user()->revokePermissionTo($permission);
-//    //auth()->user()->givePermissionTo($permission);
-//    //$role = Spatie\Permission\Models\Role::find(2);
-//    // $role->givePermissionTo($permission);
-//    // $user->removeRole($role);
+Route::get('/roles', function () {
+   $role = Spatie\Permission\Models\Role::findOrCreate('admin', 'web');
+   //$permission = Spatie\Permission\Models\Permission::findOrCreate('create shop');
+   // $permission = Spatie\Permission\Models\Permission::findOrCreate('view account');
+   // $user = App\User::find(2);
+   // $permission = Spatie\Permission\Models\Permission::create(['name'=>'create product']);
 
-//    // auth()->user()->assignRole($role);
+   // auth()->user()->revokePermissionTo($permission);
+   //auth()->user()->givePermissionTo($permission);
+   //$role = Spatie\Permission\Models\Role::find(2);
+   // $role->givePermissionTo($permission);
+   // $user->removeRole($role);
 
-// });
+   auth()->user()->assignRole($role);
+});
 
 // End development routes_________________________________
 

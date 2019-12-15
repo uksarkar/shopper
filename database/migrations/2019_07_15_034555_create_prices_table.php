@@ -18,7 +18,6 @@ class CreatePricesTable extends Migration
             $table->integer('shop_id')->index()->unsigned();
             $table->integer('product_id')->index()->unsigned();
             $table->integer('user_id')->index()->unsigned();
-            $table->integer('amounts');
             $table->timestamps();
         });
     }

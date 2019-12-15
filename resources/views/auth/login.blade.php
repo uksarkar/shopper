@@ -1,75 +1,91 @@
 @extends('layouts.app')
 
 @section('content')
-    @include('helpers.header')
-<div class="container">
-    <div class="row justify-content-center my-5">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
-
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<!-- Start main container -->
+      <div class="container mx-auto mt-20">
+        <div
+          class="max-w-sm flex shadow-lg flex-col bg-cover bg-center justify-content mx-auto my-24 bg-white p-6 rounded py-20"
+        >
+          <div class="text-center text-gray-600 mb-6">
+            <h2>{{ __('Login') }}</h2>
+          </div>
+          <div>
+            <form method="POST" action="{{ route('login') }}">
+              @csrf
+              <input
+                class="bg-transparent transition-250 border-b m-auto block w-full text-gray-600 pb-1 focus:border-teal-700 @error('email') border-red-500 @else mb-6 border-gray-400 @enderror"
+                type="email"
+                name="email" value="{{ old('email') }}" required autocomplete="email" autofocus
+                placeholder="{{ __('Email') }}"
+              />
+              @error('email')
+              <small class="text-red-500">
+                {{ $message }}
+              </small>
+              @enderror
+              <input
+                class="bg-transparent transition-250 border-b m-auto block w-full text-gray-600 pb-1 focus:border-teal-700 @error('password') border-red-500 @else mb-6 border-gray-400 @enderror"
+                type="password"
+                name="password" required autocomplete="current-password"
+                placeholder="{{ __('Password') }}"
+              />
+              @error('password')
+              <small class="text-red-500">
+                {{ $message }}
+              </small>
+              @enderror
+              <div class="flex mt-4">
+                <label class="custom-label flex">
+                  <div
+                    class="bg-white shadow w-6 h-6 p-1 flex justify-center items-center mr-2"
+                  >
+                    <input type="checkbox" name="remember" class="hidden" {{ old('remember') ? 'checked' : '' }} />
+                    <svg
+                      class="hidden w-4 h-4 text-green-600 pointer-events-none"
+                      viewBox="0 0 172 172"
+                    >
+                      <g
+                        fill="none"
+                        stroke-width="none"
+                        stroke-miterlimit="10"
+                        font-family="none"
+                        font-weight="none"
+                        font-size="none"
+                        text-anchor="none"
+                        style="mix-blend-mode:normal"
+                      >
+                        <path d="M0 172V0h172v172z" />
+                        <path
+                          d="M145.433 37.933L64.5 118.8658 33.7337 88.0996l-10.134 10.1341L64.5 139.1341l91.067-91.067z"
+                          fill="currentColor"
+                          stroke-width="1"
+                        />
+                      </g>
+                    </svg>
+                  </div>
+                  <span class="select-none text-gray-600">
+                      {{ __('Remember Me') }}
+                  </span>
+                </label>
+              </div>
+              <input
+                class="shadow-lg pt-3 pb-3 mt-6 w-full text-white bg-green-800 hover:bg-green-900 cursor-pointer transition-250 rounded-full "
+                type="submit"
+                value="SIGN IN"
+              />
+            </form>
+          </div>
+          <div>
+            <p class="mt-4 text-grey text-sm">
+              Haven't an account?
+              <a
+                href="/register"
+                class="no-underline text-green-800 hover:text-green-900"
+                >Sing Up
+              </a>
+            </p>
+          </div>
         </div>
-    </div>
-</div>
-    @include('helpers.footer')
+      </div>
+      <!-- End main container -->
 @endsection

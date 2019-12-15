@@ -22,7 +22,7 @@ class HeaderComposer
      * @param  Categories $categories
      * @return void
      */
-    public function __construct(Category $category,Menu $menu)
+    public function __construct(Category $category, Menu $menu)
     {
         // Dependencies automatically resolved by service container...
         $this->categories = $category;
@@ -38,6 +38,6 @@ class HeaderComposer
     public function compose(View $view)
     {
         $view->with('categories', $this->categories->all())
-            ->with('menu',$this->menu);
+            ->with('menu', $this->menu);
     }
 }

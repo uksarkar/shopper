@@ -52,6 +52,17 @@ class User extends Authenticatable
 
 
     /**
+     * Making relationship with reviews
+     * 
+     * @return Collection
+     */
+    public function reviews()
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
+
+    /**
      * Making relationship with many products
      * it will return the admin details who is added product to database
      * 

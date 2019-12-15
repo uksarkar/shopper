@@ -10,11 +10,12 @@ use App\Http\Requests\CreateProductRequest;
 use App\Http\Controllers\Controller;
 use App\Photo;
 use App\ProductMeta;
+use App\Variant;
 use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
-     /**
+    /**
      * Create a new controller instance.
      *
      * @return void
@@ -22,7 +23,7 @@ class ProductController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this ->middleware('role_or_permission:admin|view admin');
+        $this->middleware('role_or_permission:admin|view admin');
     }
     /**
      * Display a listing of the resource.
@@ -52,14 +53,14 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateProductRequest $request, Product $product)
+    public function store(CreateProductRequest $request, Product $product, Variant $variant)
     {
         $getData = $request->validated();
         $getData['user_id'] = auth()->user()->id;
         $getData['slug'] = $product->makeSlugFromTitle($request->name);
         $product = Product::create($getData);
         if ($request->hasFile('image')) {
-            $imageName = time().'_'.$getData['image']->getClientOriginalName();
+            $imageName = time() . '_' . $getData['image']->getClientOriginalName();
             $imageName = preg_replace("/ /", "-", $imageName);
             $getData['image']->move(public_path('images'), $imageName);
             $getData['url'] = $imageName;
@@ -69,16 +70,13 @@ class ProductController extends Controller
         // FIXME: should fix this letter
         // Cache::put('product_'.$product->id, ['price'=>$request->expected_price,'count'=>0]);
 
-        //creating metas data if there is any
-        (new ProductMeta)->storeMeta($product->id);
-        
         //create if has any photos
-        if($request->has('photos') && !blank($request->photos)){
-            $photos = explode(",",$request->photos);
+        if ($request->has('photos') && !blank($request->photos)) {
+            $photos = explode(",", $request->photos);
             $product->photos()->sync($photos);
         }
-        
-        return redirect()->route('products.index')->with('successMassage','Product was added.');
+
+        return redirect()->route('products.index')->with('successMassage', 'Product was added.');
     }
 
     /**
@@ -101,7 +99,7 @@ class ProductController extends Controller
     public function edit(Product $product, Category $category)
     {
         $category_output = $category->outputTree($product->category_id);
-        return view('admin.products.edit', compact('product','category_output'));
+        return view('admin.products.edit', compact('product', 'category_output'));
     }
 
     /**
@@ -116,26 +114,26 @@ class ProductController extends Controller
         $product->update($request->validated());
 
         if ($request->hasFile('image')) {
-            $imageName = time().'_'.$request->file('image')->getClientOriginalName();
+            $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
             $getData = preg_replace('/ /', '-', $imageName);
 
             if (!empty($product->image)) {
-                if (file_exists($oldImage = public_path().$product->image->url)){
+                if (file_exists($oldImage = public_path() . $product->image->url)) {
                     unlink($oldImage);
                 }
-                $product->image()->update(['url'=>$getData]);
+                $product->image()->update(['url' => $getData]);
             } else {
-                $product->image()->create(['url'=>$getData]);
+                $product->image()->create(['url' => $getData]);
             }
 
-            $request->image->move(public_path('images'),$getData);
+            $request->image->move(public_path('images'), $getData);
         }
         //Create and update meta data if there is any
         (new ProductMeta)->storeMeta($product->id);
 
         //create if has any photos
-        if($request->has('photos') && !blank($request->photos)){
-            $photos = explode(",",$request->photos);
+        if ($request->has('photos') && !blank($request->photos)) {
+            $photos = explode(",", $request->photos);
             $product->photos()->sync($photos);
         } else {
             $product->photos()->detach();
@@ -154,40 +152,35 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         //Delete if there is any image
-        if (!blank($product->image)) 
-        {
-            if(file_exists($imageName = public_path().$product->image->url))
-            {
+        if (!blank($product->image)) {
+            if (file_exists($imageName = public_path() . $product->image->url)) {
                 unlink($imageName);
             }
             $product->image()->delete();
         }
 
         // Delete all of prices of this product
-        if(!blank($product->prices))
-        {
+        if (!blank($product->prices)) {
             $product->prices()->delete();
         }
 
         //delete all of the metas of this product
-        if(!blank($product->metas))
-        {
+        if (!blank($product->metas)) {
             $product->metas()->delete();
         }
 
         //delete all of the photos of the product
-        if(!blank($product->photos))
-        {
+        if (!blank($product->photos)) {
             $product->photos()->detach();
         }
 
         // Delete the cache price of this product
-        Cache::put('product_'.$product->id, 1, -5);
+        Cache::put('product_' . $product->id, 1, -5);
 
         //Delete the product now
         $product->delete();
 
         //return the response
-        return redirect()->route('products.index')->with('successMassage','The product has been successfully deleted.');
+        return redirect()->route('products.index')->with('successMassage', 'The product has been successfully deleted.');
     }
 }

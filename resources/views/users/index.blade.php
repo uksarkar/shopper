@@ -3,20 +3,13 @@
     Mange your account
 @endsection
 @section('content')
-    @include('helpers.header')
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-3">
-                @include('helpers.accountSidebar')
-            </div>
-            <div class="col-sm-9">
-                <h1 class="header">My Dashboard</h1>
-                <hr>
-            </div>
+      <!-- Start main container -->
+      @include('users.sidebar')
+      <div class="container mx-auto mt-2 min-h-screen rounded bg-white p-2">
+        <div class="bg-white">
+            <h1>Dashboard</h1>
+            <hr />
         </div>
-    </div>
-
-    @include('helpers.subscribe')
-    @include('helpers.footer')
+      </div>
+      <!-- End main container -->
 @endsection

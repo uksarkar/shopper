@@ -13,7 +13,7 @@ class CreatePriceRequest extends FormRequest
      */
     public function authorize()
     {
-        if(auth()->check() && auth()->user()->can('create product')) return true;
+        if (auth()->check() && auth()->user()->can('create product')) return true;
         return false;
     }
 
@@ -26,8 +26,7 @@ class CreatePriceRequest extends FormRequest
     {
         return [
             'shop' => 'required',
-            'product' => 'required|integer',
-            'amounts' => 'required|numeric'
+            'product' => 'required|integer'
         ];
     }
 }
