@@ -8,8 +8,8 @@ Auth::routes();
 // get products prices celled by axios in vue
 Route::get("/getProductPrices", "HomeController@getAllPrices");
 // search feck shops
-Route::get('/feck-shops{q?}', 'HomeController@searchFeckShops')->where('q', '^[a-zA-Z0-9-_\/]+$');
-Route::get('/feck-customers{q?}', 'HomeController@searchFeckUsers')->where('q', '^[a-zA-Z0-9-_\/]+$');
+Route::get('/fake-shops{q?}', 'HomeController@searchFakeShops')->where('q', '^[a-zA-Z0-9-_\/]+$');
+Route::get('/fake-customers{q?}', 'HomeController@searchFakeUsers')->where('q', '^[a-zA-Z0-9-_\/]+$');
 // view shop
 Route::get('/shop/{shop}', 'HomeController@viewShop')->name('view-shop');
 Route::get('/user/{user}', 'HomeController@viewUser')->name('view-customer');

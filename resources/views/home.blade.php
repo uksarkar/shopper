@@ -4,128 +4,17 @@
       <!-- Start caption content -->
       <div
         class="container mt-5 min-w-full min-h-screen flex items-center justify-center top-bg-full"
+        style = "background-image: url({{ asset('assets/images/bg.jpg') }});"
       >
-        <div class="">
           <div class="flex-grow container mx-auto sm:px-4 pt-6 pb-8">
             <div
-              class="bg-white border-t border-b sm:border-l sm:border-r sm:rounded shadow mb-6"
+              class="flex flex-wrap items-center justify-center overflow-hidden p-10"
             >
-              <div class="flex flex-wrap overflow-hidden">
-                <div class="w-1/2 overflow-hidden md:w-1/6 text-center py-2">
-                  <div class="border-r text-green-800">
-                    <div
-                      class="text-sm uppercase text-grey cursor-pointer py-5 px-12 tracking-wide"
-                    >
-                      <svg
-                        height="30"
-                        fill="#2f855a"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 576 512"
-                      >
-                        <path
-                          d="M528 0H48C21.5 0 0 21.5 0 48v320c0 26.5 21.5 48 48 48h192l-16 48h-72c-13.3 0-24 10.7-24 24s10.7 24 24 24h272c13.3 0 24-10.7 24-24s-10.7-24-24-24h-72l-16-48h192c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zm-16 352H64V64h448v288z"
-                        />
-                      </svg>
-                    </div>
-                    Desktop
-                  </div>
-                </div>
-                <div class="w-1/2 overflow-hidden md:w-1/6 text-center py-2">
-                  <div class="border-r text-green-800">
-                    <div
-                      class="text-sm uppercase text-grey cursor-pointer py-5 px-12 tracking-wide"
-                    >
-                      <svg
-                        height="30"
-                        fill="#2f855a"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 384 512"
-                      >
-                        <path
-                          d="M96 256V96c0-53.019 42.981-96 96-96s96 42.981 96 96v160c0 53.019-42.981 96-96 96s-96-42.981-96-96zm252-56h-24c-6.627 0-12 5.373-12 12v42.68c0 66.217-53.082 120.938-119.298 121.318C126.213 376.38 72 322.402 72 256v-44c0-6.627-5.373-12-12-12H36c-6.627 0-12 5.373-12 12v44c0 84.488 62.693 154.597 144 166.278V468h-68c-6.627 0-12 5.373-12 12v20c0 6.627 5.373 12 12 12h184c6.627 0 12-5.373 12-12v-20c0-6.627-5.373-12-12-12h-68v-45.722c81.307-11.681 144-81.79 144-166.278v-44c0-6.627-5.373-12-12-12z"
-                        />
-                      </svg>
-                    </div>
-                    Microphone
-                  </div>
-                </div>
-                <div class="w-1/2 overflow-hidden md:w-1/6 text-center py-2">
-                  <div class="border-r text-green-800">
-                    <div
-                      class="text-sm uppercase text-grey cursor-pointer py-5 px-12 tracking-wide"
-                    >
-                      <svg
-                        height="30"
-                        fill="#2f855a"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 320 512"
-                      >
-                        <path
-                          d="M272 0H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h224c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zM160 480c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32z"
-                        />
-                      </svg>
-                    </div>
-                    Mobile
-                  </div>
-                </div>
-                <div class="w-1/2 overflow-hidden md:w-1/6 text-center py-2">
-                  <div class="border-r text-green-800">
-                    <div
-                      class="text-sm uppercase text-grey cursor-pointer py-5 px-12 tracking-wide"
-                    >
-                      <svg
-                        height="30"
-                        fill="#2f855a"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 512 512"
-                      >
-                        <path
-                          d="M512 144v288c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48h88l12.3-32.9c7-18.7 24.9-31.1 44.9-31.1h125.5c20 0 37.9 12.4 44.9 31.1L376 96h88c26.5 0 48 21.5 48 48zM376 288c0-66.2-53.8-120-120-120s-120 53.8-120 120 53.8 120 120 120 120-53.8 120-120zm-32 0c0 48.5-39.5 88-88 88s-88-39.5-88-88 39.5-88 88-88 88 39.5 88 88z"
-                        />
-                      </svg>
-                    </div>
-                    Camera
-                  </div>
-                </div>
-                <div class="w-1/2 overflow-hidden md:w-1/6 text-center py-2">
-                  <div class="border-r text-green-800">
-                    <div
-                      class="text-sm uppercase text-grey cursor-pointer py-5 px-12 tracking-wide"
-                    >
-                      <svg
-                        height="30"
-                        fill="#2f855a"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 512 512"
-                      >
-                        <path
-                          d="M256 32C114.52 32 0 146.496 0 288v48a32 32 0 0 0 17.689 28.622l14.383 7.191C34.083 431.903 83.421 480 144 480h24c13.255 0 24-10.745 24-24V280c0-13.255-10.745-24-24-24h-24c-31.342 0-59.671 12.879-80 33.627V288c0-105.869 86.131-192 192-192s192 86.131 192 192v1.627C427.671 268.879 399.342 256 368 256h-24c-13.255 0-24 10.745-24 24v176c0 13.255 10.745 24 24 24h24c60.579 0 109.917-48.098 111.928-108.187l14.382-7.191A32 32 0 0 0 512 336v-48c0-141.479-114.496-256-256-256z"
-                        />
-                      </svg>
-                    </div>
-                    Headphone
-                  </div>
-                </div>
-                <div class="w-1/2 overflow-hidden md:w-1/6 text-center py-2">
-                  <div class="text-green-800">
-                    <div
-                      class="text-sm uppercase text-grey cursor-pointer py-5 px-12 tracking-wide"
-                    >
-                      <svg
-                        height="30"
-                        fill="#2f855a"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 640 512"
-                      >
-                        <path
-                          d="M512 64v256H128V64h384m16-64H112C85.5 0 64 21.5 64 48v288c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zm100 416H389.5c-3 0-5.5 2.1-5.9 5.1C381.2 436.3 368 448 352 448h-64c-16 0-29.2-11.7-31.6-26.9-.5-2.9-3-5.1-5.9-5.1H12c-6.6 0-12 5.4-12 12v36c0 26.5 21.5 48 48 48h544c26.5 0 48-21.5 48-48v-36c0-6.6-5.4-12-12-12z"
-                        />
-                      </svg>
-                    </div>
-                    Laptop
-                  </div>
-                </div>
-              </div>
+            <div class="bg-white middle-bg rounded-full flex flex-wrap items-center justify-center overflow-hidden px-16 py-5 text-2xl">
+              <a class="mx-4" href="/" v-for="index in 5">
+                <i class="fa fa-desktop middle-button" aria-hidden="true"></i>
+                <span class="text-sm block">Desktop</span>
+              </a>
             </div>
           </div>
         </div>

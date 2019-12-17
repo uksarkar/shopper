@@ -69,10 +69,23 @@
     width: 50px;
 }
 .top-bg-full {
-    background-image: url("/assets/bg-image.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    background-color: #018bf6;
+}
+.logo {
+    max-height: 55px;
+    max-width: 55px;
+}
+.middle-button {
+    @apply text-green-700 rounded-full p-3;
+    background: #fff;
+    box-shadow: 0px 0px 8px -2px #000;
+}
+.middle-bg {
+    box-shadow: 0px 0px 8px -2px #000;
+    background-color: #ffffff;
 }
 /* Enter and leave animations can use different */
 /* durations and timing functions.              */

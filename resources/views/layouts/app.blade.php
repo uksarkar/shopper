@@ -24,7 +24,7 @@
       >
         <div class="flex-1 flex justify-between items-center">
           <a class="focus:outline-none" href="/">
-            <img src="{{ $site_logo }}" alt="{{ $site_name }}">
+            <img class="logo" src="{{ $site_logo }}" alt="{{ $site_name }}">
           </a>
         </div>
         <div class="cursor-pointer lg:hidden block" @click="toggleMenu">
@@ -89,16 +89,16 @@
               </li>
               <li>
                 <a
-                  href="/feck-customers"
+                  href="/fake-customers"
                   class="lg:p-4 py-3 block focus:outline-none border-b-2 border-transparent hover:border-indigo-400"
-                  >Fack Customers</a
+                  >Fake Customers</a
                 >
               </li>
               <li>
                 <a
-                  href="/feck-shops"
+                  href="/fake-shops"
                   class="lg:p-4 py-3 block focus:outline-none border-b-2 border-transparent hover:border-indigo-400"
-                  >Fack Shops</a
+                  >Fake Shops</a
                 >
               </li>
               @guest

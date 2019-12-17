@@ -38,7 +38,7 @@
                                             </tr>
                                             <tr>
                                                 <td class="bg-dark">Site Logo :</td>
-                                                <td class="pl-4"><img src="{{ $site_logo }}" alt="logo"></td>
+                                                <td class="pl-4"><img style="max-hight: 55px; max-width:55px;" src="{{ $site_logo }}" alt="logo"></td>
                                             </tr>
                                             <tr>
                                                 <td class="bg-dark">Favicon :</td>

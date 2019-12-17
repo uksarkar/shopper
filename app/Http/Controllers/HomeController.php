@@ -54,7 +54,7 @@ class HomeController extends Controller
         return view('search', compact('products', 'variants'));
     }
 
-    public function searchFeckShops(Request $request)
+    public function searchFakeShops(Request $request)
     {
         $request->flash();
         $shops = null;
@@ -62,27 +62,27 @@ class HomeController extends Controller
             $shops = Shop::where("name","RLIKE",$request->q)->paginate(25);
         }
 
-        return view('feck.feckShops', compact('shops'));
+        return view('fake.fakeShops', compact('shops'));
     }
 
-    public function searchFeckUsers(Request $request)
+    public function searchFakeUsers(Request $request)
     {
         $request->flush();
         $users = null;
         if($request->has('q') && !blank($request->q)){
             $users = User::where("name","RLIKE",$request->q)->paginate(25);
         }
-        return view('feck.feckUsers', compact('users'));
+        return view('fake.fakeUsers', compact('users'));
     }
 
     public function viewShop(Shop $shop)
     {
-        return view('feck.shop', compact('shop'));
+        return view('fake.shop', compact('shop'));
     }
 
     public function viewUser(User $user)
     {
-        return view('feck.user', compact('user'));
+        return view('fake.user', compact('user'));
     }
 
     public function getAllPrices(Request $request) {
