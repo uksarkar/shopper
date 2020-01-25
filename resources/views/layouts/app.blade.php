@@ -6,14 +6,15 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="{{ $favicon }}" />
     <link rel="stylesheet" href="{{ asset('/css/tailwind.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
     <title>@yield('title', $site_name)</title>
-    @if(session()->has("successMassage") || session()->has("failedMassage") || $errors->count() > 0)
+    @auth
         <link rel="stylesheet" href="{{ asset("css/iziToast.min.css") }}">
-    @endif
+    @endauth
     <!-- development version, includes helpful console warnings -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   </head>
@@ -74,14 +75,14 @@
               <li class="catToggler">
                 <a
                   href="#"
-                  class="lg:p-4 py-3 block focus:outline-none border-b-2 hover:border-indigo-400"
+                  class="lg:p-4 relative py-3 block focus:outline-none border-b-2 hover:border-indigo-400"
                   :class="allCatBorder"
-                  @click.prevent=""
+                  @click.prevent="showCategoriesUI"
                   >All Categories</a
                 >
                 <!-- Start Categories view -->
                 <div
-                  class="absolute left-0 right-0 mx-auto z-10 shadow-lg bg-gray-100 p-8 catContainer"
+                  :class="showCatContainer ? 'absolute z-10 shadow-lg bg-gray-100 p-8 catContainer showCatContainer' : 'absolute z-10 shadow-lg bg-gray-100 p-8 catContainer'"
                 >
                   {!! $menu->outputMenu() !!}
                 </div>
@@ -137,8 +138,9 @@
             class="lg:ml-4 flex items-center focus:outline-none justify-start lg:mb-0 mb-4 cursor-pointer"
           >
             <img
-              src="@if(auth()->user()->image){{ auth()->user()->image->url }}@else https://via.placeholder.com/100x100.png?text=avatar @endif"
+              src="{{ auth()->user()->getImage() }}"
               alt="avatar"
+              ref = "avatarImage"
               class="rounded-full shadow-outline w-10 h-10 border-2 border-transparent transition-250 hover:shadow-md"
             />
           </a>
@@ -152,65 +154,31 @@
         <div class="bg-gray-700 text-white text-center py-12">
           <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
             <div class="text-sm lg:flex-grow">
-              <a
-                href="#responsive-header"
-                class="block mt-4 md:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-              >
-                About us
-              </a>
-              <a
-                href="#responsive-header"
-                class="block mt-4 md:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-              >
-                Contact us
-              </a>
-              <a
-                href="#responsive-header"
-                class="block mt-4 md:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-              >
-                Term of use
-              </a>
-              <a
-                href="#responsive-header"
-                class="block mt-4 md:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-              >
-                Privacy Policy
-              </a>
-              <a
-                href="#responsive-header"
-                class="block mt-4 md:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-              >
-                Docs
-              </a>
-              <a
-                href="#responsive-header"
-                class="block mt-4 md:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-              >
-                Examples
-              </a>
-              <a
-                href="#responsive-header"
-                class="block mt-4 md:inline-block lg:mt-0 text-teal-200 hover:text-white"
-              >
-                Blog
-              </a>
+              @foreach ($menu->footerMenu() as $menu)
+                <a
+                  href="{{ $menu->slug }}"
+                  class="block mt-4 md:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+                >
+                  {{ $menu->name }}
+                </a>
+              @endforeach
             </div>
           </div>
           <br />
           <p>
-            Copyright © Examples.com All rights reserved.
+            {{ $menu->getCopyrightText() }}
           </p>
         </div>
       </div>
       <!-- End footer container -->
-    </div>    
-    @if(session()->has("successMassage") || session()->has("failedMassage") || $errors->count() > 0)
+    </div>
+    @auth
       <script src="{{ asset("js/iziToast.min.js") }}"></script>
       <script type="text/javascript">
           @if($errors->count() > 0)
                 @foreach($errors->all() as $error)
                     iziToast.warning({
-                        timeout: 20000,
+                        timeout: 10000,
                         transitionIn: 'flipInX',
                         transitionOut: 'flipOutX',
                         title: 'Caution',
@@ -235,7 +203,7 @@
                 });
             @endif
       </script>
-    @endif
+    @endauth
     <script src="{{ asset('js/script.js') }}"></script>
   </body>
 </html>

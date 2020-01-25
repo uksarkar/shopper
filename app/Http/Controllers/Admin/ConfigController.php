@@ -37,16 +37,16 @@ class ConfigController extends Controller
      */
     public function siteNameLogoUpdate(Request $request)
     {
-        
+
         Cache::putMany([
-            "site_name"=> $request->site_name,
-            "site_logo"=> $request->url,
-            "favicon"=> $request->favicon
+            "site_name" => $request->site_name,
+            "site_logo" => $request->url,
+            "favicon" => $request->favicon
         ]);
 
         Cache::put("mSign", $request->money);
 
-        return back()->with('successMassage','Data was successfully updated.');
+        return back()->with('successMassage', 'Data was successfully updated.');
     }
 
     /**
@@ -56,8 +56,8 @@ class ConfigController extends Controller
     {
         $item = $menu->orderBy('priority')->get();
         $menu = $menu->getHTML($item);
-        $contents = $content->where('content','<>','recommended_FoR_HoMe')->with('categories')->get();
-        $categories = Category::where('parent_id',0)->with('children')->get();
+        $contents = $content->where('content', '<>', 'recommended_FoR_HoMe')->where("title", "<>", "footer_copyright")->with('categories')->get();
+        $categories = Category::where('parent_id', 0)->with('children')->get();
         $hasContentQuery = DB::select("SELECT 
                                             c.id,
                                             ac.admin_content_id as key_id
@@ -69,75 +69,80 @@ class ConfigController extends Controller
             $hasContent[$item->id] = $item->key_id;
         }
 
+        $copyright = $content->where("title", "footer_copyright")->first();
+
         //this content is required for adding products in the bottom of home page
         $recommendedContent = $content->where('content', 'recommended_FoR_HoMe')->with('products')->first();
-        if(blank($recommendedContent)){
+        if (blank($recommendedContent)) {
             $content->create([
                 'content' => 'recommended_FoR_HoMe',
-                'title'=>'null',
-                'header'=>'Recommended Items',
-                'url'=>'not need'
+                'title' => 'null',
+                'header' => 'Recommended Items',
+                'url' => 'not need'
             ]);
             $recommendedContent = $content->where('content', 'recommended_FoR_HoMe')->with('products')->first();
         }
         //end recommended
 
-        return view('admin.configs.homeCustomization', compact('contents','menu','categories','hasContent','recommendedContent'));
+        return view('admin.configs.homeCustomization', compact('contents', 'copyright', 'menu', 'categories', 'hasContent', 'recommendedContent'));
     }
     /**
      * Create new content
      */
-    public function createContent(Request $request, AdminContent $content){
+    public function createContent(Request $request, AdminContent $content)
+    {
         $theContent = $content->create($request->all());
 
         if ($request->hasFile('image')) {
-            $imageName = time().'_'.$request->file('image')->getClientOriginalName();
+            $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
             $imageName = preg_replace("/ /", "-", $imageName);
             $request->file('image')->move(public_path('images'), $imageName);
-            $theContent->image()->create(['url'=>$imageName]);
+            $theContent->image()->create(['url' => $imageName]);
         }
 
-        return back()->with('successMassage','Content was added!');
+        return back()->with('successMassage', 'Content was added!');
     }
     /**
      * Updating content
      */
-    public function updateContent(Request $request, AdminContent $content){
+    public function updateContent(Request $request, AdminContent $content)
+    {
         $content->update($request->all());
 
         if ($request->hasFile('image')) {
-            $imageName = time().'_'.$request->file('image')->getClientOriginalName();
+            $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
             $getData = preg_replace('/ /', '-', $imageName);
 
             if (!empty($content->image)) {
-                if (file_exists($oldImage = public_path().$content->image->url)){
+                if (file_exists($oldImage = public_path() . $content->image->url)) {
                     unlink($oldImage);
                 }
-                $content->image()->update(['url'=>$getData]);
+                $content->image()->update(['url' => $getData]);
             } else {
-                $content->image()->create(['url'=>$getData]);
+                $content->image()->create(['url' => $getData]);
             }
 
-            $request->image->move(public_path('images'),$getData);
+            $request->image->move(public_path('images'), $getData);
         }
 
-        return back()->with('successMassage','Content was updated!');
+        return back()->with('successMassage', 'Content was updated!');
     }
     /**
      * Delete content
      */
-    public function deleteContent(AdminContent $content){
-        
+    public function deleteContent(AdminContent $content)
+    {
+
         //Delete if there are any images
         if (!empty($content->image)) {
-            if(file_exists($imageName = public_path().$content->image->url)){
+            if (file_exists($imageName = public_path() . $content->image->url)) {
                 unlink($imageName);
             }
             $content->image()->delete();
         }
 
         //Delete if there any categories
-        if(!empty($content->categories)){
+        if (!empty($content->categories)) {
             $content->categories()->detach();
         }
 
@@ -150,55 +155,73 @@ class ConfigController extends Controller
      * Adding the category with content
      */
 
-     public function addCategory(Request $request){
+    public function addCategory(Request $request)
+    {
         $data = $request->all();
-        $content = AdminContent::where('id',$data['content_id'])->first();
-        $store = explode(',',$data['content_ids']);
+        $content = AdminContent::where('id', $data['content_id'])->first();
+        $store = explode(',', $data['content_ids']);
         $content->categories()->syncWithoutDetaching($store);
         return back()->with('successMassage', 'Categories ware added!');
-     }
-     /**
-      * Removing the category from content
-      */
-      public function removeCategory(Request $request,AdminContent $content){
+    }
+    /**
+     * Removing the category from content
+     */
+    public function removeCategory(Request $request, AdminContent $content)
+    {
         $content->categories()->detach($request->category_id);
         return back()->with('successMassage', 'Category was removed!');
-      }
+    }
 
     /**
      * Adding the product with content
      */
 
-     public function addProduct(Request $request){
+    public function addProduct(Request $request)
+    {
 
         $data = $request->all();
-        $content = AdminContent::where('id',$data['recommended_content_id'])->first();
-        $store = explode(',',$data['product_ids']);
+        $content = AdminContent::where('id', $data['recommended_content_id'])->first();
+        $store = explode(',', $data['product_ids']);
         $content->products()->syncWithoutDetaching($store);
 
         return back()->with('successMassage', 'Products ware added!');
-     }
+    }
 
-     /**
-      * Removing the product from content
-      */
-      public function removeProduct(Request $request,AdminContent $content){
+    /**
+     * Removing the product from content
+     */
+    public function removeProduct(Request $request, AdminContent $content)
+    {
 
         $content->products()->detach($request->product_id);
 
         return back()->with('successMassage', 'Products was removed!');
-      }
+    }
 
-      /**
-       * Saving menu to database
-       */
-      public function saveMenu(Request $request, Menu $menu){
+    /**
+     * Saving menu to database
+     */
+    public function saveMenu(Request $request, Menu $menu)
+    {
         $data_ = $request->all();
         $menu->storeMenu($data_);
-        
-        return response('Success', 200);
-      }
 
-    
+        return response('Success', 200);
+    }
+
+    public function footerCopyright(Request $request)
+    {
+        if ($request->has('content') && !blank($request->content)) {
+            AdminContent::updateOrCreate(
+                ["title" => "footer_copyright", "header" => "copyright", "url" => "no-need"],
+                ["content" => $request->content]
+            );
+            return back()->with("successMassage", "Copyright Updated!");
+        } else {
+            return back()->with("failedMassage", "Content is required.");
+        }
+    }
+
+
     //end of the controller
 }

@@ -18,7 +18,8 @@ class CategoryController extends Controller
         $variants = Variant::all();
 
         if ($category) {
-            return view('category', compact('category','variants'));
+            $products = $category->products()->paginate(25);
+            return view('category', compact('category', 'variants', 'products'));
         } else {
             $product = $categoryClass->findProductBySlug($slug);
 

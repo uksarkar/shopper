@@ -74,6 +74,7 @@
         @endif
     </p>
     @endif
+    {!! $products->links() !!}
 </div>
 <!-- End main container -->
 

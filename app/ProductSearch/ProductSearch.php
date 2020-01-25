@@ -5,10 +5,14 @@ namespace App\ProductSearch;
 use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+
 class ProductSearch
 {
+    static protected $q = null;
+
     public static function apply(Request $filters)
     {
+        self::$q = $filters->all();
         $query = static::applyDecoratorsFromRequest($filters, (new Product)->newQuery());
         return static::getResults($query);
     }
@@ -32,7 +36,7 @@ class ProductSearch
     }
     private static function getResults(Builder $query)
     {
-        return $query->paginate(25);
-        // return $query->toSql();
+        return $query->paginate(25)->appends(self::$q);
+        // dd($query->toSql());
     }
 }

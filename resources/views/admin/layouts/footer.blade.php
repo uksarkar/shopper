@@ -18,9 +18,7 @@
     <script src="{{ asset('assets/js/jquery.nestable.js') }}" type="text/javascript"></script>
     <script src="{{ asset('assets/js/jquery.nestable.plus.js') }}" type="text/javascript"></script>
 @endif
-@if(Route::is('products.create') || Route::is('products.edit'))
-    <script src="{{ asset('assets/js/summernote-bs4.min.js') }}" type="text/javascript"></script>
-@endif
+<script src="{{ asset('assets/js/summernote-bs4.min.js') }}" type="text/javascript"></script>
 <script>
     function readURL(input) {
         if (input.files && input.files[0]) {
@@ -167,7 +165,7 @@
         //Menu Customizer
         @if(Route::is('config.homeCustomization'))
         $('.dd.nestable').nestable({
-            maxDepth: 2
+            maxDepth: 1
         })
         .on('change', updateOutput);
         $('#savePM').click(function(){
@@ -195,6 +193,7 @@
             request = $.ajax({
                 url: "/admin/config/menu",
                 type: "post",
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                 contentType: "application/json; charset=utf-8",
                 data: sendData
             });
@@ -206,7 +205,7 @@
 
             // Callback handler that will be called on failure
             request.fail(function (jqXHR, textStatus, errorThrown){
-                $('#resText').html("<span class='text-danger'>Error.....</span>");
+                $('#resText').html(`<span class='text-danger'>Error: ${jqXHR.responseJSON.message}</span>`);
                 // Log the error to the console
                 console.error(
                     "The following error occurred: "+
@@ -228,7 +227,6 @@
 
         //Summer nots
 
-        @if(Route::is('products.create') || Route::is('products.edit'))
         $.ajax({
         url: 'https://api.github.com/emojis',
         }).then(function(data) {
@@ -260,6 +258,7 @@
                 }
             }
         });
+        @if(Route::is('products.create') || Route::is('products.edit'))
         $(".short_textarea").summernote({
             width: 800,
             height: 150,

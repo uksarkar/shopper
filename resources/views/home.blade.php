@@ -10,9 +10,9 @@
             <div
               class="flex flex-wrap items-center justify-center overflow-hidden p-10"
             >
-            <div class="bg-white middle-bg rounded-full flex flex-wrap items-center justify-center overflow-hidden px-16 py-5 text-2xl">
-              <a class="mx-4" href="/" v-for="index in 5">
-                <i class="fa fa-desktop middle-button" aria-hidden="true"></i>
+            <div class="bg-white middle-bg rounded flex flex-wrap items-center justify-center overflow-hidden px-10 py-5 text-2xl">
+              <a class="px-4 text-info-darkest border-r border-gray-400 text-center" href="/" v-for="index in 5">
+                <i class="fa fa-desktop" aria-hidden="true"></i>
                 <span class="text-sm block">Desktop</span>
               </a>
             </div>
@@ -87,7 +87,7 @@
                 <div class="px-1 py-4 font-bold text-base mb-2">
                   {{ $product->name }}
                 </div>
-                @if(!blank($lowest = $product->prices()->orderBy('amounts','desc')->limit(2)->get()))
+                @if(false)
                   @foreach ($lowest as $prod)
                   <p class="m-1 text-sm">
                     {{ $prod->shop->name }}

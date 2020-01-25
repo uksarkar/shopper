@@ -99,6 +99,18 @@ class User extends Authenticatable
 
 
     /**
+     * Making relationship with many pages
+     * will return the end user all pages
+     * 
+     * @return Collection
+     */
+    public function pages()
+    {
+        return $this->hasMany(Page::class);
+    }
+
+
+    /**
      * Making relationship with many memberships
      * 
      * @return Collection
@@ -165,6 +177,16 @@ class User extends Authenticatable
             $query->where('product_id', $id);
         })->get();
         return $shops;
+    }
+
+    /**
+     * get user's image
+     * @return string
+     */
+    public function getImage()
+    {
+        $image = $this->image;
+        return !blank($image) ? $image->url:"/img/avatars/none.png";
     }
 
 

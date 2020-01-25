@@ -46,7 +46,14 @@ class HomeController extends Controller
     public function search(Request $request)
     {
         $request->flash();
-        $products = Search::apply($request);
+
+        $products = null;
+
+        if ($request->has('name') && !blank($request->name)) {
+            # code...
+            $products = Search::apply($request);
+        }
+
         $variants = Variant::all();
 
         // return $products;
@@ -58,8 +65,8 @@ class HomeController extends Controller
     {
         $request->flash();
         $shops = null;
-        if($request->has('q') && !blank($request->q)) {
-            $shops = Shop::where("name","RLIKE",$request->q)->paginate(25);
+        if ($request->has('q') && !blank($request->q)) {
+            $shops = Shop::where("name", "RLIKE", $request->q)->paginate(25);
         }
 
         return view('fake.fakeShops', compact('shops'));
@@ -69,8 +76,8 @@ class HomeController extends Controller
     {
         $request->flush();
         $users = null;
-        if($request->has('q') && !blank($request->q)){
-            $users = User::where("name","RLIKE",$request->q)->paginate(25);
+        if ($request->has('q') && !blank($request->q)) {
+            $users = User::where("name", "RLIKE", $request->q)->paginate(25);
         }
         return view('fake.fakeUsers', compact('users'));
     }
@@ -85,8 +92,9 @@ class HomeController extends Controller
         return view('fake.user', compact('user'));
     }
 
-    public function getAllPrices(Request $request) {
-        if($request->has('product_id')) {
+    public function getAllPrices(Request $request)
+    {
+        if ($request->has('product_id')) {
             $product = Product::find($request->product_id);
             return $product->getShops();
         }

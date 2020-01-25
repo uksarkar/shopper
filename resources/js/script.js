@@ -17,7 +17,10 @@ var app = new Vue({
         storedPrices: [],
         productVariants: [],
         selectedVariant: null,
-        variantsForEdit: []
+        variantsForEdit: [],
+        showInputs: false,
+        showPasswordForm: false,
+        showCatContainer: false
     },
     methods: {
         toggleMenu() {
@@ -76,13 +79,70 @@ var app = new Vue({
             if (result.length === 0) {
                 this.loadFailed = true;
             }
+        },
+        showError(msg) {
+            iziToast.error({
+                timeout: 10000,
+                title: 'Error',
+                message: msg
+            });
+        },
+        showSuccess(message) {
+            iziToast.success({
+                timeout: 10000,
+                title: 'OK',
+                message
+            });
+        },
+        saveAvatar() {
+            let image = this.$refs.openFileDialog;
+            this.showLoading = true;
+
+            let form = new FormData();
+
+            form.append('image', image.files[0]);
+
+            axios.post('/account/update-profile-image', form, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(response => {
+                if (response.data.error) {
+                    if (response.data.error.image) {
+                        for (let i = 0; i < response.data.error.image.length; i++) {
+                            this.showError(response.data.error.image[i]);
+                        }
+                    } else {
+                        this.showError(response.data.error);
+                    }
+                } else {
+                    this.showSuccess(response.data.success);
+                    this.previewImageUrl = response.data.image;
+                    this.$refs.avatarImage.src = response.data.image;
+                }
+                this.showLoading = false;
+            }).catch(response => {
+                this.showError(response);
+                this.showLoading = false;
+            });
+        },
+        collapse(e) {
+            let className = e.target.parentElement.className;
+            let newClasses = className === 'parent show-element' ? 'parent' : 'parent show-element';
+            let newText = className === 'parent show-element' ? '+' : '-';
+            e.target.parentElement.className = newClasses;
+            e.target.innerHTML = newText;
+
+        },
+        showCategoriesUI() {
+            this.showCatContainer = !this.showCatContainer;
         }
     },
     mounted() {
         if (this.$refs.theProductId) {
             this.getPrices();
         }
-        document.addEventListener("click", function (e) {
+        document.addEventListener("click", (e) => {
             let allOptions = document.querySelectorAll("div.options");
             allOptions.forEach(el => {
                 el.style.display = null;
@@ -90,6 +150,18 @@ var app = new Vue({
             if (e.target.dataset.options === 'btn') {
                 e.target.nextElementSibling.style.display = "block";
             }
+            if (e.target.firstChild.data !== 'All Categories') {
+                this.showCatContainer = false;
+            }
         });
+    },
+    beforeCreate() {
+        axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        let token = document.head.querySelector('meta[name="csrf-token"]');
+        if (token) {
+            axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+        } else {
+            console.error('CSRF token not found');
+        }
     }
 });

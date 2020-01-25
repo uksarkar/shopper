@@ -119,20 +119,66 @@ class Product extends Model
             }
         }
     }
+
+    public function getLowestPriceData($variant_id = null)
+    {
+        try {
+            $variant = $this->prices()->first()->variants()->first();
+
+            if ($variant_id) {
+                $variant = Variant::where('id', $variant_id)->first();
+            }
+
+            $id = $variant->id;
+
+            $priceQuery = DB::table('prices')
+                ->selectRaw('variantables.amounts, prices.shop_id, shops.name as shop_name')
+                ->where('product_id', $this->id)
+                ->join('shops', 'shops.id', 'prices.shop_id')
+                ->join('variantables', 'variantable_id', 'prices.id')
+                ->where('variant_id', $id)
+                ->orderBy('amounts')
+                ->get();
+
+            $price = $priceQuery[0];
+            $count = 0;
+
+            foreach ($priceQuery as $key => $value) {
+                if ($value->amounts === $price->amounts) {
+                    $count++;
+                }
+            }
+
+            $got = [
+                "price" => $price->amounts,
+                "count" => $count,
+                "variant" => $variant->variant_name,
+                "shop_id" => $price->shop_id,
+                "shop_name" => $price->shop_name
+            ];
+        } catch (\Throwable $th) {
+            //throw $th;
+            $got = [];
+        }
+
+        return $got;
+    }
+
     /**
      * Get product shops with lowest prices and variants
      */
-    public function getShops(){
+    public function getShops()
+    {
         $allPrices = $this->prices;
         $finalOutput = [];
-        foreach($allPrices as $price) {
+        foreach ($allPrices as $price) {
             $shop = $price->shop;
             $variants = $price->variants()->orderBy('id')->get();
             $outputVariants = [];
-            foreach($variants as $variant){
+            foreach ($variants as $variant) {
                 array_push($outputVariants, [
-                    "variant_name"=>$variant->variant_name,
-                    "price"=>$variant->pivot->amounts
+                    "variant_name" => $variant->variant_name,
+                    "price" => $variant->pivot->amounts
                 ]);
             }
             $rating = !blank($rate = $shop->reviews()->avg('rating')) ? number_format($rate, 2) : 0.00;
@@ -140,7 +186,7 @@ class Product extends Model
                 "shop_name" => $shop->name,
                 "shop_id" => $shop->id,
                 "shop_image" => $shop->image->url,
-                "shop_url" => "/shop/".$shop->id,
+                "shop_url" => "/shop/" . $shop->id,
                 "shop_rating" => $rating,
                 "variants" => $outputVariants
             ];

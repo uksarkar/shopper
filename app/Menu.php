@@ -52,14 +52,17 @@ class Menu extends Model
     return true;
   }
 
-  public function outputHTML($menu, $parent_id = null)
+  public function outputHTML($menu, $parent_id = 0)
   {
     $result = null;
     foreach ($menu as $item) {
       $slug = (new Category)->getRoute($item->id);
       if ($item->parent_id == $parent_id) {
+        $is_parent = !blank($item->children);
         $a_tag = "<a class=\"border-b border-transparent hover:text-blue-800 hover:border-gray-700 transition-250\" href=\"$slug\">$item->name</a>";
-        $result .= "<li class=''>" . $a_tag . $this->outputHTML($menu, $item->id) . "</li>";
+        $li_class = $is_parent ? "parent" : "item";
+        $span = $is_parent ? "<span @click='collapse(\$event)' class='collapse'>+</span>" : null;
+        $result .= "<li class='$li_class'>" . $span . $a_tag . $this->outputHTML($menu, $item->id) . "</li>";
       }
     }
     return $result ?  "\n<ul class=\"ml-8\">\n$result</ul>\n" : null;
@@ -75,6 +78,18 @@ class Menu extends Model
   public function getHTML($items)
   {
     return $this->buildMenu($items);
+  }
+
+  public function footerMenu()
+  {
+    $menus = $this->orderBy('priority')->get();
+    return $menus;
+  }
+
+  public function getCopyrightText()
+  {
+    $text = AdminContent::where("title", "footer_copyright")->first();
+    return blank($text) ? "Copyright © Utpal Sarkar All rights reserved." : $text->content;
   }
   //end of this controller
 }

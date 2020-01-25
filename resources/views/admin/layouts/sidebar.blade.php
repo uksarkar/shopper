@@ -10,6 +10,9 @@
                     </ul>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="{{ route("config.category") }}"><i class="nav-icon icon-menu"></i> Categories</a></li>
+            <li class="nav-title">Pages</li>
+                <li class="nav-item"><a class="nav-link" href="{{ route("page.index") }}"><i class="nav-icon icon-layers"></i> All Pages</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route("page.create") }}"><i class="nav-icon icon-plus"></i> Add Page</a></li>
             <li class="nav-title">Media</li>
                 <li class="nav-item"><a class="nav-link" href="{{ route("photos.index") }}"><i class="nav-icon icon-grid"></i> Photos</a></li>
             <li class="nav-title">Users</li>

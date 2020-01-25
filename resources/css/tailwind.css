@@ -109,12 +109,18 @@
     -webkit-transition: 0.5s;
     transition: 0.5s;
     visibility: hidden;
+    overflow-y: auto;
 }
 .catToggler:hover > .catContainer,
-.catToggler:focus > .catContainer {
+.catToggler:focus > .catContainer,
+.showCatContainer {
     opacity: 1;
     visibility: visible;
     transform: perspective(600px) rotateX(0deg);
+}
+
+.catContainer > ul {
+    margin-inline-start: 0;
 }
 
 /* Arrow info bar */
@@ -228,4 +234,81 @@
 button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+ul li.parent > a {
+    font-weight: bold;
+}
+
+ul li.parent ul {
+    display: none;
+}
+
+ul li.show-element > ul {
+    display: inherit;
+}
+
+ul li.parent span.collapse {
+    font-weight: bold;
+    padding: 0 4px;
+    margin-right: 5px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s ease;
+}
+
+ul li.parent span.collapse:hover {
+    @apply text-info-normal;
+}
+
+/* ul li.parent > a {
+    font-weight: bold;
+}
+
+ul li.parent::before {
+    font-weight: bold;
+    position: relative;
+    content: "+";
+} */
+
+.avatar-edit-btn {
+    @apply absolute rounded-full w-8 h-8 bg-gray-100 transition-250 border border-grey-100 text-grey-500;
+    top: 5px;
+    right: 40px;
+}
+.avatar-edit-btn:hover {
+    @apply text-info-normal border-info-darkest;
+}
+.avatar-edit-btn:focus {
+    @apply outline-none;
+}
+[class^="btn-"] {
+    @apply border rounded px-3 transition-250;
+}
+[class^="btn-"]:focus {
+    @apply outline-none;
+}
+.btn-outline-info {
+    @apply text-info-normal border-info-normal;
+}
+.btn-outline-info:hover {
+    @apply bg-info-normal text-info-lighter;
+}
+.btn-outline-danger {
+    @apply text-red-700 border-red-700;
+}
+.btn-outline-danger:hover {
+    @apply bg-red-700 text-red-300;
+}
+.btn-outline-success {
+    @apply text-purple-600 border-purple-600;
+}
+.btn-outline-success:hover {
+    @apply bg-purple-600 text-purple-300;
+}
+.btn-outline-warning {
+    @apply text-orange-500 border-orange-500;
+}
+.btn-outline-warning:hover {
+    @apply bg-orange-500 text-orange-200;
 }

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @method Illuminate\Support\Facades\Route;
+ */
+
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('admin', 'HomeController@admin')->name('admin');
 
@@ -13,6 +17,8 @@ Route::get('/fake-customers{q?}', 'HomeController@searchFakeUsers')->where('q', 
 // view shop
 Route::get('/shop/{shop}', 'HomeController@viewShop')->name('view-shop');
 Route::get('/user/{user}', 'HomeController@viewUser')->name('view-customer');
+// show page router
+Route::get('/page/{page}', 'PageController@show')->name('page.show');
 
 //Logged Users routes______________________________________
 Route::middleware('auth')->resource('review', 'ReviewController')->only('store');
@@ -27,6 +33,13 @@ Route::group(
       Route::get('/', 'AccountController@index')->name('account.index');
       Route::get('shops', 'AccountController@shops')->name('account.shops');
       Route::get('products', 'AccountController@products')->name('account.products');
+
+      //update user profile image
+      Route::post('/update-profile-image', 'AccountController@updateProfileImage');
+      // update user bio
+      Route::post('/updateBio/{user}', 'AccountController@updateUserBio')->name('account.updateBio');
+      // update user password
+      Route::post('/updatePassword/{user}', 'AccountController@changePassword')->name('account.changePassword');
 
       //getting the available shop of the user
       Route::get('/getShops', 'ApiController@returnShop');
@@ -91,8 +104,15 @@ Route::prefix('admin')->middleware('auth', 'role_or_permission:admin|view admin'
    Route::resource('photos', 'MediaController')->only('index', 'store', 'destroy');
    Route::get('get-photos', 'MediaController@getPhotos');
 
+   // store footer copyright
+   Route::post('store-footer', 'ConfigController@footerCopyright')->name('footer-copyright');
+
    //end of the route group
 });
+
+// page routes
+Route::resource('admin/page', 'PageController')->except('show');
+
 //End admin routes_________________________________________
 
 //Products search route
@@ -100,6 +120,10 @@ Route::get('/search{slug?}', 'HomeController@search')->where('slug', '^[a-zA-Z0-
 
 //Development only_________________________________________
 
+Route::get('/test', function () {
+   $product = \App\Product::first();
+   return $product->getLowestPriceData();
+});
 
 Route::get('/roles', function () {
    $role = Spatie\Permission\Models\Role::findOrCreate('admin', 'web');

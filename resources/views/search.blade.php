@@ -38,6 +38,16 @@
         <div class="w-5/6">
             <form action="{{ route('search') }}" method="get">
                 <input type="hidden" name="name" value="{{ old('name') }}">
+            <label for="variants">Type</label>
+            <select class="border border-gray-400 p-1 rounded" name="type" id="variants">
+              <option value="">---any---</option>
+              @foreach ($variants as $variant)
+                @php
+                    $selected = old('type') == $variant->id ? 'selected':null;
+                    echo "<option value=\"$variant->id\" $selected>$variant->variant_name</option>";
+                @endphp
+              @endforeach
+            </select>
             <label for="price">Price</label>
             <input
               class="border border-gray-500 p-1 w-20 rounded focus:border-teal-700"
@@ -64,11 +74,13 @@
       </div>
     </div>
     <!-- End Jumbotron -->
+    @if($products)
     <p class="text-gray-600 ml-5">
-        {{ $products->count() }} results for "{{ old('name') }}" 
+        {{ count($products) }} results for "{{ old('name') }}" 
         @if(old('min')) and minimum price {{ old('min') }} @endif
         @if(old('max')) and maximum price {{ old('max') }} @endif
     </p>
+    
     <!-- Start product grid -->
     <div class="flex flex-wrap overflow-hidden">
         @foreach ($products as $product)
@@ -97,8 +109,13 @@
                     </a>
                 </div>
                 <div class="px-6 py-4">
-                    @if($product->lowestPrice()['price'])
-                        Starting at <span class="text-green-500 font-semibold">{{ $product->monySign() }}{{ $product->lowestPrice()['price'] }}</span> in {{ $product->lowestPrice()['count'] }} shops.
+                    @php
+                        $productPrice = $product->getLowestPriceData(old('type'));
+                        $productPrice = !blank($productPrice) ? $productPrice:$product->getLowestPriceData();
+                    @endphp
+                    @if(!blank($productPrice))
+                        Starting at <span class="text-green-500 font-semibold">{{ $product->monySign() }}{{ $productPrice['price'] }}</span> in {{ $productPrice['count'] }} shops.
+                        <p class="text-center"><span class="border border-gray-400 rounded px-2 text-gray-400">{{ $productPrice['variant'] }}</span></p>
                     @else
                         Expecting <span class="text-green-500 font-semibold">{{ $product->monySign(). $product->expected_price }}</span>
                     @endif
@@ -109,45 +126,12 @@
     </div>
     <!-- End product grid -->
     <!-- Start pagination -->
-    <div class="hidden flex items-center justify-center">
-      <ul class="flex w-64 list-reset border border-grey-100 rounded">
-        <li>
-          <a
-            class="block hover:text-white hover:bg-blue-500 text-blue border-r border-grey-100 px-3 py-2"
-            href="#"
-            >Previous</a
-          >
-        </li>
-        <li>
-          <a
-            class="block hover:text-white hover:bg-blue-500 text-blue border-r border-grey-100 px-3 py-2"
-            href="#"
-            >1</a
-          >
-        </li>
-        <li>
-          <a
-            class="block hover:text-white hover:bg-blue-500 text-blue border-r border-grey-100 px-3 py-2"
-            href="#"
-            >2</a
-          >
-        </li>
-        <li>
-          <a
-            class="block text-white bg-blue-500 border-r border-blue-500 px-3 py-2"
-            href="#"
-            >3</a
-          >
-        </li>
-        <li>
-          <a
-            class="block hover:text-white hover:bg-blue-500 text-blue-500 px-3 py-2"
-            href="#"
-            >Next</a
-          >
-        </li>
-      </ul>
-    </div>
+    {!! $products->links() !!}
+    @else 
+    <p class="text-center">
+      Insert product's name to search...
+    </p>
+    @endif
     <!-- End pagination -->
   </div>
   <!-- End main container -->

@@ -15,7 +15,7 @@ class ProductsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('role_or_permission:admin|create product', ['create', 'store']);
+        $this->middleware('role_or_permission:admin|create product')->only('create', 'store');
     }
 
     /**
@@ -186,7 +186,7 @@ class ProductsController extends Controller
 
             //find if the request shop is valid or get fail
             $shop = Shop::findOrFail($data['shop']);
-            
+
             // abort the request if the user is not the owner of the shop
             if ($shop->userNotOwnerOrAdmin()) return abort(401);
 
@@ -198,7 +198,7 @@ class ProductsController extends Controller
             if (!blank($request->variants)) {
                 foreach ($request->variants as $key => $item) {
                     if (!blank($item)) {
-                        if(!$isUpdating) {
+                        if (!$isUpdating) {
                             $price->variants()->detach();
                             $isUpdating = true;
                         }

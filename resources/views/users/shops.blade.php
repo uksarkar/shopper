@@ -16,8 +16,8 @@
             @endif
         </h1>
         <hr />
-        @if(!blank(auth()->user()->shops))
-            @foreach (auth()->user()->shops as $shop)
+        @if(!blank($shops))
+            @foreach ($shops as $shop)
                 <div class="flex flex-wrap border-b border-gray-400 rounded m-1 p-2">
                     <div class="w-full md:w-3/12 flex items-center justify-center border-r border-gray-400">
                     <img class="h-16" src="@if(!blank($shop->image)){{ $shop->image->url }}@endif" />
@@ -46,6 +46,7 @@
                 </div>
             @endforeach
         @endif
+        {!! $shops->links() !!}
     </div>
 </div>
 <!-- End main container -->

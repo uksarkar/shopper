@@ -36,17 +36,32 @@
         Filter by :
       </div>
       <div class="w-5/6">
-        <form>
+        <form action="{{ route('search') }}" method="get">
+          <input type="hidden" name="name" value="{{ old('name', $category->name) }}">
+          <label for="variants">Type</label>
+          <select class="border border-gray-400 p-1 rounded" name="type" id="variants">
+            <option value="">---any---</option>
+            @foreach ($variants as $variant)
+              @php
+                  $selected = old('type') == $variant->id ? 'selected':null;
+                  echo "<option value=\"$variant->id\" $selected>$variant->variant_name</option>";
+              @endphp
+            @endforeach
+          </select>
           <label for="price">Price</label>
           <input
             class="border border-gray-500 p-1 w-20 rounded focus:border-teal-700"
             type="number"
+            name="min"
+            value="{{ old('min') }}"
             placeholder="min"
           />
           -
           <input
             class="border border-gray-500 p-1 w-20 rounded focus:border-teal-700"
             type="number"
+            name="max"
+            value="{{ old('max') }}"
             placeholder="max"
           />
           <button
@@ -60,17 +75,17 @@
   </div>
   <!-- End Jumbotron -->
   <p class="text-gray-600 ml-5">
-      {{ $category->products->count() }} results for "{{ $category->name }}"
+      {{ $products->count() }} results for "{{ $category->name }}"
   </p>
   <!-- Start product grid -->
   <div class="flex flex-wrap overflow-hidden">
-      @foreach ($category->products as $product)
+      @foreach ($products as $product)
       <div class="w-full overflow-hidden md:w-1/3 lg:w-1/4 xl:w-1/4">
           <div
           class="max-w-sm bg-white relative rounded my-2 mx-5 py-2 overflow-hidden shadow hover:shadow-lg hover:bg-blue-100"
           >
           <img
-              class="w-full h-56"
+              class="max-w-full h-56"
               src="@if($product->image){{ $product->image->url }}@else https://via.placeholder.com/300x300.png?text=No+Image @endif"
               alt="{{ $product->name }}"
           />
@@ -102,45 +117,7 @@
   </div>
   <!-- End product grid -->
   <!-- Start pagination -->
-  <div class="hidden flex items-center justify-center">
-    <ul class="flex w-64 list-reset border border-grey-100 rounded">
-      <li>
-        <a
-          class="block hover:text-white hover:bg-blue-500 text-blue border-r border-grey-100 px-3 py-2"
-          href="#"
-          >Previous</a
-        >
-      </li>
-      <li>
-        <a
-          class="block hover:text-white hover:bg-blue-500 text-blue border-r border-grey-100 px-3 py-2"
-          href="#"
-          >1</a
-        >
-      </li>
-      <li>
-        <a
-          class="block hover:text-white hover:bg-blue-500 text-blue border-r border-grey-100 px-3 py-2"
-          href="#"
-          >2</a
-        >
-      </li>
-      <li>
-        <a
-          class="block text-white bg-blue-500 border-r border-blue-500 px-3 py-2"
-          href="#"
-          >3</a
-        >
-      </li>
-      <li>
-        <a
-          class="block hover:text-white hover:bg-blue-500 text-blue-500 px-3 py-2"
-          href="#"
-          >Next</a
-        >
-      </li>
-    </ul>
-  </div>
+  {!! $products->links() !!}
   <!-- End pagination -->
 </div>
 <!-- End main container -->

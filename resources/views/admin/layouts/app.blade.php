@@ -25,9 +25,7 @@
     @if(Route::is('config.homeCustomization'))
         <link rel="stylesheet" href="{{ asset('assets/css/nestable-style.css') }}" />
     @endif
-    @if(Route::is('products.create') || Route::is('products.edit'))
         <link rel="stylesheet" href="{{ asset('assets/css/summernote-bs4.css') }}" />
-    @endif
         <style>
             .avatar-upload {
                 position: relative;
