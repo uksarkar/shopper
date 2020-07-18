@@ -20,7 +20,7 @@
         "jquery": "^3.2",
         "laravel-mix": "^4.0.7",
         "laravel-mix-postcss-config": "^1.0.2",
-        "lodash": "^4.17.13",
+        "lodash": "^4.17.19",
         "mix-tailwindcss": "^1.2.0",
         "popper.js": "^1.12",
         "postcss-cli": "^6.1.2",
